@@ -1,0 +1,2 @@
+Sitemap: https://featherl.github.io/sitemap.xml
+Sitemap: https://featherl.github.io/baidusitemap.xml
