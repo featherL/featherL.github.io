@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>feather&#39;s blog</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://featherl.github.io/"/>
+  <updated>2018-11-24T14:23:16.704Z</updated>
+  <id>https://featherl.github.io/</id>
+  
+  <author>
+    <name>feather</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>golang学习（一）</title>
+    <link href="https://featherl.github.io/2018/11/24/golang-learning-1/"/>
+    <id>https://featherl.github.io/2018/11/24/golang-learning-1/</id>
+    <published>2018-11-24T14:02:00.000Z</published>
+    <updated>2018-11-24T14:23:16.704Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;简介(摘自&lt;a href=&quot;http://www.runoob.com/go/go-tutorial.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;菜鸟教程&lt;/a&gt;)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Go 是一个开源的编程语言，它能让构造简单、可靠且高效的软件变得容易。&lt;br&gt;Go是从2007年末由Robert Griesemer, Rob Pike, Ken Thompson主持开发，后来还加入了&lt;br&gt;Ian Lance Taylor, Russ Cox等人，并最终于2009年11月开源，在2012年早些时候发布了&lt;br&gt;Go 1稳定版本。现在Go的开发已经是完全开放的，并且拥有一个活跃的社区。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;安装环境: &lt;a href=&quot;http://www.runoob.com/go/go-environment.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;参考链接&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一个golang程序&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;新建文件&lt;code&gt;hello.go&lt;/code&gt;输入以下代码
+    
+    </summary>
+    
+      <category term="golang学习" scheme="https://featherl.github.io/categories/golang%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="golang" scheme="https://featherl.github.io/tags/golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第一篇文章</title>
+    <link href="https://featherl.github.io/2018/11/24/test/"/>
+    <id>https://featherl.github.io/2018/11/24/test/</id>
+    <published>2018-11-24T11:15:00.000Z</published>
+    <updated>2018-11-24T13:45:47.607Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;这是我的第一篇文章&quot;&gt;&lt;a href=&quot;#这是我的第一篇文章&quot; class=&quot;headerlink&quot; title=&quot;这是我的第一篇文章&quot;&gt;&lt;/a&gt;这是我的第一篇文章&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;markdown语法&lt;/strong&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="test" scheme="https://featherl.github.io/categories/test/"/>
+    
+    
+      <category term="test" scheme="https://featherl.github.io/tags/test/"/>
+    
+      <category term="markdown语法" scheme="https://featherl.github.io/tags/markdown%E8%AF%AD%E6%B3%95/"/>
+    
+      <category term="first" scheme="https://featherl.github.io/tags/first/"/>
+    
+  </entry>
+  
+</feed>
