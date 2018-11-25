@@ -23,13 +23,6 @@
   </url>
   
   <url>
-    <loc>https://featherl.github.io/about/index.html</loc>
-    
-    <lastmod>2018-11-24T13:45:47.604Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://featherl.github.io/admin/index.html</loc>
     
     <lastmod>2018-11-24T13:45:47.604Z</lastmod>
@@ -37,7 +30,7 @@
   </url>
   
   <url>
-    <loc>https://featherl.github.io/categories/index.html</loc>
+    <loc>https://featherl.github.io/about/index.html</loc>
     
     <lastmod>2018-11-24T13:45:47.604Z</lastmod>
     
@@ -45,6 +38,13 @@
   
   <url>
     <loc>https://featherl.github.io/tags/index.html</loc>
+    
+    <lastmod>2018-11-24T13:45:47.604Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://featherl.github.io/categories/index.html</loc>
     
     <lastmod>2018-11-24T13:45:47.604Z</lastmod>
     
