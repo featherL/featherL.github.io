@@ -1,2 +1,0 @@
-Sitemap: https://featherl.gitee.io/sitemap.xml
-Sitemap: https://featherl.gitee.io/baidusitemap.xml
