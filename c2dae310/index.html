@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="先简单介绍下python。（真的很简单）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python教程（一）·简介">
+<meta property="og:url" content="http://www.xi4oyu.top/c2dae310/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="先简单介绍下python。（真的很简单）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-11-30T13:02:00.000Z">
+<meta property="article:modified_time" content="2018-11-30T13:02:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/c2dae310/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/c2dae310/","path":"c2dae310/","title":"python教程（一）·简介"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python教程（一）·简介 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">python是什么?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">python怎么工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">python可以做什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">python的优缺点</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/c2dae310/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python教程（一）·简介
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-11-30 21:02:00" itemprop="dateCreated datePublished" datetime="2018-11-30T21:02:00+08:00">2018-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">python教程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>763</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>先简单介绍下python。（真的很简单）<span id="more"></span></p>
+<h3 id="python是什么"><a href="#python是什么" class="headerlink" title="python是什么?"></a>python是什么?</h3><p>Python是<strong>Guido van Rossum</strong>发布于<strong>1991年</strong>的一种计算机程序设计语言。是一种<strong>动态</strong>的、<strong>面向对象</strong>的<strong>脚本语言</strong>，是一种<strong>解释型</strong>的，<strong>弱类型</strong>的<strong>高级计算机语言</strong>。稍作了解即可。</p>
+<p><strong>注意</strong>：python有2.x和3.x两个<strong>不兼容</strong>的版本，这是个历史遗留问题，<strong>python3.x</strong>将是趋势，所以在本教程里选择<strong>python3.x</strong></p>
+<h3 id="python怎么工作"><a href="#python怎么工作" class="headerlink" title="python怎么工作"></a>python怎么工作</h3><p>python是<strong>解释型</strong>语言，需要一个叫<strong>解释器</strong>的程序，来根据程序的<strong>源码</strong>（自己写下的代码），执行相应的操作，这是一个很简单的说法，能理解即可。</p>
+<h3 id="python可以做什么？"><a href="#python可以做什么？" class="headerlink" title="python可以做什么？"></a>python可以做什么？</h3><ul>
+<li>游戏开发  <strong>星战前夜（EVE）</strong> 的服务器是python开发的</li>
+<li>桌面软件</li>
+<li>web开发（许多大型网站都有用到python，如<strong>YouTube</strong>，<strong>豆瓣</strong>，<strong>知乎</strong>）</li>
+<li>运维管理</li>
+<li>…</li>
+</ul>
+<h3 id="python的优缺点"><a href="#python的优缺点" class="headerlink" title="python的优缺点"></a>python的优缺点</h3><p>优点：</p>
+<ul>
+<li>跨平台，同一份源码可不加修改（大部分情况下是这样）的运行在任意的平台上，即在<strong>Windows</strong>上写的python程序可以放到<strong>Linux</strong>，<strong>MacOS</strong>等平台上运行</li>
+<li>学习成本低（语法简单易懂，易于入门）</li>
+<li>有非常完善的基础代码库（通俗来将就是现成的功能）</li>
+<li>有大量的第三方库（就是别人写好的功能）</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>速度慢，这是硬伤，其实只要不是在性能苛刻的领域里，对大部分的需求都是可以应对的，毕竟大部分应用不需要那么快的运行速度</li>
+<li>代码不能加密，不同于<strong>编译型语言</strong>，python是<strong>解释型语言</strong>，不需要编译（不严格地讲），发布程序相当于发布源代码。这一点其实这在自由开放的互联网时代不是那么重要，不想让别人知道你的源代码的，同时使用你的python程序，也是有一定的加密方法的（似乎有点打自己脸），读者可自行查阅。</li>
+<li>除了以上两个比较突出的缺点，其余的小缺点就忽略了吧。。。</li>
+</ul>
+<hr>
+<p>关于python简单了解即可，不需要太过深入。当然，有兴趣的读者可自行<a target="_blank" rel="external nofollow noopener noreferrer" href="https://baike.baidu.com/item/Python/407313?fr=aladdin">百度</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/c2dae310/" title="python教程（一）·简介">http://www.xi4oyu.top/c2dae310/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/e0d15d61/" rel="prev" title="python教程（零）·前言">
+                  <i class="fa fa-chevron-left"></i> python教程（零）·前言
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/8447b565/" rel="next" title="python教程（一）·python环境搭建">
+                  python教程（一）·python环境搭建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"ef29708ce8982b272fdb0c82f6f1291c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="下半部分果然很快到来，这次介绍函数的更高级用法，装饰器！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python教程（三）·函数进阶（下）">
+<meta property="og:url" content="http://www.xi4oyu.top/30020b82/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="下半部分果然很快到来，这次介绍函数的更高级用法，装饰器！">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-30T07:18:00.000Z">
+<meta property="article:modified_time" content="2019-01-30T07:18:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/30020b82/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/30020b82/","path":"30020b82/","title":"python教程（三）·函数进阶（下）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python教程（三）·函数进阶（下） | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%B5%8C%E5%A5%97"><span class="nav-number">1.</span> <span class="nav-text">函数嵌套</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">装饰器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%87%E8%83%BD%E7%9A%84-%E5%92%8C"><span class="nav-number">2.1.</span> <span class="nav-text">万能的*和**</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">带参数的装饰器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%AD%BE%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">函数签名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">2.4.</span> <span class="nav-text">多个装饰器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/30020b82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python教程（三）·函数进阶（下）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-30 15:18:00" itemprop="dateCreated datePublished" datetime="2019-01-30T15:18:00+08:00">2019-01-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">python教程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>下半部分果然很快到来，这次介绍函数的更高级用法，装饰器！<span id="more"></span></p>
+<h3 id="函数嵌套"><a href="#函数嵌套" class="headerlink" title="函数嵌套"></a>函数嵌套</h3><p>先来说说函数嵌套，python中的函数是可以嵌套的，也就是说可以将一个函数放在另一个函数里面，比如：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">outer</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>             <span class="token keyword">print</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">return</span> inner
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> func1 <span class="token operator">=</span> outer<span class="token punctuation">(</span><span class="token string">'feather'</span><span class="token punctuation">)</span>
+<span class="token operator">>></span><span class="token operator">></span> func2 <span class="token operator">=</span> outer<span class="token punctuation">(</span><span class="token string">'Lee'</span><span class="token punctuation">)</span>
+<span class="token operator">>></span><span class="token operator">></span> func1<span class="token punctuation">(</span><span class="token punctuation">)</span>
+feather
+<span class="token operator">>></span><span class="token operator">></span> func2<span class="token punctuation">(</span><span class="token punctuation">)</span>
+Lee
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>你没看错，我们在函数里面定义了另一个函数，并把这个函数返回了？</p>
+<p>返回出来的函数是带着它的所在的作用域的，这就是为什么返回出来的函数仍能访问外层函数的变量name，而且可以看到<code>func1()</code>和<code>func2()</code>结果不一样，这表明每次调用外层函数都会重新定义内层函数，事实也是如此。</p>
+<h3 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h3><p>再来看看下面这个函数，<code>&lt;(￣︶￣)↗</code>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>  <span class="token comment"># pass的意思是什么都不做</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>这段函数只是空转100000次没什么意义，只是做个例子，假如我们想要运使用这个函数并输出运行了多长时间，我们可以这么做：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> time
+
+<span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>  <span class="token comment"># pass的意思是什么都不做</span>
+
+<span class="token comment"># 获取当前时间戳，时间戳就是当前到1970年所经过的秒数</span>
+start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>  
+func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们可以在函数前后分别获取时间，两个时间的差就是函数的运行时间，这很简单。可是，如果我们有很多个函数都需要统计时间怎么办？每个函数调用前都加上同样的代码吗？</p>
+<p>当然不是，受函数嵌套的启发，我们可以像下面这样定义一个函数：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">count</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> result
+    <span class="token keyword">return</span> inner<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后把要计算运行时间的函数作为参数传给count函数，就是把count函数当一个代理人，替我们调用函数。</p>
+<p>但是这样的话，调用func函数不能写<code>func()</code>，要写<code>count(func)</code>，有点别扭，再改进下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">count</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> result
+    <span class="token keyword">return</span> inner    <span class="token comment"># 返回这个内层函数，而不是调用</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果再执行了这样的代码：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">func <span class="token operator">=</span> count<span class="token punctuation">(</span>func<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这个什么意思？</p>
+<p>其实就是把<code>func</code>这个变量（函数也可理解成一种变量）重新绑定成count里面定义的inner()函数。这个时候我们再执行<code>func()</code>就可以达到效果了，完整代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> time
+
+<span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>  <span class="token comment"># pass的意思是什么都不做</span>
+
+<span class="token keyword">def</span> <span class="token function">count</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取当前时间戳，时间戳就是当前到1970年所经过的秒数</span>
+        start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>  
+        result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> result
+    <span class="token keyword">return</span> inner
+
+func <span class="token operator">=</span> count<span class="token punctuation">(</span>func<span class="token punctuation">)</span>
+func<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>装饰器</strong>的雏形出来了！<strong>装饰器</strong>就是像count这样的函数，用来给其它函数增加额外的功能，count函数在里面定义了一个inner函数用来包裹（装饰）被装饰的函数func。</p>
+<p>不过这仅仅是<strong>雏形</strong>，并不是真正的装饰器，现在该让真正的装饰器登场了！</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> time
+
+<span class="token keyword">def</span> <span class="token function">count</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取当前时间戳，时间戳就是当前到1970年所经过的秒数</span>
+        start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>  
+        result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> result
+    <span class="token keyword">return</span> inner
+    
+<span class="token decorator annotation punctuation">@count</span>
+<span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>  <span class="token comment"># pass的意思是什么都不做</span>
+        
+func<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在函数<code>func()</code>的上面多了样东西：<code>@count</code>，这个东西就是装饰器，它的本质等同于<code>func = count(func)</code>。这样以后，每当我们需要为哪个函数的增加输出运行时间的功能，就在这个函数的定义前加上<code>@count</code>。</p>
+<h4 id="万能的-和"><a href="#万能的-和" class="headerlink" title="万能的*和**"></a>万能的<code>*</code>和<code>**</code></h4><p>如果func函数的参数数量不确定，我们可以使用参数收集和分配参数的技巧，代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">count</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># “百搭”的参数定义</span>
+    <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>  <span class="token comment"># 展开参数</span>
+        end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> result
+    <span class="token keyword">return</span> inner<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这样的count装饰器对于参数数量任意的函数都可以匹配了。</p>
+<h4 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h4><p>装饰器也可以有参数！</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> time
+
+<span class="token keyword">def</span> <span class="token function">count</span><span class="token punctuation">(</span>switch<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># switch为True则计时，否则关闭计时功能</span>
+    <span class="token keyword">def</span> <span class="token function">wrapper</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">if</span> switch<span class="token punctuation">:</span>
+                start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>  
+                result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span>end<span class="token operator">-</span>start<span class="token punctuation">)</span>
+                <span class="token keyword">return</span> result
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                <span class="token keyword">return</span> func<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> inner
+    <span class="token keyword">return</span> wrapper
+
+switch <span class="token operator">=</span> <span class="token builtin">bool</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">'是否计时？(y/n)'</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">'y'</span><span class="token punctuation">)</span>
+
+<span class="token decorator annotation punctuation">@count</span><span class="token punctuation">(</span>switch<span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>  <span class="token comment"># pass的意思是什么都不做</span>
+
+func<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>看完以后是不是有点晕？<code>(＠_＠;)</code></p>
+<p>我来说说这个运行的过程：首先，程序等待输入，假定输入<code>y</code>，这是switch变量赋值为<code>True</code>，然后遇到<code>@count(switch)</code>，这一行相当于调用了count函数，这个函数返回了一个装饰器，就是里面的<code>wrapper</code>，然后对func函数使用这个装饰器。</p>
+<p><code>(°ー°〃)</code></p>
+<p>嗯？我应该说清楚了吧。。。</p>
+<p>对！还有一个问题 <code>(°ー°〃)</code></p>
+<h4 id="函数签名"><a href="#函数签名" class="headerlink" title="函数签名"></a>函数签名</h4><p>每个函数都有一个<strong>属性</strong>，叫做<strong>函数签名</strong>，就是函数的名字，比如print函数的<strong>函数签名</strong>可以这样获得：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">.</span>__name__
+<span class="token string">'print'</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>一个函数使用了装饰器，表面上还是使用这个函数的名字，实际上真的是这样吗？看下面代码：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">outer</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>             <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">return</span> inner
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> @outer
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> func<span class="token punctuation">.</span>__name__
+<span class="token string">'inner'</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>函数的签名已经改变了！</p>
+<p>可是…</p>
+<p>这个能有什么问题？</p>
+<p><code>(￣︶￣)↗</code> 有些时候我们是需要使用这个函数签名的的，比如：根据输入的函数名字使用对应的函数（根据字符串获取函数的方法在后面的小实例有用到），有些模块也可能使用到了函数签名，如果不注意到这个细节，出错了也找不出什么问题来！</p>
+<p>那么怎么解决？</p>
+<p>解决这个问题的方法很简单，我们只需使用一个内置模块的装饰器：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">import</span> functools
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">outer</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     @functools<span class="token punctuation">.</span>wraps<span class="token punctuation">(</span>func<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>             <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">return</span> inner
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> @outer
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> func<span class="token punctuation">.</span>__name__
+<span class="token string">'func'</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>代码简洁明了，至于原理，我们奉行 “拿来主义”，只需要知道在用于包裹的函数上方加上<code>@functools.wraps()</code>即可，不必纠结functools.wraps的内部实现</p>
+<h4 id="多个装饰器"><a href="#多个装饰器" class="headerlink" title="多个装饰器"></a>多个装饰器</h4><p>装饰器可以使用多个，多个装饰器的执行顺序是<strong>从下往上</strong>的，看下面这个例子：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">wrapper_1</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>             <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'wrapper_1'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">return</span> inner
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">wrapper_2</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">def</span> <span class="token function">inner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>             <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'wrapper_2'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">return</span> inner
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+<span class="token operator">>></span><span class="token operator">></span> @wrapper_1
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> @wrapper_2
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">pass</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+wrapper_2
+wrapper_1
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这很好理解，我们在包装东西的时候，都是先从最里面的一层开始，一层一层包裹，直到最外层（就像<a target="_blank" rel="external nofollow noopener noreferrer" href="https://baike.baidu.com/item/%E4%BF%84%E7%BD%97%E6%96%AF%E5%A5%97%E5%A8%83/17215?fr=aladdin">“俄罗斯套娃“</a>），所以先执行<code>@wrapper_2</code>再执行外面的<code>@wrapper_1</code></p>
+<p>与此同时，这个例子中并没有调用func函数，但是却有执行的print语句，这更进一步证明了，<code>@wrapper</code>这样的语句相当于执行了<code>func=wrapper(func)</code>，这是在函数定义的时候马上就执行的，而不是调用的时候才执行的，要注意了</p>
+<hr>
+<p>到目前，我们对函数的讲解就此结束，内容很多，读者们有得是时间消化了，也为我准备后面小实例提供了准备时间，读者们期待吧！（提示一下，我们将使用微信控制电脑！）</p>
+<p><code>ヾ(￣▽￣)Bye~Bye~</code></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/30020b82/" title="python教程（三）·函数进阶（下）">http://www.xi4oyu.top/30020b82/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ae669e21/" rel="prev" title="python教程（三）·函数进阶（上）">
+                  <i class="fa fa-chevron-left"></i> python教程（三）·函数进阶（上）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/be7e62bd/" rel="next" title="公告·关于博客的发布">
+                  公告·关于博客的发布 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"dc4096bd2dacc310453e423d28cbd750"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

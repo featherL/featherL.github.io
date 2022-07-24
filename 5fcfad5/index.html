@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="几乎所有的计算机语言教程，不仅仅是python，都以这样一个相似的示例程序开始讲解——">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python教程（二）·第一个python程序">
+<meta property="og:url" content="http://www.xi4oyu.top/5fcfad5/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="几乎所有的计算机语言教程，不仅仅是python，都以这样一个相似的示例程序开始讲解——">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5fcfad5/open_cmd.png">
+<meta property="article:published_time" content="2018-12-16T03:06:00.000Z">
+<meta property="article:modified_time" content="2018-12-16T03:06:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/5fcfad5/open_cmd.png">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/5fcfad5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/5fcfad5/","path":"5fcfad5/","title":"python教程（二）·第一个python程序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python教程（二）·第一个python程序 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">如何运行代码？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E4%B8%BA%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">保存为文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">交互式解释器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">程序解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">算术运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97"><span class="nav-number">3.1.</span> <span class="nav-text">四则运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E8%BF%90%E7%AE%97"><span class="nav-number">3.2.</span> <span class="nav-text">其它运算</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/5fcfad5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python教程（二）·第一个python程序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-16 11:06:00" itemprop="dateCreated datePublished" datetime="2018-12-16T11:06:00+08:00">2018-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">python教程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>几乎所有的计算机语言教程，不仅仅是python，都以这样一个<strong>相似的</strong>示例程序开始讲解——<span id="more"></span><strong>Hello World!</strong></p>
+<p>代码如下，简简单单的一行。想必稍微了解英语的读者，都能猜到这段代码功能吧。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Hello World!"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="如何运行代码？"><a href="#如何运行代码？" class="headerlink" title="如何运行代码？"></a>如何运行代码？</h3><p>代码有了，那么该怎么运行呢？？接下来介绍两种运行代码的方法。</p>
+<h4 id="保存为文件"><a href="#保存为文件" class="headerlink" title="保存为文件"></a>保存为文件</h4><p>读者可以打开自己喜欢的文本编辑器，当然，记事本也是OK的。新建一个文本文件，文件名字随意，只要<strong>后缀名</strong>为<code>.py</code>即可，为了作者的叙述方便，我将采用“hello.py”。将代码写进去，并保存，代码中的双引号是<strong>半角的</strong>，要当心，不要输错。</p>
+<p>然后，打开命令行，切换到文件所在目录，还记得前面所讲的吗？使用命令<code>cd</code>来切换目录。还有一种更方便的方法，图形界面打开文件所在的目录，按住键盘<kbd>shift</kbd>键，再用鼠标右键空白处，点击 <strong>“在此处打开命令窗口”</strong>，如下图：<br><img src="/images/5fcfad5/open_cmd.png" alt="打开cmd"></p>
+<p><strong>打开后自动切换到文件所在的目录</strong></p>
+<p>在命令行中输入，<code>python 代码的文件名</code>，比如这里代码文件名为“hello.py”，所以应输入<code>python hello.py</code>，记得按下回车键，命令行显示大致如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">></span> python hello.py
+Hello World<span class="token operator">!</span>
+<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>字符<code>&gt;</code>是提示字符，在实际中，应该是这样的：<code>当前路径&gt;</code>，我在这里就把路径省去了，毕竟这不是重点。</p>
+<p><strong>声明一下</strong>：往后的文章基本上会少用截图来展示代码，会用类似上面的文字来讲解，因为作者认为，如果一篇文章下来全是图片，那么还不如拍视频教程（往后有拍视频这个打算<code>^_^</code>）。其次，图片真的很影响排版<code>╮(╯▽╰)╭</code>。如有必要的话，作者还是会贴上图片来说明的。</p>
+<h4 id="交互式解释器"><a href="#交互式解释器" class="headerlink" title="交互式解释器"></a>交互式解释器</h4><p>像这样简单的一句代码，比起写在文件里，我更推荐直接用<strong>python交互式解释器</strong>来运行。那什么又是<strong>交互式</strong>呢？很简单，像命令行这样，人输入一条命令，命令行运行一条命令，运行完后再等待下一条命令……这种类似人与程序<strong>对话</strong>的方式，称为交互式。</p>
+<p>在命令行中，输入<code>python</code>即可进入python交互式解释器。将会出现类似下面这样的版本信息：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">></span> python
+Python <span class="token number">3.7</span><span class="token number">.1</span> <span class="token punctuation">(</span>v3<span class="token punctuation">.</span><span class="token number">7.1</span><span class="token punctuation">:</span><span class="token number">260ec2c36a</span><span class="token punctuation">,</span> Oct <span class="token number">20</span> <span class="token number">2018</span><span class="token punctuation">,</span> <span class="token number">14</span><span class="token punctuation">:</span><span class="token number">05</span><span class="token punctuation">:</span><span class="token number">16</span><span class="token punctuation">)</span> <span class="token punctuation">[</span>MSC v<span class="token punctuation">.</span><span class="token number">1915</span> <span class="token number">32</span> bit <span class="token punctuation">(</span>Inte
+l<span class="token punctuation">)</span><span class="token punctuation">]</span> on win <span class="token number">32</span>
+Type <span class="token string">"help"</span><span class="token punctuation">,</span> <span class="token string">"copyright"</span><span class="token punctuation">,</span> <span class="token string">"credits"</span> <span class="token keyword">or</span> <span class="token string">"license"</span> <span class="token keyword">for</span> mor information
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>注意啦</strong>，现在你是在和python解释器交互，而不是和cmd.exe交互，cmd.exe已经把控制权交给了解释器，所以你现在输入cmd的一些命令如<code>dir</code>是不起作用的，除非python解释器刚好对待“dir”这个字符串，像cmd.exe对待的一样，这是不可能的，读者们死心吧<code>╮(╯▽╰)╭</code>。</p>
+<p>要是想结束解释器的交互，回到cmd的交互，那么只需输入<code>exit()</code>或者按下组合键<kbd>Ctrl</kbd> + <kbd>Z</kbd>，然后按下回车键即可。</p>
+<p>在提示符<code>&gt;&gt;&gt;</code>后输入刚刚的代码，像这样：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Hello World"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>按下<strong>回车键</strong>，命令行显示为：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Hello World"</span><span class="token punctuation">)</span>
+Hello World
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="程序解析"><a href="#程序解析" class="headerlink" title="程序解析"></a>程序解析</h3><p>英文单词“print”是“打印”的意思，显然，代码<code>print(&quot;Hello World&quot;)</code>的作用是，在命令行中输出（打印）“Hello World”一行字符，并且输出后光标会进行<strong>换行</strong>。而<code>&quot;Hello World&quot;</code>是一个<strong>字符串</strong>。<br><code>print()</code>的括号中还可以用逗号(<strong>半角的</strong>)<code>,</code>分开多个字符串，表示打印多个字符串，字符串之间以空格分开，比如代码<code>print(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;)</code>将得到输出:</p>
+<pre class="line-numbers language-none"><code class="language-none">1 2 3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>程序会从上到下，一行一行按顺序，目前为止是这样，执行代码。比如下面这段代码：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我是第一行"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我是第二行"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"我是第三行"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>保存为文件后运行得到输出：</p>
+<pre class="line-numbers language-none"><code class="language-none">我是第一行
+我是第二行
+我是第三行<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="算术运算"><a href="#算术运算" class="headerlink" title="算术运算"></a>算术运算</h3><h4 id="四则运算"><a href="#四则运算" class="headerlink" title="四则运算"></a>四则运算</h4><p>仅仅打印几行字符，太简单了，既然计算机最擅长的就是计算，那么就来做一做计算。相信大家的早就在小学数学中掌握了四则运算也就是加减乘除了，如果你说不会<code>⊙▽⊙</code>，只能惋惜你一秒钟了。</p>
+<p>来吧，先来做做加法，在交互式解释器中输入<code>1+1</code>按下回车键，结果如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span><span class="token operator">+</span><span class="token number">1</span>
+<span class="token number">2</span>
+<span class="token operator">>></span><span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><code>1+1</code>太简单了，口算都可以，换个大的数吧<code>456423+786651</code>，读者可用计算器算算是不是这个：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">456423</span><span class="token operator">+</span><span class="token number">786651</span>
+<span class="token number">1243074</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>那么减法呢？</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span><span class="token operator">-</span><span class="token number">1</span>
+<span class="token number">0</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">123</span><span class="token operator">-</span><span class="token number">456</span>
+<span class="token operator">-</span><span class="token number">333</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">556</span><span class="token operator">-</span><span class="token number">999</span>
+<span class="token operator">-</span><span class="token number">443</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>不用算啦，结果保证准确<code>&lt;(￣ˇ￣)/</code></p>
+<hr>
+<p>乘法也类似，不过在计算机中用字符<code>*</code>表示乘号。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">123</span><span class="token operator">*</span><span class="token number">456</span>
+<span class="token number">56088</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>至于除法，符号用斜杠<code>/</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token operator">-</span><span class="token number">123</span><span class="token operator">/</span><span class="token number">456</span>
+<span class="token operator">-</span><span class="token number">0.26973684210526316</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">39</span><span class="token operator">/</span><span class="token number">3</span>
+<span class="token number">13.0</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>细心的读者可能会注意到，<code>39/3</code>的结果是<code>13.0</code>而不是<code>13</code>，为什么一定要有小数点呢？这涉及到python<strong>数据类型</strong>，很快就提到啦，不要急，如果想要结果是<code>13</code>整数的话，那么可以把<code>/</code>换成<code>//</code>，像这样：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">39</span><span class="token operator">//</span><span class="token number">3</span>
+<span class="token number">13</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>运算符<code>//</code>的也是进行除法，只不过结果是向下取整的整数，就是截去小数部分。</p>
+<hr>
+<p>这和我们在小学中学到的数学是一致的，没什么难的。读者可以自己尝试下做些复杂点的运算，比如下面这样把加减乘除都用上的：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">123</span><span class="token operator">-</span><span class="token number">8546</span><span class="token operator">/</span><span class="token number">131</span><span class="token operator">*</span><span class="token number">231</span><span class="token operator">+</span><span class="token number">451</span>
+<span class="token operator">-</span><span class="token number">14495.664122137405</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">5</span><span class="token operator">/</span><span class="token number">4</span><span class="token operator">-</span><span class="token number">1</span>
+<span class="token number">9.0</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>总之，加减乘除所用的运算符为<code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>（<code>//</code>），简单明了。</p>
+<h4 id="其它运算"><a href="#其它运算" class="headerlink" title="其它运算"></a>其它运算</h4><p>猜猜下面是怎么运算的？</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span><span class="token operator">**</span><span class="token number">2</span>
+<span class="token number">1</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">2</span><span class="token operator">**</span><span class="token number">2</span>
+<span class="token number">4</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">3</span><span class="token operator">**</span><span class="token number">2</span>
+<span class="token number">9</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">4</span><span class="token operator">**</span><span class="token number">2</span>
+<span class="token number">16</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">2</span><span class="token operator">**</span><span class="token number">3</span>
+<span class="token number">8</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>读者们都猜到了吧，显然，<code>1**2</code>是1的平方，<code>2**3</code>是2的立方，所以<code>a**b</code>的意思是a的b次方。</p>
+<hr>
+<p>要想计算10除以3的余数，聪明的你可能会这么做</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">10</span><span class="token operator">-</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token operator">//</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">3</span>
+<span class="token number">1</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>然而，你还可以写得更简单：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">10</span><span class="token operator">%</span><span class="token number">3</span>
+<span class="token number">1</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>这个百分号<code>%</code>叫做取模运算符，用来取除法的余数，用于<strong>正数</strong>！！！，如果用于进行负数的运算的话，我也不知道会出现什么奇怪的结果，因为作者好像也不了解负数除法的余数是怎么定义的<code>(＠_＠;)</code>，比如这个：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">10</span><span class="token operator">%</span><span class="token operator">-</span><span class="token number">3</span>
+<span class="token operator">-</span><span class="token number">2</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>好了，本文到此为止，接下来将接触python中的<strong>数据类型</strong>和<strong>变量</strong>。</p>
+<p><code>ヾ(￣▽￣)Bye~Bye~</code></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/5fcfad5/" title="python教程（二）·第一个python程序">http://www.xi4oyu.top/5fcfad5/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/9424038a/" rel="prev" title="python教程（一）·命令行基本操作">
+                  <i class="fa fa-chevron-left"></i> python教程（一）·命令行基本操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/bdb8174f/" rel="next" title="python教程（二）·数据类型">
+                  python教程（二）·数据类型 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"25c10f41a2fad9f146ab204ed416e640"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

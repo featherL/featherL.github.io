@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="介绍Linux中的文本信息，以及学习文本文件处理的相关命令。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux开发环境及应用-第一周-文本文件的处理">
+<meta property="og:url" content="http://www.xi4oyu.top/7ccebcef/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="介绍Linux中的文本信息，以及学习文本文件处理的相关命令。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-02-01T14:49:00.000Z">
+<meta property="article:modified_time" content="2019-02-01T14:49:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/7ccebcef/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/7ccebcef/","path":"7ccebcef/","title":"Linux开发环境及应用-第一周-文本文件的处理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux开发环境及应用-第一周-文本文件的处理 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">Linux中的文本信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E5%9E%8B%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.</span> <span class="nav-text">文本型网络协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">文本文件处理常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#more%E4%B8%8Eless"><span class="nav-number">2.1.</span> <span class="nav-text">more与less</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cat%E4%B8%8Eod"><span class="nav-number">2.2.</span> <span class="nav-text">cat与od</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#head%E4%B8%8Etail"><span class="nav-number">2.3.</span> <span class="nav-text">head与tail</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tee"><span class="nav-number">2.4.</span> <span class="nav-text">tee</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wc"><span class="nav-number">2.5.</span> <span class="nav-text">wc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sort"><span class="nav-number">2.6.</span> <span class="nav-text">sort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tr"><span class="nav-number">2.7.</span> <span class="nav-text">tr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uniq"><span class="nav-number">2.8.</span> <span class="nav-text">uniq</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/7ccebcef/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux开发环境及应用-第一周-文本文件的处理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-02-01 22:49:00" itemprop="dateCreated datePublished" datetime="2019-02-01T22:49:00+08:00">2019-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MOOC%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%C2%B7Linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%8F%8A%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">MOOC课程学习·Linux开发环境及应用</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>介绍Linux中的文本信息，以及学习文本文件处理的相关命令。</p>
+<span id="more"></span>
+
+<h3 id="Linux中的文本信息"><a href="#Linux中的文本信息" class="headerlink" title="Linux中的文本信息"></a>Linux中的文本信息</h3><p>主要分为以下几类：</p>
+<ul>
+<li>C语言，Java语言等编程文件的源程序文本文件</li>
+<li>文本格式的数据文件</li>
+<li>文本格式的文字信息</li>
+<li>系统配置信息 如/etc下的配置文件</li>
+<li>程序的输出</li>
+</ul>
+<h4 id="文本型网络协议"><a href="#文本型网络协议" class="headerlink" title="文本型网络协议"></a>文本型网络协议</h4><p>因特网大部分传输层以上的协议是文本型协议</p>
+<p>例如：</p>
+<ul>
+<li>会话层协议：HTTP，POP3，SMTP，IMAP</li>
+<li>表示层协议：HTML，XML，MIME，JSON</li>
+</ul>
+<h3 id="文本文件处理常用命令"><a href="#文本文件处理常用命令" class="headerlink" title="文本文件处理常用命令"></a>文本文件处理常用命令</h3><p>可以使用重定向机制和管道机制，把多个命令组合使用。</p>
+<p>Linux中的文本文件处理命令的特点：</p>
+<ul>
+<li>不指定处理对象文件名时，从标准输入获得数据</li>
+<li>指定处理对象文件名时。从文件中获取数据</li>
+<li>多数命令可以指定多个文件，常结合shell的文件通配符使用</li>
+<li>处理结果在标准输出显示</li>
+</ul>
+<p>常用的文本文件处理命令有：</p>
+<ul>
+<li>more/less：逐屏显示文件内容</li>
+<li>cat、od：列出文件内容</li>
+<li>head、tail：显示文件的头部、尾部</li>
+<li>tee：三通</li>
+<li>wc：字计数</li>
+<li>sort：排序</li>
+<li>tr：翻译字符（替换字符）</li>
+<li>uniq：筛选重复行</li>
+</ul>
+<h4 id="more与less"><a href="#more与less" class="headerlink" title="more与less"></a>more与less</h4><p>more使用方法举例：</p>
+<ul>
+<li><code>more shudu.c</code> 指定一个文件</li>
+<li><code>more *.[ch]</code> 指定多个文件</li>
+<li><code>ls -l | more</code> 不指定文件，从标准输入获取，这里利用管道把<code>ls -l</code>的标准输出重定向到<code>more</code>的标准输入</li>
+</ul>
+<p>输出满屏后，在more中使用的指令：</p>
+<ul>
+<li>空格 显示下一屏</li>
+<li>回车 向上滚一行，也就是把下一行滚动上来</li>
+<li>q quit，退出程序</li>
+<li>/pattern 根据正则表达式搜索字符串</li>
+<li>/ 继续查找要搜索的字符串</li>
+<li>h help，帮助信息</li>
+<li>Ctrl+L 屏幕刷新</li>
+</ul>
+<p>less命令用法与more类似，增强的功能有：</p>
+<ul>
+<li>使用键盘的上下方向键，或者j，k键来滚动一行</li>
+<li>用PgUp和PgDn按键翻页</li>
+<li>用Home键翻到第一页，或者用End键翻到最后一页</li>
+</ul>
+<p>more和less都可以同时处理多个文件</p>
+<h4 id="cat与od"><a href="#cat与od" class="headerlink" title="cat与od"></a>cat与od</h4><p>cat命名来源于英文concatenate——串结，查字典查到意思是“把 （一系列事件、事情等）联系起来”。这个命令用于打印文件内容，选项-n可以显示行号。</p>
+<p>od octal dump 逐字节打印。常用选项有：</p>
+<ul>
+<li>-c 按照字符打印，如果这个字节为ascii码就显示为对应的字符，字符如果不可打印就显示为八进制码</li>
+<li>-t c 同-c选项</li>
+<li>-t x1 每一字节不可见字符显示为十六进制码</li>
+<li>-t d1 每一字节不可见字符显示为十进制码</li>
+<li>-t u1 每一字节不可见字符显示为无符号的十进制码</li>
+</ul>
+<p>cat和od命令都可以同时处理多个文件</p>
+<h4 id="head与tail"><a href="#head与tail" class="headerlink" title="head与tail"></a>head与tail</h4><p>head显示文件内容前10行，tail显示文件内容最后10行，-n选项可以指定显示的行数。</p>
+<p>一些用法：</p>
+<ul>
+<li><code>head -n 15 ab.c</code> 显示文件ab.c的前15行</li>
+<li><code>head -n -20 msg.c</code>  除了文件msg.c尾部20行，显示其余部分</li>
+<li><code>tail -n +20 msg.c</code> 除了文件msg.c头部20行，显示其余部分</li>
+<li><code>tail -f debug.txt</code> 实时打印文件尾部被追加的内容</li>
+</ul>
+<p>head和tail命令都可以同时处理多个文件</p>
+<h4 id="tee"><a href="#tee" class="headerlink" title="tee"></a>tee</h4><p>tee命令将从标准输入得到的数据抄送到标准输出显示，与此同时，把数据存入磁盘文件中，也可以同时写入多个文件。</p>
+<p>用法举例：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">vim</span> <span class="token number">1</span>.txt <span class="token operator">|</span> <span class="token function">tee</span> /dev/pts/1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code>/dev/pts/1</code>是一个终端设备文件，这条命令使用vim编辑文件1.txt，并同时显示在<code>/dev/pts/1</code>终端的屏幕上。</p>
+<h4 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h4><p>wc命令的功能主要是统计文件行数，单词数，字符数。</p>
+<p>文件shudu.c有240行，576个单词，5264个字符：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">wc</span> shudu.c 
+ <span class="token number">240</span>  <span class="token number">576</span> <span class="token number">5264</span> shudu.c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>使用选项-l，只列出行数：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">wc</span> -l shudu.c
+<span class="token number">240</span> shudu.c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>当同时处理多个文件的时候，还列出一个合计：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">wc</span> shudu.c arg.c 
+ <span class="token number">240</span>  <span class="token number">576</span> <span class="token number">5264</span> shudu.c
+   <span class="token number">9</span>   <span class="token number">24</span>  <span class="token number">153</span> arg.c
+ <span class="token number">249</span>  <span class="token number">600</span> <span class="token number">5417</span> total<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>结合管道和ps命令，查看系统所有进程的个数</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">wc</span> -l
+<span class="token number">166</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<h4 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h4><p>sort命令按照字符串排序，每一行为一个字符串，默认为升序。</p>
+<p>文件test.txt内容是：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt 
+aasd
+zxcaw
+<span class="token number">456</span>
+<span class="token number">1234</span>
+as<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>用sort排序：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sort</span> test.txt   
+<span class="token number">1234</span>
+<span class="token number">456</span>
+aasd
+as
+zxcaw<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用-n选项，对数字按照算术值大小排序，而不是按照字符串比较规则排序。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sort</span> test.txt -n
+aasd
+as
+zxcaw
+<span class="token number">456</span>
+<span class="token number">1234</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>更多选项可以用man命令查看</p>
+<h4 id="tr"><a href="#tr" class="headerlink" title="tr"></a>tr</h4><p>基本用法：<code>tr string1 string2</code> 把标准输入拷贝到标准输出，string1中出现的字符替换为string2中的对应字符。</p>
+<p>把前面提到的test.txt文件中的字符转换成大写：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">tr</span> axcwdzs <span class="token string">'AXCWDZS'</span>
+AASD
+ZXCAW
+<span class="token number">456</span>
+<span class="token number">1234</span>
+AS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>或者直接使用[]指定一个集合：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">tr</span> <span class="token string">'[a-z]'</span> <span class="token string">'[A-Z]'</span>
+AASD
+ZXCAW
+<span class="token number">456</span>
+<span class="token number">1234</span>
+AS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以用<code>\</code>加一个八进制数值来表示一个字符，下面是把字符<code>1</code>换成换行符（<code>\012</code>）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">tr</span> <span class="token string">'1'</span> <span class="token string">'\012'</span>    
+aasd
+zxcaw
+<span class="token number">456</span>
+
+<span class="token number">234</span>
+as<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h4 id="uniq"><a href="#uniq" class="headerlink" title="uniq"></a>uniq</h4><p>uniq命令用与筛选文件中重复的行，重复的行是指<strong>连续的</strong>、<strong>相同的</strong>行。</p>
+<p>与大部分命令不同，这个命令最多指定两个文件，第一个文件为输入文件，第二个文件为输出文件。</p>
+<p>现有name.txt文件，内容如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> name.txt 
+feather
+feather
+Lee
+lee
+feather
+Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>不带选项运行uniq命令，打印没有重复的行和有重复的行，重复的行只打印一次</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> name.txt 
+feather
+Lee
+lee
+feather
+Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用-u （uniqe）选项，打印没有重复的行</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> -u name.txt 
+Lee
+lee
+feather
+Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用-d （duplicated）选项，打印有重复的行，重复的行只打印一次</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> -d name.txt
+feather<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>使用-c选项，统计每行的重复次数</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> -c name.txt  
+      <span class="token number">2</span> feather
+      <span class="token number">1</span> Lee
+      <span class="token number">1</span> lee
+      <span class="token number">1</span> feather
+      <span class="token number">1</span> Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>注意</strong>：重复的行是指<strong>连续的</strong>、<strong>相同的</strong>行</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/7ccebcef/" title="Linux开发环境及应用-第一周-文本文件的处理">http://www.xi4oyu.top/7ccebcef/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ac82b932/" rel="prev" title="Linux开发环境及应用·第一周·开始使用Linux（三）">
+                  <i class="fa fa-chevron-left"></i> Linux开发环境及应用·第一周·开始使用Linux（三）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/7ccebcef/" rel="next" title="Linux开发环境及应用·第二周·正则表达式及相关命令">
+                  Linux开发环境及应用·第二周·正则表达式及相关命令 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"0c07f6d8feb2a96c27a877d43daa3c7b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

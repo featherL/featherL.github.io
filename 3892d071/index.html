@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="本文整理了Linux文件与目录的管理相关知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux开发环境及应用·第四周·文件管理和目录管理（二）">
+<meta property="og:url" content="http://www.xi4oyu.top/3892d071/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="本文整理了Linux文件与目录的管理相关知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-17T06:03:00.000Z">
+<meta property="article:modified_time" content="2019-06-17T06:03:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/3892d071/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/3892d071/","path":"3892d071/","title":"Linux开发环境及应用·第四周·文件管理和目录管理（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux开发环境及应用·第四周·文件管理和目录管理（二） | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">目录管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%92%8C"><span class="nav-number">1.1.</span> <span class="nav-text">.和..</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%9B%AE%E5%BD%95"><span class="nav-number">1.2.</span> <span class="nav-text">主目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9D%E5%AF%B9%E8%B7%AF%E5%BE%84%E5%92%8C%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84"><span class="nav-number">1.3.</span> <span class="nav-text">绝对路径和相对路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-number">1.4.</span> <span class="nav-text">当前工作目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-%E5%88%A0%E9%99%A4%E7%9B%AE%E5%BD%95"><span class="nav-number">1.5.</span> <span class="nav-text">创建&#x2F;删除目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E7%9B%AE%E5%BD%95"><span class="nav-number">1.6.</span> <span class="nav-text">复制目录</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#cp%E7%9A%84%E5%85%B6%E5%AE%83%E5%B8%B8%E7%94%A8%E9%80%89%E9%A1%B9"><span class="nav-number">1.6.1.</span> <span class="nav-text">cp的其它常用选项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%97%E9%95%BF%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.6.2.</span> <span class="nav-text">冗长模式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">增量拷贝</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86"><span class="nav-number">1.7.</span> <span class="nav-text">目录遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E9%80%89%E9%A1%B9"><span class="nav-number">1.7.1.</span> <span class="nav-text">条件选项</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#name-wildcard"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">-name wildcard</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#regex-pattern"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">-regex pattern</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#type"><span class="nav-number">1.7.1.3.</span> <span class="nav-text">-type</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#size-n%E5%8D%95%E4%BD%8D"><span class="nav-number">1.7.1.4.</span> <span class="nav-text">-size +&#x2F;- n单位</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#mtime-ndays"><span class="nav-number">1.7.1.5.</span> <span class="nav-text">-mtime +&#x2F;- ndays</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#newer-file"><span class="nav-number">1.7.1.6.</span> <span class="nav-text">-newer file</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E6%9D%A1%E4%BB%B6%E9%80%89%E9%A1%B9"><span class="nav-number">1.7.1.7.</span> <span class="nav-text">其它条件选项</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.7.1.8.</span> <span class="nav-text">复合条件</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A8%E4%BD%9C%E9%80%89%E9%A1%B9"><span class="nav-number">1.7.2.</span> <span class="nav-text">动作选项</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#print"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">-print</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#exec"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">-exec</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#ok"><span class="nav-number">1.7.2.3.</span> <span class="nav-text">-ok</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.7.3.</span> <span class="nav-text">目录遍历举例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#xargs%E5%91%BD%E4%BB%A4"><span class="nav-number">1.7.4.</span> <span class="nav-text">xargs命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%92%8C%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.</span> <span class="nav-text">打包和压缩</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/3892d071/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux开发环境及应用·第四周·文件管理和目录管理（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-06-17 14:03:00" itemprop="dateCreated datePublished" datetime="2019-06-17T14:03:00+08:00">2019-06-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MOOC%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%C2%B7Linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%8F%8A%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">MOOC课程学习·Linux开发环境及应用</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文整理了Linux文件与目录的管理相关知识</p>
+<span id="more"></span>
+
+<h3 id="目录管理"><a href="#目录管理" class="headerlink" title="目录管理"></a>目录管理</h3><h4 id="和"><a href="#和" class="headerlink" title=".和.."></a><code>.</code>和<code>..</code></h4><p>每个目录下都必有两个文件，<code>.</code>和<code>..</code>，它们分别代表着当前目录和上级目录，这两个目录由系统创建和删除</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ls</span> -a
+<span class="token builtin class-name">.</span>  <span class="token punctuation">..</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="主目录"><a href="#主目录" class="headerlink" title="主目录"></a>主目录</h4><p>每个用户都有自己独立的目录，一般是<code>/home/用户名</code>，可以用env命令查看环境变量HOME的值来看当前用户的主目录路径。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">env</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token environment constant">HOME</span>
+<span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span>/home/featherm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>大多数的shell都会把符号<code>~</code>解释成主目录的路径，所以可以用<code>~</code>代替主目录，但是要注意的是，但是<code>~</code>只是shell解释的，编写程序涉及路径的时候，最好不要用<code>~</code>，因为所用的程序函数不一定支持<code>~</code>的解释。</p>
+<h4 id="绝对路径和相对路径"><a href="#绝对路径和相对路径" class="headerlink" title="绝对路径和相对路径"></a>绝对路径和相对路径</h4><p>路径分隔符使用的是<code>/</code>（不同于Windows用<code>\</code>），以根目录<code>/</code>开头的路径为<strong>绝对路径</strong>，如<code>/home/featherm</code>；否则为<strong>相对路径</strong>，相对路径是指相对于当前目录的路径，如：当前目录下有一文件1.txt，则路径<code>1.txt</code>指的是当前目录下的1.txt</p>
+<h4 id="当前工作目录"><a href="#当前工作目录" class="headerlink" title="当前工作目录"></a>当前工作目录</h4><p>当前工作目录是进程属性的一部分，每个进程都有</p>
+<p>在shell中可以用pwd命令打印当前工作目录：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token builtin class-name">pwd</span>        
+/home/featherm/tmp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>可用cd命令改变当前工作目录，如切换到根目录：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token builtin class-name">cd</span> /
+$ <span class="token builtin class-name">pwd</span>
+/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>若不传递参数，则回到主目录：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token builtin class-name">cd</span> 
+$ <span class="token builtin class-name">pwd</span>
+/home/featherm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><em>cd是shell的一个内部命令，功能由shell完成</em></p>
+<h4 id="创建-删除目录"><a href="#创建-删除目录" class="headerlink" title="创建/删除目录"></a>创建/删除目录</h4><p>创建目录用命令mkdir，如下创建tmp目录：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">mkdir</span> tmp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>添加选项-p，可自动创建路径中不存在的目录，如：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">mkdir</span> -p database/2019/6/17/log<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>删除目录用命令rmdir：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">rmdir</span> tmp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用rmdir时，被删除的目录必须是空的，如果想删除非空目录，可以使用前一篇文章中介绍的<code>rm -r dir</code></p>
+<h4 id="复制目录"><a href="#复制目录" class="headerlink" title="复制目录"></a>复制目录</h4><p>前一篇文章已经介绍了，使用cp命令，添加-r选项即可：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cp</span> -r dir1 dir2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h5 id="cp的其它常用选项"><a href="#cp的其它常用选项" class="headerlink" title="cp的其它常用选项"></a>cp的其它常用选项</h5><h5 id="冗长模式"><a href="#冗长模式" class="headerlink" title="冗长模式"></a>冗长模式</h5><p>选项-v，冗长（Verbose）模式：可以实时列出正在复制的n文件</p>
+<h6 id="增量拷贝"><a href="#增量拷贝" class="headerlink" title="增量拷贝"></a>增量拷贝</h6><p>选项-u，增量拷贝（Update），一般用于备份目录。可根据文件的时间戳，不拷贝相同的或者过时的版本的文件，以提高速度。</p>
+<p><em>命令touch可将文件最后一次修改时间设置为当前时间，但不修改文件的内容，如<code>touch 1.txt</code></em></p>
+<p>关于增量拷贝，Linux下还有一款工具：rsync，该工具可以远程同步目录，具体用法查看man手册：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">man</span> <span class="token function">rsync</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<hr>
+<h4 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历"></a>目录遍历</h4><p>目录遍历主要用到命令find，该命令从指定的<em>查找范围<em>开始，递归地查找子目录，对满足</em>条件<em>的文件或目录，执行指定的</em>动作</em></p>
+<p>例：<br><code>find ver1.d ver2.d -name &#39;*.c&#39; -print</code></p>
+<ul>
+<li>范围：目录ver1.d和目录ver2.d</li>
+<li>条件：与名字<code>*.c</code>匹配</li>
+<li>动作：把查找到的文件的路径名打印出来</li>
+</ul>
+<h5 id="条件选项"><a href="#条件选项" class="headerlink" title="条件选项"></a>条件选项</h5><h6 id="name-wildcard"><a href="#name-wildcard" class="headerlink" title="-name wildcard"></a>-name wildcard</h6><ul>
+<li>文件名与wildcard匹配（wildcard的中文意识是通配符）</li>
+<li>通配符的解释由find完成，所以wildcard两边要有引号，否则通配符会被shell展开</li>
+<li>文件名指路径名的最后一部分</li>
+</ul>
+<h6 id="regex-pattern"><a href="#regex-pattern" class="headerlink" title="-regex pattern"></a>-regex pattern</h6><p><strong>整个路径名</strong>与正则表达式pattern匹配</p>
+<h6 id="type"><a href="#type" class="headerlink" title="-type"></a>-type</h6><ul>
+<li>f 普通文件</li>
+<li>d 目录</li>
+<li>l 符号连接文件</li>
+<li>c 字符设备文件</li>
+<li>b 块设备文件</li>
+<li>p 管道文件</li>
+</ul>
+<p>例如，打印tmp目录下的所有文件：<code>find tmp -type f -print</code></p>
+<h6 id="size-n单位"><a href="#size-n单位" class="headerlink" title="-size +/- n单位"></a>-size +/- n单位</h6><p>指定文件大小，单位有c（字符），b（块，512字节），k，M，G，<strong>默认为b</strong><br>如：大于10M：<code>+10M</code>、小于10M：<code>-10M</code>、等于10M：<code>10M</code></p>
+<h6 id="mtime-ndays"><a href="#mtime-ndays" class="headerlink" title="-mtime +/- ndays"></a>-mtime +/- ndays</h6><p>文件的最近修改时间离现在有多少天</p>
+<h6 id="newer-file"><a href="#newer-file" class="headerlink" title="-newer file"></a>-newer file</h6><p>所匹配文件最近修改时间比file要晚，也就是所匹配的文件要比file新</p>
+<h6 id="其它条件选项"><a href="#其它条件选项" class="headerlink" title="其它条件选项"></a>其它条件选项</h6><ul>
+<li>-user 指定文件主（所属用户）</li>
+<li>-nouser 文件的所属用户已经不存在（被删除）</li>
+<li>-group 文件所属用户的组</li>
+<li>…</li>
+</ul>
+<p>其余可查阅man手册</p>
+<h6 id="复合条件"><a href="#复合条件" class="headerlink" title="复合条件"></a>复合条件</h6><p>可以用<code>()</code>、<code>-o</code>、<code>!</code>表示条件的“与（且）”、“或”、“非”</p>
+<hr>
+<h5 id="动作选项"><a href="#动作选项" class="headerlink" title="动作选项"></a>动作选项</h5><h6 id="print"><a href="#print" class="headerlink" title="-print"></a>-print</h6><p>打印匹配的文件的路径名</p>
+<h6 id="exec"><a href="#exec" class="headerlink" title="-exec"></a>-exec</h6><p>对匹配的目标执行一条命令。在-exec及随后分号之间的内容作为一条命令</p>
+<h6 id="ok"><a href="#ok" class="headerlink" title="-ok"></a>-ok</h6><p>与-exec类似，但每一条命令执行前需操作员确认</p>
+<hr>
+<p><strong>注意</strong>：动作也可以有多个</p>
+<h5 id="目录遍历举例"><a href="#目录遍历举例" class="headerlink" title="目录遍历举例"></a>目录遍历举例</h5><ul>
+<li><code>find . type -d -print</code> 从当前目录开始，打印所有目录路径</li>
+<li><code>find / -name &#39;stud*&#39; -type d -print</code> 打印名字与<code>stud*</code>匹配，<em>且</em>为目录的路径</li>
+<li><code>find / -type f -mtime -10 -print</code> 查找根目录下最近10天内修改过的普通磁盘文件</li>
+<li><code>find . ! -type -d -links +2 -print</code> 从当前目录开始查找link数大于2的非目录文件</li>
+<li><code>find～ -size +100k &#39;(&#39; -name core -o -name &#39;*.tmp&#39; &#39;)&#39; -print</code> 从主目录开始查找大于100KB的名叫core <em>或者</em> 有.tmp后缀的文件或目录等</li>
+<li><code>find ~ -size +100k \( -name core -o -name &#39;*.tmp&#39; \) -print</code> 同上</li>
+<li><code>find /lib /usr -name &#39;libc*.so&#39; -exec ls -lh &#123;&#125; \;</code> 对匹配条件的路径执行ls命令，其中的<code>&#123;&#125;</code>代表匹配的路径</li>
+<li><code>find src -name &#39;*.c&#39; -exec grep -n -- --help &#123;&#125; /dev/null \;</code> 搜索src目录下的匹配<code>*.c</code>的文件，并用grep搜索文件中的字符串<code>--help</code>，显示出行号（-n选项）。由于grep命令操作一个文件时，不显示文件名，故加上一个“虚拟的”文件<code>/dev/null</code>（该文件是一个特殊的设备文件，读取不到数据，是空的，写入什么数据都被丢弃）</li>
+</ul>
+<h5 id="xargs命令"><a href="#xargs命令" class="headerlink" title="xargs命令"></a>xargs命令</h5><p>上面最后一个例子的效率特别低，因为每匹配到一个路径，都要创建一个进程来执行grep命令。<br>可以结合xargs命令提高效率，高效率的方法应该如下：<br><code>find src -name &#39;*.c&#39; -print | xargs grep -n -- --help</code></p>
+<p>xargs命令会把标准输入追加到它的第一个参数（grep）后面，再作为一个命令执行。</p>
+<p>如果标准输入的数据量很大，xargs指定的处理程序会启动多个进程进行，每个进程处理一批，一般是几千个参数（命令行参数占满128K字节）。可以用-n选项指定每批处理最多多少个参数</p>
+<p>xargs常用场景：</p>
+<ul>
+<li>shell通配符展开，超出缓冲区空间大小而失败<br>  <code>rm -f *.dat</code> 文件名<code>*.dat</code>展开失败，文件过多，超出缓冲区空间大小，可用xargs改造：<br>  <code>ls | grep &quot;.dat$&quot; | xargs rm -f</code></li>
+<li>find命中目录名因删除目录导致影响目录遍历过程<br>  <code>find . -name CVS -exec rm -rf &#123;&#125; \;</code> 改为：<code>find . -name CVS -print | xargs rm -rf</code></li>
+</ul>
+<hr>
+<h3 id="打包和压缩"><a href="#打包和压缩" class="headerlink" title="打包和压缩"></a>打包和压缩</h3><p>tar最早为顺序访问的i磁带机设备而设计（Tape ARchive 磁带归档），用于保留和恢复磁带上的文件，可用来打包和压缩文件</p>
+<p>用法：<code>tar ctxv[f device] file-list</code><br>第一个字母选项指定功能，必须指定，有以下三个：</p>
+<ul>
+<li>c 创建（Create）新磁带，从头开始写，以前存于磁带上的数据会被覆盖掉</li>
+<li>t 列表（Table），列出磁带上的文件名列表，当不指定文件名时，将列出所有的文件</li>
+<li>x 抽取（eXtract），从磁带中抽取指定文件，当不指定文件名时，抽取所有文件<br>其他选项：</li>
+<li>v 冗长（Verbose），每处理一个文件就打印文件的名字，并在文件名前冠以功能字母</li>
+<li>f File，指定设备文件名</li>
+<li>z 采用压缩格式（gzip算法）</li>
+<li>j 采用压缩格式（bzip2算法）</li>
+</ul>
+<p>常用方法：</p>
+<ul>
+<li>打包文件：<code>tar cvf my.tar *.[ch] makefile</code></li>
+<li>打包work目录：<code>tar cvf work.tar work</code></li>
+<li>用gizp压缩算法打包work目录：<code>tar cvzf work.tar.gz work</code> （文件名的后缀只是惯例，无强制要求）</li>
+<li>恢复work目录：<code>tar xvf work.tar.gz</code></li>
+</ul>
+<p>gzip算法的执行速度快，但压缩比率不如bzip2；bzip2执行速度要不gzip慢很多，压缩比率较好</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/3892d071/" title="Linux开发环境及应用·第四周·文件管理和目录管理（二）">http://www.xi4oyu.top/3892d071/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/8843ca9/" rel="prev" title="Linux开发环境及应用·第四周·文件管理和目录管理（一）">
+                  <i class="fa fa-chevron-left"></i> Linux开发环境及应用·第四周·文件管理和目录管理（一）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/a5aecc96/" rel="next" title="python小项目之文本编辑器">
+                  python小项目之文本编辑器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"4069217dd1dc80f055048198a25b92a3"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

