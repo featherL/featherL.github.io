@@ -4,6 +4,11 @@
     <title>diary</title>
     <url>/917bede2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p>记录日常学习 &amp; 生活，随缘更新<br>（本想整个日记啥的插件的，想了想还是直接扔到一篇文章里得了）</p>
+<h2 id="2022-8-21"><a href="#2022-8-21" class="headerlink" title="2022/8/21"></a>2022/8/21</h2><p>因接触 <a href="https://github.com/SoftSec-KAIST/NTFuzz">NTFuzz</a> 这个工具的时候，看论文发现有些理论的基础我是没接触过的，查阅后知道是<strong>数据流分析</strong>的知识，然后发现了<a href="https://zhuanlan.zhihu.com/p/136697432">南京大学软件分析</a>这门课程对这方面讲得比较清晰，于是开始学习了，看了一星期多点，看了八节课 ppt，做了 4 个实验，很有趣，感觉应用场景挺大的。</p>
+<p>学习过程中也在整理笔记，等学完这门课，整理完笔记后，一波放出来（<del>埋坑</del>）</p>
+<span id="more"></span>
+
+
 <h2 id="2022-6-11"><a href="#2022-6-11" class="headerlink" title="2022/6/11"></a>2022/6/11</h2><p>实习一个月了，搞 windows 内核，挺有意思的，学习了 win32kfull.sys 图形驱动的漏洞，以及 clfs 日志文件系统的漏洞，本想写点文章记录，想了想重复性工作太多了，就懒狗了。之前关于 linux 条件竞争的技巧想写文章，但其实说起来也就那样，不知道如何丰富内容，于是乎咕咕咕……</p>
 <p>最近的状态都是：白天实习学 windows 内核漏洞利用，晚上看 《Linux Device Drivers》学习搞搞 linux 驱动开发，周末躺平摸鱼玩手机</p>
 <p>2022 年也过去一半了，回顾下我目前为止都弃坑了什么东西以及学了什么东西吧</p>
@@ -18,8 +23,6 @@
 <blockquote>
 <p>不想更文章就会像现在这样，水个日记证明这个站还在</p>
 </blockquote>
-<span id="more"></span>
-
 <h2 id="2022-3-30"><a href="#2022-3-30" class="headerlink" title="2022/3/30"></a>2022/3/30</h2><p>最近在学习 linux kernel，尝试复现一些真实的漏洞（<del>文章还没写 咕咕咕</del>）</p>
 <p>在之前的内核中，常用到 userfaultfd 来提高条件竞争漏洞利用的成功率，但是在比较新的版本内核中，userfaultfd 的系统调用不能被普通用户所使用了，不过最近有利用 fuse 即用户态文件系统来提高条件竞争利用成功率的方法，具体可以看下面的文章：</p>
 <ul>
