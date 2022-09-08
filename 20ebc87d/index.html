@@ -278,7 +278,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -415,20 +415,21 @@
     <div class="post-body" itemprop="articleBody">
         <p>hgame ctf比赛第一周的writeup</p>
 <span id="more"></span>
-
-<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="Cosmos-的博客"><a href="#Cosmos-的博客" class="headerlink" title="Cosmos 的博客"></a>Cosmos 的博客</h3><p>打开后是这个样子</p>
+<h2 id="Web">Web</h2>
+<h3 id="Cosmos-的博客">Cosmos 的博客</h3>
+<p>打开后是这个样子</p>
 <p><img src="/images/20ebc87d/web-1-1.png" alt="1"></p>
 <p>版本管理工具和GitHub都标记明显，想到应该是<code>.git</code>文件夹的泄露。但是直接访问<a target="_blank" rel="external nofollow noopener noreferrer" href="http://cosmos.hgame.n3ko.co/.git/">http://cosmos.hgame.n3ko.co/.git/</a>是显示404，不管了，直接上工具<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/BugScanTeam/GitHack.git">GitHack</a></p>
 <p><strong>运行命令：</strong></p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python GitHack.py  http://cosmos.hgame.n3ko.co/.git/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>然后在这个工具所在位置下的目录<code>dist/cosmos.hgame.n3ko.co/.git/</code>下，发现<code>config</code>文件有问题（找了好久才发现）</p>
 <p><img src="/images/20ebc87d/web-1-2.png" alt="2"></p>
 <p>然后就去上图中的仓库<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/FeYcYodhrPDJSru/8LTUKCL83VLhXbc">https://github.com/FeYcYodhrPDJSru/8LTUKCL83VLhXbc</a>找，发现其中一个commit有flag信息：</p>
 <p><img src="/images/20ebc87d/web-1-3.png" alt></p>
 <p>根据提示解码得到flag：<code>hgame&#123;g1t_le@k_1s_danger0us_!!!!&#125;</code></p>
 <hr>
-<h3 id="接-头-霸-王"><a href="#接-头-霸-王" class="headerlink" title="接 头 霸 王"></a>接 头 霸 王</h3><p>首先当然是打开链接啦</p>
+<h3 id="接-头-霸-王">接 头 霸 王</h3>
+<p>首先当然是打开链接啦</p>
 <p><img src="/images/20ebc87d/web-2-1.png" alt></p>
 <p>根据提示说要从<a target="_blank" rel="external nofollow noopener noreferrer" href="https://vidar.club/">https://vidar.club/</a>过来这个页面，那就去google下http的头哪些可以表示从哪里跳转来的，发现一个<code>Referer</code>头，扔到burpsuite里试</p>
 <p><img src="/images/20ebc87d/web-2-2.png" alt="2"></p>
@@ -446,7 +447,8 @@
 <p><img src="/images/20ebc87d/web-2-6.png" alt="6"></p>
 <p>于是得到flag：<code>hgame&#123;W0w!Your_heads_@re_s0_many!&#125;</code></p>
 <hr>
-<h3 id="Code-World"><a href="#Code-World" class="headerlink" title="Code World"></a>Code World</h3><p>开局就是一个403 Forbidden</p>
+<h3 id="Code-World">Code World</h3>
+<p>开局就是一个403 Forbidden</p>
 <p><img src="/images/20ebc87d/web-3-1.png" alt="1"></p>
 <p>而且url本来是<a target="_blank" rel="external nofollow noopener noreferrer" href="http://codeworld.hgame.day-day.work/">http://codeworld.hgame.day-day.work</a>，却变成<a target="_blank" rel="external nofollow noopener noreferrer" href="http://codeworld.hgame.day-day.work/new.php">http://codeworld.hgame.day-day.work/new.php</a>，那应该是跳转了</p>
 <p>好在我有burpsuite（多次打广告行为）</p>
@@ -456,22 +458,22 @@
 <p><img src="/images/20ebc87d/web-3-3.png" alt="3"></p>
 <p>看到这个Not Allowed我懵了好久，难道我错了？卡了半天就去做misc题了（而且还一题没做出来），一段时间后突然有想法，去搜了下405状态码是什么意思，发现</p>
 <blockquote>
-<h3 id="405-Method-Not-Allowed"><a href="#405-Method-Not-Allowed" class="headerlink" title="405 Method Not Allowed"></a>405 Method Not Allowed</h3><p>请求行中指定的请求方法不能被用于请求相应的资源。该响应必须返回一个Allow 头信息用以表示出当前资源能够接受的请求方法的列表。</p>
+<h3 id="405-Method-Not-Allowed">405 Method Not Allowed</h3>
+<p>请求行中指定的请求方法不能被用于请求相应的资源。该响应必须返回一个Allow 头信息用以表示出当前资源能够接受的请求方法的列表。</p>
 </blockquote>
 <p>原来是请求的方法不对，虽然返回包中没有Allow头告诉我用什么方法请求，但最常用的除了GET就是POST了，那就改POST请求</p>
 <p><img src="/images/20ebc87d/web-3-4.png" alt="4"></p>
 <p>这里要提交url参数a，计算两个数相加结果为10，一个参数传两个值，一想就想到php的url传数组的方式</p>
 <pre class="line-numbers language-none"><code class="language-none">?a[]&#x3D;1&amp;a[]&#x3D;9<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>发现不对，url编码后再提交，发现还是不对，又卡住了。。。</p>
 <p>最后，有个hint说a的参数的格式是<code>a=b+c</code>（此时已经有好多人解出来了），最后提交</p>
 <pre class="line-numbers language-none"><code class="language-none">?a&#x3D;1%2b9<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>（+号编码后为%2b）</p>
 <p><img src="/images/20ebc87d/web-3-5.png" alt="5"></p>
 <p>遂得flag：<code>hgame&#123;C0d3_1s_s0_S@_sO_C0ol!&#125;</code></p>
 <hr>
-<h3 id="🐔尼泰玫"><a href="#🐔尼泰玫" class="headerlink" title="🐔尼泰玫"></a>🐔尼泰玫</h3><p>这标题！这界面！</p>
+<h3 id="🐔尼泰玫">🐔尼泰玫</h3>
+<p>这标题！这界面！</p>
 <p><img src="/images/20ebc87d/web-4-1.png" alt="1"></p>
 <p>律师函警告？！</p>
 <p>咳咳！</p>
@@ -484,7 +486,9 @@
 <p>嘻嘻，成了！flag：<code>hgame&#123;j4vASc1pt_w1ll_tel1_y0u_someth1n9_u5efu1?!&#125;</code></p>
 <p>（做完后发现flag中有提示javascript的，看了下js文件，发现score参数字符<code>|</code>后面那个是时间戳的md5值，没什么影响）</p>
 <hr>
-<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><h3 id="maze"><a href="#maze" class="headerlink" title="maze"></a>maze</h3><p>拖入ida，f5反汇编，简单处理一下后</p>
+<h2 id="Reverse">Reverse</h2>
+<h3 id="maze">maze</h3>
+<p>拖入ida，f5反汇编，简单处理一下后</p>
 <p><img src="/images/20ebc87d/re-1-1.png" alt="1"></p>
 <p>迷宫类题目，<code>wsad</code>为上下左右，图中的v5代表当前位置，水平方向移动4个字节，一行有64个字节</p>
 <p><img src="/images/20ebc87d/re-1-2.png" alt="2"></p>
@@ -495,7 +499,8 @@
 <p><img src="/images/20ebc87d/re-1-4.png" alt="4"></p>
 <p>这样简单多了，flag：<code>hgame&#123;ssssddddddsssssddwwdddssssdssdd&#125;</code></p>
 <hr>
-<h3 id="bitwise-operation2"><a href="#bitwise-operation2" class="headerlink" title="bitwise_operation2"></a>bitwise_operation2</h3><p>首先，拖入ida，找到main函数反汇编</p>
+<h3 id="bitwise-operation2">bitwise_operation2</h3>
+<p>首先，拖入ida，找到main函数反汇编</p>
 <p><img src="/images/20ebc87d/re-2-1.png" alt="1"></p>
 <p>红框可以看到，再加上后面有个异或操作，而且这样的访问方式揭示了是v6,v7,…,v13是个数组，可以修改一下变量的定义：</p>
 <p><img src="/images/20ebc87d/re-2-2.png" alt="2"></p>
@@ -550,10 +555,10 @@ byte arr2<span class="token punctuation">[</span><span class="token punctuation"
     <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"&#125;\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>运行程序得flag：<code>hgame&#123;0f233e63637982d266cbf41ecb1b0102&#125;</code></p>
 <hr>
-<h3 id="advance"><a href="#advance" class="headerlink" title="advance"></a>advance</h3><p>常规操作，我也写了注释，改了变量名和函数名</p>
+<h3 id="advance">advance</h3>
+<p>常规操作，我也写了注释，改了变量名和函数名</p>
 <p><img src="/images/20ebc87d/re-3-1.png" alt="1"></p>
 <p>下面那个strncmp的字符串一开始我数了下长度，是4的倍数，那时候开始我就猜是base64编码了，但是直接解密不太对。在encrypt函数里（这个名字当然是我自己改的）发现</p>
 <p><img src="/images/20ebc87d/re-3-2.png" alt="2"></p>
@@ -574,11 +579,11 @@ string2 <span class="token operator">=</span> <span class="token string">"ABCDEF
 
 <span class="token comment"># 先把编码后的字符串str1的字符一一对应回原base64表的字符再解码</span>
 <span class="token keyword">print</span> <span class="token punctuation">(</span>base64<span class="token punctuation">.</span>b64decode<span class="token punctuation">(</span>str1<span class="token punctuation">.</span>translate<span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">.</span>maketrans<span class="token punctuation">(</span>string1<span class="token punctuation">,</span>string2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>得到flag：<code>hgame&#123;b45e6a_i5_50_eazy_6VVSQ&#125;</code></p>
 <hr>
-<h3 id="cpp"><a href="#cpp" class="headerlink" title="cpp"></a>cpp</h3><p><strong>注意：本题有大量的猜测</strong></p>
-<p>运行过一遍后，发现输入错误会显示<code>error</code>，那么拖入ida，<kbd>Alt</kbd>+<kbd>F4</kbd>搜索”error”字符串可以找到main函数。</p>
+<h3 id="cpp">cpp</h3>
+<p><strong>注意：本题有大量的猜测</strong></p>
+<p>运行过一遍后，发现输入错误会显示<code>error</code>，那么拖入ida，<kbd>Alt</kbd>+<kbd>F4</kbd>搜索&quot;error&quot;字符串可以找到main函数。</p>
 <p><img src="/images/20ebc87d/re-4-1.png" alt="1"></p>
 <p>首先看到的是std::cin，大胆猜测这个操作相当于<code>std::cin &gt;&gt; v16</code>，先进去<code>sub_140002AE0</code>函数分析了一波，没怎么看懂，而且有很多无意义的代码。然后自己写了段c++代码，大概如下</p>
 <pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;iostream&gt;
@@ -590,21 +595,22 @@ int main()
     std::cin &gt;&gt; s;
     return 0;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>编译后拖入ida反汇编，发现有和红框中相似的代码，于是大胆猜测，<code>sub_140002AE0</code>函数是string类的构造函数，顺便也猜测到了一个vector类，还有一些类的方法（幸好我有点c++基础），分析完后大概是这样的：</p>
 <p><img src="/images/20ebc87d/re-4-2.png" alt="2"></p>
 <p><img src="/images/20ebc87d/re-4-3.png" alt="3"></p>
-<p>（可以发现我的注释里充满了<strong>“可能”</strong>，<strong>“应该”</strong>）</p>
+<p>（可以发现我的注释里充满了**“可能”<strong>，</strong>“应该”**）</p>
 <p>看到那三层循环，和我之前写过的矩阵乘法很像，再加上hint说让我翻开线代课本，贯穿线代课本的除了矩阵还是矩阵，那么可以肯定这就是个矩阵乘法。</p>
 <p>和我添加的注释一样，<code>rect_input * rect1 = rect2</code>这个rect_input 是输入，格式是<code>hgame&#123;r11_r12_r13_r20_r21_..._r33&#125;</code>，r11表示这是矩阵的第(1, 1)个元素</p>
 <p>那简单了，解矩阵方程就好，找了个在线网站求rect1的逆，根据我的分析<code>rect1[0][1]</code>这个元素未知，盲猜0（其实也不是盲猜，因为我试了好多，发现rect1的逆都有小数，只有0的时候结果是整数）</p>
 <p>最后解出矩阵input写成flag就行：<code>hgame&#123;-24840_-78193_51567_2556_-26463_26729_3608_-25933_25943&#125;</code></p>
 <hr>
-<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="Hard-AAAAA"><a href="#Hard-AAAAA" class="headerlink" title="Hard_AAAAA"></a>Hard_AAAAA</h3><p>看下图</p>
+<h2 id="Pwn">Pwn</h2>
+<h3 id="Hard-AAAAA">Hard_AAAAA</h3>
+<p>看下图</p>
 <p><img src="/images/20ebc87d/pwn-1-1.png" alt="1"></p>
 <p><img src="/images/20ebc87d/pwn-1-2.png" alt="2"></p>
 <p>直接提供了一个后门，只要那么memcmp返回值为0即可getshell。</p>
-<p>需要注意的是，memcmp这个函数是逐字节比较，相等才返回0，这里是比较7个字节（第三个参数），但是这个”0O0o”只看到4个字节+1个\0（结束符），还有2个字节不知道，那么双击这个字符串，可看到，剩下两个字节是<code>O0</code></p>
+<p>需要注意的是，memcmp这个函数是逐字节比较，相等才返回0，这里是比较7个字节（第三个参数），但是这个&quot;0O0o&quot;只看到4个字节+1个\0（结束符），还有2个字节不知道，那么双击这个字符串，可看到，剩下两个字节是<code>O0</code></p>
 <p><img src="/images/20ebc87d/pwn-1-3.png" alt="3"></p>
 <p>只要溢出，把v5地址处开始覆盖成<code>0O0o</code> + \0 + <code>O0</code>这7个字节即可，exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
@@ -618,11 +624,11 @@ io<span class="token punctuation">.</span>recvuntil<span class="token punctuatio
 io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>getshell之后，读取flag文件</p>
 <p><img src="/images/20ebc87d/pwn-1-4.png" alt="4"></p>
 <hr>
-<h3 id="Number-Killer"><a href="#Number-Killer" class="headerlink" title="Number_Killer"></a>Number_Killer</h3><p>红框框起的部分为关键部分</p>
+<h3 id="Number-Killer">Number_Killer</h3>
+<p>红框框起的部分为关键部分</p>
 <p><img src="/images/20ebc87d/pwn-2-1.png" alt="1"></p>
 <p><img src="/images/20ebc87d/pwn-2-2.png" alt="2">其实就是根据读入的字符串转换成数字填到数组里，但是数组大小只有11，循环读入数字的次数却是19，每次可以写8个字节（__int64是8个字节），足够溢出修改返回地址了。</p>
 <p>需要注意的是溢出到循环变量i的时候，不要修改变量i的值，也就是说第12次读入数字的时候，要保持变量i的值是11，还有就是i是4字节整数，它刚刚好在数组v4之后的8个字节的高4个字节处，也就是说，我们第12次读入的数字转成8字节整数时，其高4个字节看成一个int型整数，必须是11，那么最简单就写<code>47244640256</code>这个数就好了（47244640256 &gt;&gt; 32 == 11），exp如下：</p>
@@ -675,10 +681,10 @@ io<span class="token punctuation">.</span>send<span class="token punctuation">(<
 
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>flag：略（哈哈哈，自己运行脚本）</p>
 <hr>
-<h3 id="One-Shot"><a href="#One-Shot" class="headerlink" title="One_Shot"></a>One_Shot</h3><p>关键位置：</p>
+<h3 id="One-Shot">One_Shot</h3>
+<p>关键位置：</p>
 <p><img src="/images/20ebc87d/pwn-3-1.png" alt="1"></p>
 <p>读入一个地址，将这个地址指向的那个字节赋值为1（一开始还以为是把name变量修改成flag，后来发现不可能）</p>
 <p>其实问题很简单，先看下图：</p>
@@ -697,10 +703,10 @@ io<span class="token punctuation">.</span>sendline<span class="token punctuation
 io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>addr<span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>io<span class="token punctuation">.</span>recv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>（怪不得题目叫这个）</p>
 <hr>
-<h3 id="ROP-LEVEL0"><a href="#ROP-LEVEL0" class="headerlink" title="ROP_LEVEL0"></a>ROP_LEVEL0</h3><p><img src="/images/20ebc87d/pwn-4-1.png" alt="1"></p>
+<h3 id="ROP-LEVEL0">ROP_LEVEL0</h3>
+<p><img src="/images/20ebc87d/pwn-4-1.png" alt="1"></p>
 <p>其实很明了，没有canary保护，题目提示可以通过文件读写操作把flag读出来，试了下不知道为什么一直错，然后就放弃了，所以我直接构造ROP，exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
 <span class="token comment">#coding=utf8</span>
@@ -744,9 +750,10 @@ io<span class="token punctuation">.</span>sendline<span class="token punctuation
 
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="InfantRSA"><a href="#InfantRSA" class="headerlink" title="InfantRSA"></a>InfantRSA</h3><p>查一下密码学RSA的资料，知道p,q,e可以算出用来解密的d（目前只是简单了解了下），题目已经给出来了，那么exp如下：</p>
+<h2 id="Crypto">Crypto</h2>
+<h3 id="InfantRSA">InfantRSA</h3>
+<p>查一下密码学RSA的资料，知道p,q,e可以算出用来解密的d（目前只是简单了解了下），题目已经给出来了，那么exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
 <span class="token comment">#coding=utf8</span>
 <span class="token keyword">import</span> gmpy2
@@ -768,9 +775,9 @@ flag <span class="token operator">=</span> <span class="token builtin">hex</span
 flag <span class="token operator">=</span> flag<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Affine"><a href="#Affine" class="headerlink" title="Affine"></a>Affine</h3><p>根据题目，搜索Affine，可以查到仿射加密。</p>
+<h3 id="Affine">Affine</h3>
+<p>根据题目，搜索Affine，可以查到仿射加密。</p>
 <p>仿射加密要求这个A必须与MOD互素，其实A是MOD内的一个素数（或者1），然后这个B其实就是一个偏移（当A=1的时候，这个加密就是凯撒加密了），我们只需要枚举A和B，如果A和B仿射加密<code>hgame</code>后是<code>A8I5z</code>那么这对A和B就是正确的，exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
 <span class="token comment">#coding=utf8</span>
@@ -829,9 +836,9 @@ data <span class="token operator">=</span> <span class="token string">'A8I5z&#12
             <span class="token keyword">print</span><span class="token punctuation">(</span>ret<span class="token punctuation">)</span>
             <span class="token keyword">break</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="not-One-time"><a href="#not-One-time" class="headerlink" title="not_One-time"></a>not_One-time</h3><p>一开始查到many-time-pad，但是以现有的工具都不行，学长说不是这样搞的。。。</p>
+<h3 id="not-One-time">not_One-time</h3>
+<p>一开始查到many-time-pad，但是以现有的工具都不行，学长说不是这样搞的。。。</p>
 <p>然后我在一个many-time-pad的攻击脚本中得到灵感，它是根据语义自己猜出明文或者密钥。</p>
 <p>然后我想了下，哪里用自己猜，直接爆破flag不就得了。</p>
 <p>异或运算有个特点：<code>A xor B xor B == A</code>，样本数据（就是加密后的数据）是这么来的：<code>明文 xor flag == sample</code></p>
@@ -845,7 +852,6 @@ data <span class="token operator">=</span> <span class="token builtin">raw_input
 
 decode_bytes <span class="token operator">=</span> base64<span class="token punctuation">.</span>b64decode<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
 <span class="token keyword">print</span> decode_bytes<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>用法：<code>nc 47.98.192.231 25001 | python2 get_sample.py &gt;&gt; samples.txt</code></p>
 <p>保存数据在samples.txt文件里，运行多次上述命令，大概搜集够50条数据就够了</p>
 <p>然后，用这些数据进行爆破的flag的验证：</p>
@@ -900,16 +906,19 @@ count <span class="token operator">=</span> <span class="token number">1</span>
                 q<span class="token punctuation">.</span>put<span class="token punctuation">(</span>new_flag<span class="token punctuation">)</span>
                 count <span class="token operator">+=</span> <span class="token number">1</span>
                 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'count: %d'</span> <span class="token operator">%</span> count<span class="token punctuation">)</span> <span class="token comment"># 显示出可能的结果数，如果太多就再多收集点密文</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Reorder"><a href="#Reorder" class="headerlink" title="Reorder"></a>Reorder</h3><p>一开始把题目看错成Recoder，瞬间懵了，然后才发现其实就是打乱了flag的顺序。</p>
+<h3 id="Reorder">Reorder</h3>
+<p>一开始把题目看错成Recoder，瞬间懵了，然后才发现其实就是打乱了flag的顺序。</p>
 <p>直接上做题过程图（嘻嘻，刚好这题留了图，再也不敢不留图了T_T）</p>
 <p><img src="/images/20ebc87d/crypto-4-1.png" alt="1"></p>
 <hr>
-<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="欢迎参加HGame！"><a href="#欢迎参加HGame！" class="headerlink" title="欢迎参加HGame！"></a>欢迎参加HGame！</h3><p>百度发现要base64解码，解码后是摩斯电码：</p>
+<h2 id="Misc">Misc</h2>
+<h3 id="欢迎参加HGame！">欢迎参加HGame！</h3>
+<p>百度发现要base64解码，解码后是摩斯电码：</p>
 <p><code>.-- ...-- .-.. -.-. ----- -- . ..--.- - --- ..--.- ..--- ----- ..--- ----- ..--.- .... --. .- -- ...--</code></p>
 <p>然后去找个摩斯电码在线解密的网站解密即可，要注意的是我找到的大部分网站的摩斯电码的分隔符都是<code>/</code>，而这里是空格，所以我还把全部空格换成了<code>/</code>才成功解密</p>
-<h3 id="壁纸"><a href="#壁纸" class="headerlink" title="壁纸"></a>壁纸</h3><p>压缩包解压后是张图片，kali上用binwalk查看发现图片里隐藏了压缩包，且提示解压密码是图片ID：</p>
+<h3 id="壁纸">壁纸</h3>
+<p>压缩包解压后是张图片，kali上用binwalk查看发现图片里隐藏了压缩包，且提示解压密码是图片ID：</p>
 <p><img src="/images/20ebc87d/misc-2-1.png" alt="1"></p>
 <p>分离出压缩包：</p>
 <p><img src="/images/20ebc87d/misc-2-2.png" alt="2"></p>
@@ -918,15 +927,14 @@ count <span class="token operator">=</span> <span class="token number">1</span>
 <p>看样子是unicode编码，其实直接当16进制编码处理就好了，python处理一下就好：</p>
 <p><img src="/images/20ebc87d/misc-2-4.png" alt="4"></p>
 <hr>
-<h3 id="克苏鲁神话"><a href="#克苏鲁神话" class="headerlink" title="克苏鲁神话"></a>克苏鲁神话</h3><p>解压压缩包后，有文本文件Bacon.txt和压缩包Novel.zip，压缩包有密码。然后这个压缩包里面也有一个文本文件叫Bacon.txt，把Bacon.txt这个文本文件单独压缩，发现校验码和Novel.zip里的Bacon.txt文件的一样，那么可以确定是一样的文件，查资料发现可以使用明文攻击，可以爆破出加密密钥（不是密码）。</p>
+<h3 id="克苏鲁神话">克苏鲁神话</h3>
+<p>解压压缩包后，有文本文件Bacon.txt和压缩包Novel.zip，压缩包有密码。然后这个压缩包里面也有一个文本文件叫Bacon.txt，把Bacon.txt这个文本文件单独压缩，发现校验码和Novel.zip里的Bacon.txt文件的一样，那么可以确定是一样的文件，查资料发现可以使用明文攻击，可以爆破出加密密钥（不是密码）。</p>
 <p>可以用<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/Aloxaf/rbkcrack">rbkcrack</a>工具来破解，安装我就不细说了，直接破解：</p>
 <pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">rbkcrack<span class="token punctuation">.</span>exe <span class="token operator">-</span>C Novel<span class="token punctuation">.</span>zip <span class="token operator">-</span>c Bacon<span class="token punctuation">.</span>txt <span class="token operator">-</span>p Bacon<span class="token punctuation">.</span>txt <span class="token operator">-</span>P Bacon<span class="token punctuation">.</span>zip<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>其中<code>-C Novel.zip</code>是要破解的压缩包，<code>-c Bacon.txt</code>是Novel.zip里面的已知的那个文件的路径，<code>-p Bacon.txt</code>是已知的明文文件，<code>-P Bacon.zip</code>是已知的Bacon.txt压缩后的zip文件</p>
 <p><img src="/images/20ebc87d/misc-3-1.png" alt="1"></p>
 <p>得到密钥，flag肯定在压缩包里的那个.doc文件里啦，解密出来</p>
 <pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">rbkcrack<span class="token punctuation">.</span>exe <span class="token operator">-</span>C Novel<span class="token punctuation">.</span>zip <span class="token operator">-</span>c <span class="token string">'The Call of Cthulhu.doc'</span> <span class="token operator">-</span>k 720b7516 d2d6a716 2c24dcae  <span class="token operator">-</span>u <span class="token operator">-</span>d xx<span class="token punctuation">.</span>doc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>发现.doc文件打开需要密码，那么密码是从Bacon.txt里解到的（其实我是先解出了.doc文件的密码，才来破解压缩包的），无意间翻译了Bacon这个单词，发现有”培根“的意思，而且还查到了培根密码，然后Bacon.txt里的内容是这样的：</p>
 <p><img src="/images/20ebc87d/misc-3-2.png" alt="2"></p>
 <p>一些是大写，一些是小写，大写字母当作a，小写字母当作b，空格标点去掉，那么得到培根密码：</p>
@@ -938,7 +946,8 @@ count <span class="token operator">=</span> <span class="token number">1</span>
 <p>flag在文档最底部：</p>
 <p><img src="/images/20ebc87d/misc-3-6.png" alt="6"></p>
 <hr>
-<h3 id="签到题ProPlus"><a href="#签到题ProPlus" class="headerlink" title="签到题ProPlus"></a>签到题ProPlus</h3><p>根据提示</p>
+<h3 id="签到题ProPlus">签到题ProPlus</h3>
+<p>根据提示</p>
 <p><img src="/images/20ebc87d/misc-4-1.png" alt="1"></p>
 <p>把前三行文字，找个网站用栅栏密码解密，每组数字为3</p>
 <p><img src="/images/20ebc87d/misc-4-2.png" alt="2"></p>
@@ -956,7 +965,8 @@ count <span class="token operator">=</span> <span class="token number">1</span>
 <p><img src="/images/20ebc87d/misc-4-8.png" alt="8"></p>
 <p>扫码得flag哟！</p>
 <hr>
-<h3 id="每日推荐"><a href="#每日推荐" class="headerlink" title="每日推荐"></a>每日推荐</h3><p>一个.pcapng文件，用wireshark分析，发现有很多http的包，那就筛选http的包出来</p>
+<h3 id="每日推荐">每日推荐</h3>
+<p>一个.pcapng文件，用wireshark分析，发现有很多http的包，那就筛选http的包出来</p>
 <p><img src="/images/20ebc87d/misc-5-1.png" alt="1"></p>
 <p>逐个查看，发现有一个http的请求，上传了一个压缩包</p>
 <p><img src="/images/20ebc87d/misc-5-2.png" alt="2"></p>
@@ -968,17 +978,23 @@ count <span class="token operator">=</span> <span class="token number">1</span>
 <p>用Audacity软件打开查看频谱图可得flag</p>
 <p><img src="/images/20ebc87d/misc-5-5.png" alt="5"></p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第一周艰难的把题目都做了</p>
+<h2 id="总结">总结</h2>
+<p>第一周艰难的把题目都做了</p>
 <ul>
-<li><p>web的cxk游戏很好玩！</p>
+<li>
+<p>web的cxk游戏很好玩！</p>
 </li>
-<li><p>re看汇编和反汇编很头疼</p>
+<li>
+<p>re看汇编和反汇编很头疼</p>
 </li>
-<li><p>Pwn乍一眼一看，想复杂了</p>
+<li>
+<p>Pwn乍一眼一看，想复杂了</p>
 </li>
-<li><p>Crypto学了不少东西（虽然不怎么懂）</p>
+<li>
+<p>Crypto学了不少东西（虽然不怎么懂）</p>
 </li>
-<li><p>misc脑洞真大！！！</p>
+<li>
+<p>misc脑洞真大！！！</p>
 </li>
 </ul>
 <blockquote>
@@ -1074,13 +1090,13 @@ count <span class="token operator">=</span> <span class="token number">1</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

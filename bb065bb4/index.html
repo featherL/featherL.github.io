@@ -213,7 +213,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -330,7 +330,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.4k</span>
+      <span>3.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -351,21 +351,52 @@
         <p>由于离高考越来越近，博主打算本篇文章过后，暂停本系列教程的更新，等到高考完后再继续本系列教程，请谅解！</p>
 <p>这次我们学习用python操作文件，包括文件的读、写等……</p>
 <span id="more"></span>
-
-<h2 id="操作文件第一步——打开文件"><a href="#操作文件第一步——打开文件" class="headerlink" title="操作文件第一步——打开文件"></a>操作文件第一步——打开文件</h2><p>要想操作文件，我们首先应该打开一个文件。当然，这个“打开”不是用鼠标双击那种“打开”，别忘了这是个python编程的教程，所以我们是用python程序来打开文件。打开文件用open函数，函数的基本用法如下：</p>
+<h2 id="操作文件第一步——打开文件">操作文件第一步——打开文件</h2>
+<p>要想操作文件，我们首先应该打开一个文件。当然，这个“打开”不是用鼠标双击那种“打开”，别忘了这是个python编程的教程，所以我们是用python程序来打开文件。打开文件用open函数，函数的基本用法如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">obj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>name<span class="token punctuation">[</span><span class="token punctuation">,</span> mode<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># 中括号包围表示mode参数是默认参数的，即有默认值</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>上面的<code>name</code>就是我们要打开的文件的路径，这个参数是必须的。参数<code>mode</code>是打开文件的模式，后面单独介绍。</p>
 <p>该函数返回一个文件对象，通过这个对象的一些方法，我们对文件进行一些操作。</p>
-<h3 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h3><p>参数<code>mode</code>代表打开文件的模式，文件模式的常用取值有以下几种：<br>值|含义<br>–|:–<br><code>&#39;r&#39;</code> | 读模式 （<strong>默认值</strong>）<br><code>w</code> | 写模式<br><code>a</code> | 追加模式<br><code>b</code> | 二进制模式（和其它模式一起使用，如<code>&#39;rb&#39;</code>，<code>&#39;wb&#39;</code>等）<br><code>+</code> | 读/写模式（和其它模式一起使用，如<code>&#39;r+&#39;</code>、<code>&#39;w+&#39;</code>、<code>a+</code>等） </p>
+<h3 id="文件模式">文件模式</h3>
+<p>参数<code>mode</code>代表打开文件的模式，文件模式的常用取值有以下几种：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'r'</code></td>
+<td style="text-align:left">读模式 （<strong>默认值</strong>）</td>
+</tr>
+<tr>
+<td><code>w</code></td>
+<td style="text-align:left">写模式</td>
+</tr>
+<tr>
+<td><code>a</code></td>
+<td style="text-align:left">追加模式</td>
+</tr>
+<tr>
+<td><code>b</code></td>
+<td style="text-align:left">二进制模式（和其它模式一起使用，如<code>'rb'</code>，<code>'wb'</code>等）</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td style="text-align:left">读/写模式（和其它模式一起使用，如<code>'r+'</code>、<code>'w+'</code>、<code>a+</code>等）</td>
+</tr>
+</tbody>
+</table>
 <p>在这里需要进一步解释说明：</p>
 <ul>
 <li>以读模式打开文件，可以对文件进行读取内容，这要求文件必须存在，若不存在程序将报错中止。</li>
 <li>以写模式打开文件，可以往文件写入数据，需要注意的是，如果文件不存在将<strong>创建</strong>文件，如果文件存在会将文件内容<strong>清空</strong></li>
-<li>读/写模式意思是即可读文件又可写文件，如<code>&#39;r+&#39;</code>，以读模式打开文件，除了可以读取文件内容，还可以写入数据</li>
+<li>读/写模式意思是即可读文件又可写文件，如<code>'r+'</code>，以读模式打开文件，除了可以读取文件内容，还可以写入数据</li>
 <li>以追加模式打开文件不会将文件清空，可以<strong>以文件末尾为起点</strong>往文件写入数据，相当于特殊的读模式</li>
 </ul>
-<h4 id="何为二进制模式？"><a href="#何为二进制模式？" class="headerlink" title="何为二进制模式？"></a>何为二进制模式？</h4><p><strong>二进制模式</strong>有些特殊，这里单独说明。</p>
+<h4 id="何为二进制模式？">何为二进制模式？</h4>
+<p><strong>二进制模式</strong>有些特殊，这里单独说明。</p>
 <p>文本中的一些控制字符如<strong>换行符</strong>，在不同的系统中的存储形式是不同的，在Linux系统中存储的是<code>\n</code>一个字符，而在Windows系统中存储的是<code>\r\n</code>两个字符。</p>
 <p>为了通用性，python默认用文本模式打开一个文件，从文件中读取到的换行符，python会自动将其转换成一个<code>\n</code>字符；写入数据的时候，python自动将<code>\n</code>转换成对应系统的换行符形式后再写入文件。</p>
 <p>也就是说，以文本模式打开的文件，读取的内容不一定是原本的内容！</p>
@@ -374,29 +405,29 @@
 <hr>
 <p>好了，现在我们以写模式打开一个文件，名为<code>test.txt</code>，这个文件不存在，python自动为我们创建，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>第一步完成！</p>
-<h2 id="操作文件第二步——读和写"><a href="#操作文件第二步——读和写" class="headerlink" title="操作文件第二步——读和写"></a>操作文件第二步——读和写</h2><h3 id="写文件"><a href="#写文件" class="headerlink" title="写文件"></a>写文件</h3><p>由于我们刚才以写模式打开了一个<code>test.txt</code>文件，文件无内容，我们先来说说如何往文件写入数据。</p>
+<h2 id="操作文件第二步——读和写">操作文件第二步——读和写</h2>
+<h3 id="写文件">写文件</h3>
+<p>由于我们刚才以写模式打开了一个<code>test.txt</code>文件，文件无内容，我们先来说说如何往文件写入数据。</p>
 <p>往文件写入数据用到文件对象的一个write方法：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span>
 fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'hello world!\n'</span><span class="token punctuation">)</span> <span class="token comment"># 写入内容</span>
 fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'I am Lee\n'</span><span class="token punctuation">)</span> <span class="token comment"># 写入内容</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
 <p>该方法还返回一个整数，表示写入的字符数</p>
-<h3 id="读文件"><a href="#读文件" class="headerlink" title="读文件"></a>读文件</h3><p>如果以读模式打开了一个文件（这个文件要存在），那么我们可以使用文件对象的read方法来读取文件内容：</p>
+<h3 id="读文件">读文件</h3>
+<p>如果以读模式打开了一个文件（这个文件要存在），那么我们可以使用文件对象的read方法来读取文件内容：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">)</span> <span class="token comment"># 或者fobj = open('test.txt')</span>
 content <span class="token operator">=</span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token comment"># 读取10个字符</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span>
 content <span class="token operator">=</span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 读取剩下的所有字符</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>read方法带参数时，表示读取的字符数（如果是二进制模式就是字节数），不带参数时表示读取剩下全部内容，如果文件比较小的时候可以直接读取全部内容，如果文件比较大不建议这么做，一是因为速度慢，二是因为文件内容过大，没有足够的内存可以一次性容纳这么多数据。</p>
 <hr>
 <p><strong>注意</strong>：对文件的读和写操作时，文件对象有一个<strong>指针</strong>用于指定当前文件的操作位置，读文件的时候，会使这个指针往后移动。也就是说，我们读取文件内容时是按顺序读取的，读取完后就没有了，因为指针已经移动到文件末尾。不过我们可以使用文件对象的<strong>seek</strong>方法，手动改变这个指针的位置；写文件的操作也是类似，除非使用seek方法，否则我们无法将这次写入的数据写入到上一次写入的数据之前。</p>
-<h2 id="操作文件最后一步——关闭文件"><a href="#操作文件最后一步——关闭文件" class="headerlink" title="操作文件最后一步——关闭文件"></a>操作文件最后一步——关闭文件</h2><p>操作完文件后要对其关闭，特别是更改了文件的数据的时候，可能造成写入的数据没有真正写入到文件中，这是因为写入数据的时候，是往缓冲区写入的，等缓冲区满了，或者关闭文件的时候才会将数据写入硬盘。</p>
+<h2 id="操作文件最后一步——关闭文件">操作文件最后一步——关闭文件</h2>
+<p>操作完文件后要对其关闭，特别是更改了文件的数据的时候，可能造成写入的数据没有真正写入到文件中，这是因为写入数据的时候，是往缓冲区写入的，等缓冲区满了，或者关闭文件的时候才会将数据写入硬盘。</p>
 <p>操作很简单，调用close方法即可：</p>
 <pre class="line-numbers language-pytrhon" data-language="pytrhon"><code class="language-pytrhon">fobj.close()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>一般情况下，程序退出后或者退出前，程序打开的文件会被自动关闭，但是如果程序因为错误中止了，很可能会出现数据没有被写入文件的现象，为了安全起见，使用完文件后应及时关闭。</p>
 <p>通常使用如下代码来保证文件正常关闭：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span>
@@ -404,12 +435,10 @@ content <span class="token operator">=</span> fobj<span class="token punctuation
     <span class="token comment"># do something</span>
 <span class="token keyword">finally</span><span class="token punctuation">:</span>
     f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>暂时不用理解<code>try</code>、<code>finally</code>代码块的具体作用，我们只需要知道当<code>try</code>代码块发生错误是程序中止，或者程序正常运行下去，<code>finally</code>代码块都会执行。</p>
 <p>也可以使用如下代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
     <span class="token comment"># do something</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <p><code>with</code>代码块结束后，无论程序是否发生错误，会自动调用close方法来关闭文件</p>
 <hr>
 <p>最后总结起来，代码如下：</p>
@@ -420,7 +449,6 @@ content <span class="token operator">=</span> fobj<span class="token punctuation
 <span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'I am Lee.\n'</span><span class="token punctuation">)</span>
 <span class="token number">10</span>
 <span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>然后读取这个写入的文件：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> fobj <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">)</span> <span class="token comment"># 默认模式为读模式'r'</span>
 <span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span>  <span class="token comment"># 读取10个字符</span>
@@ -428,20 +456,20 @@ content <span class="token operator">=</span> fobj<span class="token punctuation
 <span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 读取剩下的全部字符</span>
 <span class="token string">'d!\nI am Lee.\n'</span>
 <span class="token operator">>></span><span class="token operator">></span> fobj<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 没有对文件进行修改可不调用</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="其它文件操作方式"><a href="#其它文件操作方式" class="headerlink" title="其它文件操作方式"></a>其它文件操作方式</h2><h3 id="迭代文件"><a href="#迭代文件" class="headerlink" title="迭代文件"></a>迭代文件</h3><p>我们读取文件的时候还可以使用<code>for</code>循环进行迭代，代码如下：</p>
+<h2 id="其它文件操作方式">其它文件操作方式</h2>
+<h3 id="迭代文件">迭代文件</h3>
+<p>我们读取文件的时候还可以使用<code>for</code>循环进行迭代，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">for</span> line <span class="token keyword">in</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'test.txt'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span>line<span class="token punctuation">,</span> end<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">)</span>  <span class="token comment"># end参数表示字符串最后附加的字符，默认为换行符</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
 hello world!
 I am Lee<span class="token punctuation">.</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>可以看到，每次循环我们得到文件的一行内容，在这里我们没有关闭文件，但是这没有必要，因为我们只是读文件，并没有改变文件的内容。</p>
 <p>这种读取文件的方法是我们最常用的方法。</p>
-<h3 id="随机访问"><a href="#随机访问" class="headerlink" title="随机访问"></a>随机访问</h3><p>刚才我们说过，文件的操作都是从头到尾按顺序进行的，若想“回头”，就需要使用seek方法重新设置文件指针，具体用法如下：</p>
+<h3 id="随机访问">随机访问</h3>
+<p>刚才我们说过，文件的操作都是从头到尾按顺序进行的，若想“回头”，就需要使用seek方法重新设置文件指针，具体用法如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">fobj<span class="token punctuation">.</span>seek<span class="token punctuation">(</span>offset<span class="token punctuation">[</span><span class="token punctuation">,</span> whence<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p><code>offset</code>参数表示偏移量，正数为向后偏移，负数为向前偏移，0表示不偏移；<code>whence</code>参数表示起始位置，默认是0（表示相对于<strong>文件开头</strong>，偏移量为非负数），其它取值还有1（相对于<strong>当前位置</strong>，偏移量可正可负可0,），2（相对于<strong>文件末尾</strong>，偏移量为非正数）。</p>
 <p>同时还可以配合tell方法来使用，tell方法返回当前文件指针位置。</p>
 <p>具体可以看下面的例子：</p>
@@ -465,8 +493,6 @@ I am Lee<span class="token punctuation">.</span>
 <span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 读取所有文件内容</span>
 <span class="token string">b'hellhaharld'</span>
 <span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 关闭文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <hr>
 <p>好了，本节教程就此结束，感谢读者的阅读，下一节教程要等到高考完了才有时间更新咯～</p>
 <p><code>ヾ(￣▽￣)Bye~Bye~</code></p>
@@ -561,13 +587,13 @@ I am Lee<span class="token punctuation">.</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

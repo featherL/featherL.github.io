@@ -220,7 +220,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -372,24 +372,36 @@
 <p>“我在visual studio中写C语言程序的时候怎么就不见要用命令行？”</p>
 </blockquote>
 <p>其实这都是<strong>IDE</strong>（Integrated Development Environment，<strong>集成开发环境</strong>）的“锅”，操作命令行什么的，IDE在底下偷偷帮你做好了，比如<strong>visual studio</strong>就是一个IDE，写好代码后，只要点击一下按钮，编译、链接、运行什么的都是它帮你做好了。说到底还是命令行，所以命令行是基本。况且，多学点东西也不是什么坏事。</p>
-<h3 id="打开命令提示符"><a href="#打开命令提示符" class="headerlink" title="打开命令提示符"></a>打开命令提示符</h3><p>打开命令提示符即cmd.exe程序，有很多种方法，下面介绍几种常见的方法，当然啦，不只有这几种方法。</p>
+<h3 id="打开命令提示符">打开命令提示符</h3>
+<p>打开命令提示符即cmd.exe程序，有很多种方法，下面介绍几种常见的方法，当然啦，不只有这几种方法。</p>
 <ol>
-<li><p>鼠标点击<code>开始</code>，在搜索框中输入<code>cmd</code>，黑色图标那个就是cmd.exe，如下图：<br><img src="/images/9424038a/open_cmd_1.png" alt="打开cmd方式一"></p>
+<li>
+<p>鼠标点击<code>开始</code>，在搜索框中输入<code>cmd</code>，黑色图标那个就是cmd.exe，如下图：<br>
+<img src="/images/9424038a/open_cmd_1.png" alt="打开cmd方式一"></p>
 </li>
-<li><p>鼠标依次点击：<code>开始</code>-&gt;<code>所有程序</code>-&gt;<code>附件</code>-&gt;<code>命令提示符</code>，如下图：<br><img src="/images/9424038a/open_cmd_2.png" alt="打开cmd方式二"></p>
+<li>
+<p>鼠标依次点击：<code>开始</code>-&gt;<code>所有程序</code>-&gt;<code>附件</code>-&gt;<code>命令提示符</code>，如下图：<br>
+<img src="/images/9424038a/open_cmd_2.png" alt="打开cmd方式二"></p>
 </li>
-<li><p>这是本人习惯的一种打开方式：按下键盘组合键 <kbd>win</kbd> + <kbd>R</kbd>，<kbd>win</kbd>键就是键盘上有windows徽标的那个键，在弹出的窗口中输入<code>cmd</code>按下回车即可，如下图：<br><img src="/images/9424038a/open_cmd_3.png" alt="打开cmd方式三"></p>
+<li>
+<p>这是本人习惯的一种打开方式：按下键盘组合键 <kbd>win</kbd> + <kbd>R</kbd>，<kbd>win</kbd>键就是键盘上有windows徽标的那个键，在弹出的窗口中输入<code>cmd</code>按下回车即可，如下图：<br>
+<img src="/images/9424038a/open_cmd_3.png" alt="打开cmd方式三"></p>
 </li>
 </ol>
 <hr>
-<p>无论您以哪种方式打开cmd，都将出现下面这样一个黑框框：<br><img src="/images/9424038a/cmd.png" alt="cmd窗口"></p>
-<h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><p>在cmd中，你给出一条命令，cmd就会解析这条命令执行，完成后就等待你的下一条命令，要做事情就要懂”命令“，于是下面来介绍一下一些基本的命令。</p>
-<p>显示当前目录下的文件与目录（<strong>“目录”</strong> 就是人们常说的 <strong>“文件夹”</strong>)，输入<code>dir</code>，如下图：<br><img src="/images/9424038a/dir_1.png" alt="显示目录下的文件与目录"></p>
+<p>无论您以哪种方式打开cmd，都将出现下面这样一个黑框框：<br>
+<img src="/images/9424038a/cmd.png" alt="cmd窗口"></p>
+<h3 id="基本命令">基本命令</h3>
+<p>在cmd中，你给出一条命令，cmd就会解析这条命令执行，完成后就等待你的下一条命令，要做事情就要懂”命令“，于是下面来介绍一下一些基本的命令。</p>
+<p>显示当前目录下的文件与目录（<strong>“目录”</strong> 就是人们常说的 <strong>“文件夹”</strong>)，输入<code>dir</code>，如下图：<br>
+<img src="/images/9424038a/dir_1.png" alt="显示目录下的文件与目录"></p>
 <p>尖括号<code>&gt;</code>前面的字符就是当前所处的路径，图像中是<code>C:\Users\f1</code>，也就是说刚刚列出来的都是<code>C:\Users\f1</code>目录下的文件和目录。</p>
-<p>若想浏览其它目录，可在命令后加一个目录名为参数，用空格隔开，格式为：<code>dir 目录名</code>，如浏览当前目录下的“Desktop”：<br><img src="/images/9424038a/dir_2.png" alt="显示目录下的文件与目录"></p>
+<p>若想浏览其它目录，可在命令后加一个目录名为参数，用空格隔开，格式为：<code>dir 目录名</code>，如浏览当前目录下的“Desktop”：<br>
+<img src="/images/9424038a/dir_2.png" alt="显示目录下的文件与目录"></p>
 <p>上面用到的参数是<strong>相对路径</strong>，“Desktop”是相对的，相对于当前路径，当然也可以用<strong>绝对路径</strong>来作为参数：<code>dir C:\Users\f1\Destop</code>。<code>.</code>表示当前路径，命令<code>dir .</code>可浏览当前目录，而<code>..</code>表示当前目录的上一级目录，又叫<strong>父目录</strong>（为什么不叫“母目录”就不要问我啦），命令<code>dir ..</code>可浏览上一级目录，这里就不放图啦。同样的，路径<code>.\a\b\..\1.txt</code>表示的是当前目录下的a目录下的b目录的父目录下的“1.txt”文件，等价于<code>.\a\1.txt</code>。</p>
 <p><strong>注意了</strong>，windows下的文件名或目录名是不分大小写的，也就是说“Desktop”、“dEsktop”、“desktop”表示的都是同一个目录。若是目录名中间有空格，要用<strong>半角的</strong>双引号扩起来：<code>dir &quot;目录    名&quot;</code>（将输入法切换到<strong>英文输入</strong>后打出来的字符就是半角的）。<strong>建议不要用带有空格的路径</strong>。</p>
-<p>切换目录：<code>cd 目录路径</code>，当然，路径可以是相对路径也可以是绝对路径。<br>因此，回到父目录的命令自然就是<code>cd ..</code></p>
+<p>切换目录：<code>cd 目录路径</code>，当然，路径可以是相对路径也可以是绝对路径。<br>
+因此，回到父目录的命令自然就是<code>cd ..</code></p>
 <p>创建目录：<code>mkdir 目录名</code></p>
 <p>删除<strong>空目录</strong>：<code>rmdir 目录名</code></p>
 <p>删除<strong>整个非空目录</strong>：<code>rmdir /S 目录名</code>，还可加<code>/Q</code>参数可防止在删除每个文件前询问是否删除，即<code>rmdir /S /Q 目录名</code></p>
@@ -491,13 +503,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

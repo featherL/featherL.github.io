@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83-amp-%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">环境 &amp; 一些问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">3.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">3.2.</span> <span class="nav-text">方法二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9F"><span class="nav-number">3.3.</span> <span class="nav-text">方法三？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83-%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">环境 &amp; 一些问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">3.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">3.2.</span> <span class="nav-text">方法二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9F"><span class="nav-number">3.3.</span> <span class="nav-text">方法三？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -213,7 +213,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -350,14 +350,15 @@
     <div class="post-body" itemprop="articleBody">
         <p>去年参加的一场 CTF，当时不怎么会 kernel，现在想深入学习下 kernel，回过头来看看这道题</p>
 <span id="more"></span>
-
-<h2 id="环境-amp-一些问题"><a href="#环境-amp-一些问题" class="headerlink" title="环境 &amp; 一些问题"></a>环境 &amp; 一些问题</h2><p>题目的附件可以在<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/Kqueue">官方题目仓库</a>里找到</p>
+<h2 id="环境-一些问题">环境 &amp; 一些问题</h2>
+<p>题目的附件可以在<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/teambi0s/InCTFi/tree/master/2021/Pwn/Kqueue">官方题目仓库</a>里找到</p>
 <p>需要注意的几件事情：</p>
 <ol>
-<li>题目的环境是用 buildroot，登陆用户名是 <code>ctf</code>，密码是 <code>kqueue</code>（可以在官方的 exp.py 里面找到）</li>
+<li>题目的环境是用 buildroot，登陆用户名是 <code>ctf</code>，密码是 <code>kqueue</code>（可以在官方的 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://exp.py">exp.py</a> 里面找到）</li>
 <li>解包/重新打包 rootfs.cpio 的时候记得用 <strong>root</strong> 权限，不然启动的时候会有奇奇怪怪的权限或者文件丢失的问题</li>
 </ol>
-<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>qemu 启动参数</p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>qemu 启动参数</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
 
 <span class="token builtin class-name">exec</span> qemu-system-x86_64 <span class="token punctuation">\</span>
@@ -370,7 +371,6 @@
     -initrd <span class="token string">"./rootfs.cpio.pack"</span> <span class="token punctuation">\</span>
     -net user <span class="token punctuation">\</span>
     -net nic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>开启了 kaslr，关闭了 kpti，而且还没开启 SMAP，SMEP，意味着内核可以访问用户空间代码和数据，可以 ret2usr</p>
 <p>内核模块直接提供了源码</p>
 <p>题目创建了一个设备，可以对这个设备进行 ioctl 调用</p>
@@ -379,7 +379,6 @@
     <span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"kqueue"</span><span class="token punctuation">,</span>
     <span class="token punctuation">.</span>fops <span class="token operator">=</span> <span class="token operator">&amp;</span>kqueue_fops<span class="token punctuation">,</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>ioctl 通过一个 <code>request_t</code> 结构体进行传参</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span><span class="token punctuation">&#123;</span>
     <span class="token class-name">uint32_t</span> max_entries<span class="token punctuation">;</span>
@@ -388,8 +387,6 @@
     <span class="token class-name">uint16_t</span> queue_idx<span class="token punctuation">;</span>
     <span class="token keyword">char</span><span class="token operator">*</span> data<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token class-name">request_t</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 <p>此外通过 <code>cmd</code> 参数分别实现管理多个队列的增删改查</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">kqueue_ioctl</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>file<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">int</span> cmd<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
 
@@ -425,7 +422,6 @@ ret<span class="token operator">:</span>
     <span class="token function">mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>operations_lock<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> result<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>队列的存储结构体如下：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span><span class="token punctuation">&#123;</span>
     <span class="token class-name">uint16_t</span> data_size<span class="token punctuation">;</span>
@@ -440,7 +436,6 @@ ret<span class="token operator">:</span>
     <span class="token keyword">char</span> <span class="token operator">*</span>data<span class="token punctuation">;</span>
     queue_entry <span class="token operator">*</span>next<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>create 操作：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">create_kqueue</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token keyword">long</span> result <span class="token operator">=</span> INVALID<span class="token punctuation">;</span>
@@ -522,7 +517,6 @@ ret<span class="token operator">:</span>
     result <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> result<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>create 分配队列，queue 的 data 字段和每个 entry 的 data 字段，分配 data_size 大小的内存，所有entry 结构紧跟在 queue 后面，entry 之间还通过 next 指针链接起来，queue 指针存放到全局 kqueues 变量数组里，queue 的情况大致如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">queue(size &#x3D; sizeof(queue_entry) * (request.max_entries+1) + sizeof(queue)):
 	data_size
@@ -531,7 +525,6 @@ ret<span class="token operator">:</span>
     idx
     data
     struct queue_entry[max_entries];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>其中的 <code>__builtin_umulll_overflow(sizeof(queue_entry),(request.max_entries+1),&amp;space)</code> 的作用是 <code>space = sizeof(queue_entry) * (request.max_entries+1)</code>，并且乘法溢出的时候返回 true，后面的 <code>__builtin_saddll_overflow</code> 就是加法溢出检查了</p>
 <p>溢出检查存在一个问题，就是 <code>(request.max_entries+1)</code> 这里本身没有做溢出检查，使 <code>max_entries</code> 为 0xffffffff，那么加 1 溢出为0，最后计算出来 <code>queue_size = sizeof(queue)</code> 就不对了</p>
 <p>然后还有一个应该是出题人写错的地方，就是这个 <code>err</code> 是个函数：</p>
@@ -539,7 +532,6 @@ ret<span class="token operator">:</span>
     <span class="token function">printk</span><span class="token punctuation">(</span>KERN_ALERT <span class="token string">"%s\n"</span><span class="token punctuation">,</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>所有的检查失败都调用这个函数，但是<strong>这个函数并不会影响后面的流程，那么所有的参数检查都是无效的</strong>，因为这个问题，后面利用的时候比官方 wp 还要简单，应该是非预期了，如果 <code>err</code> 写成宏函数就没有问题了</p>
 <p>delete 操作只是把队列删掉了，指针也置 NULL 了，不过还有槽点，指针 free 后还要改写其指向内容，这会破坏堆管理吧（应该又是写错了）：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">delete_kqueue</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
@@ -557,7 +549,6 @@ ret<span class="token operator">:</span>
     kqueues<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>edit 操作:</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">edit_kqueue</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token comment">/* Check the idx of the kqueue */</span>
@@ -601,7 +592,6 @@ ret<span class="token operator">:</span>
         <span class="token keyword">return</span> NOT_EXISTS<span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>根据参数 queue_idx 选择队列，找到 entry_idx 对应的 entry 写入 data 指向的数据，需要注意的是 queue 结构体也有一个 data 字段，这个相当于 entry_idx 为 0 的 entry，可以算是头节点吧，没有什么漏洞点，但是这里也有个槽点，就是这个 request-&gt;data 可是用户地址空间的指针，要不是 SMAP 没开，<code>validate(memcpy(kqueue_entry-&gt;data,request.data,queue-&gt;data_size));</code> 就炸了</p>
 <p>save 操作：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> noinline <span class="token keyword">long</span> <span class="token function">save_kqueue_entries</span><span class="token punctuation">(</span><span class="token class-name">request_t</span> request<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
@@ -654,7 +644,6 @@ ret<span class="token operator">:</span>
     isSaved<span class="token punctuation">[</span>request<span class="token punctuation">.</span>queue_idx<span class="token punctuation">]</span> <span class="token operator">=</span> true<span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>save 操作把指定数量的 data 存放到新分配的大小为 <code>queue_size</code> 的内存里，然后这里有个漏洞点：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
     <span class="token comment">/* Each saved entry can have its own size */</span>
@@ -674,9 +663,10 @@ ret<span class="token operator">:</span>
         kqueue_entry <span class="token operator">=</span> kqueue_entry<span class="token operator">-></span>next<span class="token punctuation">;</span>
         new_queue <span class="token operator">+=</span> queue<span class="token operator">-></span>data_size<span class="token punctuation">;</span>
     <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>所有的 memcpy 使用的长度都是用户传递过来的 <code>request.data_size</code>，而参数检查里面只检查了 <code>request.data_size</code> 是否超过 <code>queue-&gt;queue_size</code>， 理应是 <code>if(request.data_size &gt; queue-&gt;data_size)</code>，这就存在一个堆溢出了 （<del>虽然参数检查一点用没有</del>）</p>
-<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>如果不考虑参数检查，利用方式非常简单，同时这也是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue"><strong>@arttnba3</strong></a> 师傅的做法</p>
+<p>所有的 memcpy 使用的长度都是用户传递过来的 <code>request.data_size</code>，而参数检查里面只检查了 <code>request.data_size</code> 是否超过 <code>queue-&gt;queue_size</code>， 理应是 <code>if(request.data_size &gt; queue-&gt;data_size)</code>，这就存在一个堆溢出了 （<s>虽然参数检查一点用没有</s>）</p>
+<h2 id="漏洞利用">漏洞利用</h2>
+<h3 id="方法一">方法一</h3>
+<p>如果不考虑参数检查，利用方式非常简单，同时这也是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue"><strong>@arttnba3</strong></a> 师傅的做法</p>
 <ol>
 <li>create 操作，利用 <code>request.max_entries=0xffffffff</code> 溢出，创造一个只有 0x18 大小的 queue，并且忽略参数检查，data_size 比 queue_size 大，后面 save 才能溢出</li>
 <li>堆喷射大量的 seq_operations，堆溢出后改写 seq_operations 的指针劫持程序执行流</li>
@@ -818,8 +808,8 @@ ret<span class="token operator">:</span>
 	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>如果要考虑参数检查，就当这个参数检查是有效的情况下，利用方式也很相似</p>
+<h3 id="方法二">方法二</h3>
+<p>如果要考虑参数检查，就当这个参数检查是有效的情况下，利用方式也很相似</p>
 <ol>
 <li>create，queue1，data_size=0x20</li>
 <li>create，queue2，max_entries=0xffffffff，queue_size=0x18，data_size=0x20，要求 queue2 后面紧跟的位置就是 queue1-&gt;data 或者 queue1_entries-&gt;data 的位置</li>
@@ -827,10 +817,11 @@ ret<span class="token operator">:</span>
 <li>堆喷射 file_operations</li>
 <li>save queue2，传递参数 max_entries=1，因为 queue2-&gt;max_entries 为 0xffffffff，所以检查是可以通过的，因为第一个 entry 已经伪造好了，data 指向许多 shellcode 指针，堆越界的时候有可能覆盖到 seq_operations 里，从而劫持程序执行流，后续操作就一样了</li>
 </ol>
-<p>这个思路是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-269031.htm">ScUpax0s师傅的 writeup 里的</a> </p>
+<p>这个思路是 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-269031.htm">ScUpax0s师傅的 writeup 里的</a></p>
 <p>具体操作起来，第一第二步可能会复杂一点，具体描述和 ScUpax0s 师傅的 writeup 有点不一样，大概是这个意思就行</p>
 <p>详细 exp 我就不再重复了，可以参考 ScUpax0s 师傅的 writeup</p>
-<h3 id="方法三？"><a href="#方法三？" class="headerlink" title="方法三？"></a>方法三？</h3><p>在前面的分析中，堆溢出的主要原因是 <em>参数检查里面只检查了 <code>request.data_size</code> 是否超过 <code>queue-&gt;queue_size</code> 而不是 <code>queue-&gt;data_size</code></em></p>
+<h3 id="方法三？">方法三？</h3>
+<p>在前面的分析中，堆溢出的主要原因是 <em>参数检查里面只检查了 <code>request.data_size</code> 是否超过 <code>queue-&gt;queue_size</code> 而不是 <code>queue-&gt;data_size</code></em></p>
 <p>所以 create 的加法溢出并不会对这个堆溢出有多大的影响，只是因为有这个洞的存在，使得 <code>new_queue</code> 分配的大小是 0x18，其相邻位置有概率是 0x20 大小的 seq_operations 结构体，方便了利用</p>
 <p>在这里提供一个堆溢出的想法：</p>
 <ol>
@@ -841,8 +832,9 @@ ret<span class="token operator">:</span>
 <p>通过控制 queue_size，可以控制 new_queue 堆内存的大小，再通过控制 edit，还有 save 时 request-&gt;max_entries，request-&gt;data_size，可以控制 new_queue 溢出的内容和长度</p>
 <p>需要的就是一个合适的结构体了，初步判断 tty_struct 不太行，因为 tty_struct 的 ops 字段之前还有一些比较重要的数据不能覆盖，而 ops 字段那个结构体在源码中也没找到在哪分配的，好像是固定的静态字段，官方 writeup 说的是堆喷 tty_struct，但 exp 确实 seq_operations 没懂啥情况</p>
 <p>才疏学浅，没想到能有哪些结构体能劫持一下，往后学习再看看</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue">https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue</a></li>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#%E4%BE%8B%E9%A2%98%EF%BC%9AInCTF2021-Kqueue">https://arttnba3.cn/2021/03/03/NOTE-0X03-LINUX-KERNEL-PWN-PART-II/#例题：InCTF2021-Kqueue</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-269031.htm">https://bbs.pediy.com/thread-269031.htm</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.bi0s.in/2021/08/17/Pwn/InCTFi21-Kqueue/">https://blog.bi0s.in/2021/08/17/Pwn/InCTFi21-Kqueue/</a></li>
 </ul>
@@ -937,13 +929,13 @@ ret<span class="token operator">:</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

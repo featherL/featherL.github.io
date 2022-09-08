@@ -213,7 +213,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -350,11 +350,13 @@
     <div class="post-body" itemprop="articleBody">
         <p>本文整理了第三周课程有关文件比较的笔记</p>
 <span id="more"></span>
-
-<h2 id="相关命令"><a href="#相关命令" class="headerlink" title="相关命令"></a>相关命令</h2><h3 id="cmp"><a href="#cmp" class="headerlink" title="cmp"></a>cmp</h3><p>该命令用法为：<code>cmp file1 file2</code></p>
+<h2 id="相关命令">相关命令</h2>
+<h3 id="cmp">cmp</h3>
+<p>该命令用法为：<code>cmp file1 file2</code></p>
 <p>该命令会逐字节比较两个文件的内容，当文件内容完全相同的时候，不给出任何的提示，也就是没有输出；当文件不同时，输出第一个不同的位置。</p>
 <p>（此命令类似Windows中的COMP命令）</p>
-<p>例：<br>有以下文件：</p>
+<p>例：<br>
+有以下文件：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test1.txt 
 aasd
 zxcaw
@@ -370,35 +372,33 @@ as
 $ <span class="token function">cat</span> test3.txt 
 <span class="token number">123</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>文件test1.txt和test2.txt内容相同</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cmp</span> test1.txt test2.txt 
 $ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <p>文件test1.txt和test3.txt内容不同</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cmp</span> test1.txt test3.txt 
 test1.txt test3.txt differ: byte <span class="token number">1</span>, line <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<h3 id="md5sum-sha1sum"><a href="#md5sum-sha1sum" class="headerlink" title="md5sum/sha1sum"></a>md5sum/sha1sum</h3><p>md5sum和sha1sum命令分别使用md5和sha-1算法生成文件的hash值，其中md5sum生成16字节hash值，sha1sum生成20字节hash值，通过比较hash值是否相同即可判断文件内容是否相同。</p>
+<h3 id="md5sum-sha1sum">md5sum/sha1sum</h3>
+<p>md5sum和sha1sum命令分别使用md5和sha-1算法生成文件的hash值，其中md5sum生成16字节hash值，sha1sum生成20字节hash值，通过比较hash值是否相同即可判断文件内容是否相同。</p>
 <p>使用方法（以md5sum为例）：</p>
 <ul>
 <li><code>md5sum file1 file2 file3 ...</code> 计算文件的hash值</li>
 <li><code>md5sum file1 &gt; test.sum</code>  将生成的test.sum文件放到另一台计算机上运行命令：<code>md5sum -c test.sum</code> 即可验证文件file1的完整性</li>
 </ul>
-<p>例：<br>计算上面提到的三个文件的hash值</p>
+<p>例：<br>
+计算上面提到的三个文件的hash值</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ md5sum test1.txt test2.txt test3.txt 
 d08a81eeaf86e095fa5fbbbcb6936344  test1.txt
 d08a81eeaf86e095fa5fbbbcb6936344  test2.txt
 ba1f2511fc30423bdbb183fe33f3dd0f  test3.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>验证文件的完整性</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ md5sum test1.txt test2.txt test3.txt <span class="token operator">></span> test.sum
 $ md5sum -c test.sum 
 test1.txt: OK
 test2.txt: OK
 test3.txt: OK<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h3><p>此命令用于找出两个文件的差别</p>
+<h3 id="diff">diff</h3>
+<p>此命令用于找出两个文件的差别</p>
 <p>基本用法：</p>
 <ul>
 <li><code>diff file1 file2</code> 使用normal格式输出</li>
@@ -411,7 +411,8 @@ test3.txt: OK<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 <li>d — delete 删除</li>
 </ul>
 <p>指令字母左边的行号是file1的行号，右面是file2的行号，列出内容的时候，大于号<code>&gt;</code>右边的内容是需要在file1文件中增加的内容；小于号<code>&lt;</code>右边的内容是需要从file1文件中删除的内容</p>
-<p> 举个例子：<br> 现有以下文件：</p>
+<p>举个例子：<br>
+现有以下文件：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> <span class="token number">1</span>.txt 
 feather
 feather
@@ -428,7 +429,6 @@ feather
 LInux
 hello
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>使用diff命令得到输出：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">diff</span> <span class="token number">1</span>.txt <span class="token number">2</span>.txt 
 3d2
@@ -440,22 +440,18 @@ hello
 ---
 <span class="token operator">></span> LInux
 <span class="token operator">></span> hello<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>删除文件file1第3行的内容<code>Lee</code>可得到文件file2的第2行，对应指令为：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">3d2
 <span class="token operator">&lt;</span> Lee<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <p>在文件file1的第4行添加内容<code>abc</code>可以得到文件file2的第4行，对应指令为：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">4a4
 <span class="token operator">></span> abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <p>修改文件file1的第6行可变为file2的第6，7行，对应指令为：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">6c6,7
 <span class="token operator">&lt;</span> Linux
 ---
 <span class="token operator">></span> LInux
 <span class="token operator">></span> hello<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>至于unified格式，这种格式和git版本管理使用的文件比较的输出类似，不详谈。</p>
 <p><strong>重要应用</strong>：基于文件比较可以实现版本管理系统</p>
 
@@ -549,13 +545,13 @@ hello
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

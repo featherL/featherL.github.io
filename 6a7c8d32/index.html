@@ -216,7 +216,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -353,8 +353,9 @@
     <div class="post-body" itemprop="articleBody">
         <p>（太难了这周，缩圈效果极佳）</p>
 <span id="more"></span>
-
-<h2 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h2><h3 id="easyVM"><a href="#easyVM" class="headerlink" title="easyVM"></a>easyVM</h3><p>简单处理下后，这题把你的输入经过一个虚拟机的操作变化后，与设定的结果比较，一致则成功，输入就是flag</p>
+<h2 id="Re">Re</h2>
+<h3 id="easyVM">easyVM</h3>
+<p>简单处理下后，这题把你的输入经过一个虚拟机的操作变化后，与设定的结果比较，一致则成功，输入就是flag</p>
 <p><img src="/images/6a7c8d32/re-1-2.png" alt="2"></p>
 <p>虚拟机执行的指令如下：</p>
 <p><img src="/images/6a7c8d32/re-1-1.png" alt="1"></p>
@@ -375,10 +376,13 @@ s2 <span class="token operator">=</span> <span class="token builtin">bytes</span
 flag <span class="token operator">=</span> xor<span class="token punctuation">(</span>s1<span class="token punctuation">,</span> s2<span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="ROP-LEVEL5"><a href="#ROP-LEVEL5" class="headerlink" title="ROP_LEVEL5"></a>ROP_LEVEL5</h3><p>32位程序，没有输出流，没法leak，然后了解到一个不用leak的技术！——ret2dlresolve<br>比较难，涉及到一个延迟绑定的概念，这里就贴两篇文章参考：</p>
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/elvirangel/p/8994799.html">https://www.cnblogs.com/elvirangel/p/8994799.html</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://pwn4.fun/2016/11/09/Return-to-dl-resolve/">http://pwn4.fun/2016/11/09/Return-to-dl-resolve/</a></p>
+<h2 id="Pwn">Pwn</h2>
+<h3 id="ROP-LEVEL5">ROP_LEVEL5</h3>
+<p>32位程序，没有输出流，没法leak，然后了解到一个不用leak的技术！——ret2dlresolve<br>
+比较难，涉及到一个延迟绑定的概念，这里就贴两篇文章参考：</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/elvirangel/p/8994799.html">https://www.cnblogs.com/elvirangel/p/8994799.html</a><br>
+<a target="_blank" rel="external nofollow noopener noreferrer" href="http://pwn4.fun/2016/11/09/Return-to-dl-resolve/">http://pwn4.fun/2016/11/09/Return-to-dl-resolve/</a></p>
 <p>我的exp如下，可以结合文章和我的注释看看：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
 <span class="token comment">#coding=utf8</span>
@@ -471,9 +475,9 @@ payload <span class="token operator">+=</span> bin_sh_str
 io<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h3 id="Annevi-Note2"><a href="#Annevi-Note2" class="headerlink" title="Annevi_Note2"></a>Annevi_Note2</h3><p>其实这题和week3的Annevi_Note差不多，唯一的区别就是关闭了标准输出，没法leak。</p>
+<h3 id="Annevi-Note2">Annevi_Note2</h3>
+<p>其实这题和week3的Annevi_Note差不多，唯一的区别就是关闭了标准输出，没法leak。</p>
 <p>查到资料了解到，bss段最开头有三个全局变量（有时候是两个）：stdin，stdout，stderr</p>
 <p>这三个全局变量是IO_FILE结构体的指针，详细的就不说了（毕竟我还没学完），特别注意的是，printf函数使用的是stdout这个指针（puts函数呢不使用这个），因为关闭的是stdout，stderr没有被关闭，可以修改stdout这个指针的值为stderr的值，这样printf函数的输出就可以接收到了，而且程序中的show的处理就是用printf的。</p>
 <p>stdout和stderr的值其实只有12bit之差，而且因为libc的基址最低12bit必定全为0（这大概是物理页对齐为0x1000的原因），所以stdin和stderr的最低12bit是完全固定的，就是偏移量的最低12bit。</p>
@@ -573,9 +577,9 @@ io<span class="token punctuation">.</span>sendline<span class="token punctuation
 
 <span class="token comment">#gdb.attach(io)</span>
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这周又学习了新的pwn技术，曾经无比渴望的二进制方向，现在我也可以算是踏出小小一脚入门了，路还长，继续加油！</p>
+<h2 id="总结">总结</h2>
+<p>这周又学习了新的pwn技术，曾经无比渴望的二进制方向，现在我也可以算是踏出小小一脚入门了，路还长，继续加油！</p>
 
     </div>
 
@@ -666,13 +670,13 @@ io<span class="token punctuation">.</span>interactive<span class="token punctuat
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

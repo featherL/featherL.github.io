@@ -215,7 +215,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -352,25 +352,30 @@
     <div class="post-body" itemprop="articleBody">
         <p>本文整理了vi编辑其使用方法和常见的问题</p>
 <span id="more"></span>
-
 <p>vi用于编辑文件，它有一个增强版命令叫vim，语法上vim是兼容vi的，只需要学习好vi就基本可以使用vim了，下面是整理到的笔记</p>
-<h3 id="用户配置文件"><a href="#用户配置文件" class="headerlink" title="用户配置文件"></a>用户配置文件</h3><p>用户的HOME目录下，存在一个.exrc文件（每个用户独立配置），在里面可以配置vi编辑器的一些偏好设置，比如是否显示行号，制表符的长度等等。</p>
+<h3 id="用户配置文件">用户配置文件</h3>
+<p>用户的HOME目录下，存在一个.exrc文件（每个用户独立配置），在里面可以配置vi编辑器的一些偏好设置，比如是否显示行号，制表符的长度等等。</p>
 <p>最常用的配置为：</p>
 <ul>
 <li>set number  # 显示行号</li>
 <li>set tabstop=4  # 制表符长度为4</li>
 </ul>
 <p>这里不详细记录其它配置</p>
-<h3 id="工作状态"><a href="#工作状态" class="headerlink" title="工作状态"></a>工作状态</h3><p>vi有两种工作状态，分别为<strong>命令状态</strong>（启动时进入此状态）和<strong>文本状态</strong>。</p>
+<h3 id="工作状态">工作状态</h3>
+<p>vi有两种工作状态，分别为<strong>命令状态</strong>（启动时进入此状态）和<strong>文本状态</strong>。</p>
 <p>在命令状态下，键盘输入解释成命令，<strong>按键无回显</strong>；输入冒号<code>:</code>后，可以输入<strong>行编辑命令</strong>（与不输入冒号<code>:</code>的命令是不一样的），<strong>按键有回显</strong>，按下回车键后才执行；i和a命令可以进入文本状态</p>
 <p>在文本状态下，键盘输入解释为输入的文本，<strong>按键有回显</strong>，按下<strong>Esc</strong>键可以回到命令状态</p>
-<p>课程中的一幅形象的图：<br><img src="/images/e411af14/1.png" alt="vi工作状态"></p>
-<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><h4 id="编辑"><a href="#编辑" class="headerlink" title="编辑"></a>编辑</h4><p>可以使用以下两个编辑命令来进入文本状态：</p>
+<p>课程中的一幅形象的图：<br>
+<img src="/images/e411af14/1.png" alt="vi工作状态"></p>
+<h3 id="命令">命令</h3>
+<h4 id="编辑">编辑</h4>
+<p>可以使用以下两个编辑命令来进入文本状态：</p>
 <ul>
 <li><code>i</code> i是insert的缩写，意思是插入，在光标位置之前插入字符</li>
 <li><code>a</code> a是append的缩写，意思是附加，在光标位置之后追加字符</li>
 </ul>
-<h4 id="光标移动"><a href="#光标移动" class="headerlink" title="光标移动"></a>光标移动</h4><p>在<strong>命令状态</strong>下，使用以下命令来移动光标：</p>
+<h4 id="光标移动">光标移动</h4>
+<p>在<strong>命令状态</strong>下，使用以下命令来移动光标：</p>
 <ul>
 <li><code>h</code> 左</li>
 <li><code>j</code> 下</li>
@@ -381,16 +386,19 @@
 <p>命令前加一个整数，表示这个命令连续执行多少遍，如：</p>
 <ul>
 <li><code>5h</code> 左移5列</li>
-<li><code>6j</code> 下移6行<br>…</li>
+<li><code>6j</code> 下移6行<br>
+…</li>
 </ul>
-<h4 id="翻页"><a href="#翻页" class="headerlink" title="翻页"></a>翻页</h4><p>翻页使用的命令为：</p>
+<h4 id="翻页">翻页</h4>
+<p>翻页使用的命令为：</p>
 <ul>
 <li><code>Ctrl-b</code> （按下Ctrl键和b键，不是输入Ctrl-b） 向后翻页 （字母b是backward的缩写，后退）</li>
 <li><code>Ctrl-f</code> 向前翻页 （字母f是forward的缩写，前进）</li>
 </ul>
 <p>一般可以使用PgDn键（Page Down）代替Ctrl-f，用PgUp键（Page Up）代替Ctrl-b</p>
 <p>也可以在命令前加上整数表示执行的次数，如：<code>6Ctrl-f</code>表示向前翻6页</p>
-<h4 id="光标行内快速移动"><a href="#光标行内快速移动" class="headerlink" title="光标行内快速移动"></a>光标行内快速移动</h4><p>在行内快速移动光标的命令主要有以下几个：</p>
+<h4 id="光标行内快速移动">光标行内快速移动</h4>
+<p>在行内快速移动光标的命令主要有以下几个：</p>
 <ul>
 <li><code>^</code> 移动光标至行首</li>
 <li><code>$</code> 移动光标至行尾</li>
@@ -398,56 +406,67 @@
 <li><code>b</code> 作移一个单词</li>
 </ul>
 <p>命令前加上整数的方式同样适用</p>
-<h4 id="移动光标到指定行"><a href="#移动光标到指定行" class="headerlink" title="移动光标到指定行"></a>移动光标到指定行</h4><ul>
+<h4 id="移动光标到指定行">移动光标到指定行</h4>
+<ul>
 <li><code>:123</code> 将光标定位至123行</li>
 <li><code>:$</code> 将光标定位至文件尾，即最后一行</li>
 <li>描述行号时，<code>$</code>表示最后一行，圆点<code>.</code>表示当前行</li>
 <li>将光标移动到一个括号上，按下<code>%</code>键可将光标定位至该括号匹配的括号上</li>
 </ul>
-<h4 id="其它常用命令"><a href="#其它常用命令" class="headerlink" title="其它常用命令"></a>其它常用命令</h4><p>这里列出其它常用的命令：</p>
+<h4 id="其它常用命令">其它常用命令</h4>
+<p>这里列出其它常用的命令：</p>
 <ul>
-<li>删除命令：<ul>
+<li>删除命令：
+<ul>
 <li><code>x</code> 删除当前光标处的一个字符，<code>5x</code>表示删除从当前光标开始的5个字符</li>
 <li><code>dd</code> 删除当前行，<code>3dd</code>表示删除从当前行开始的3行</li>
 </ul>
 </li>
 <li><code>r</code> 替换字符，<code>ra</code>表示将当前光标处的字符替换成a</li>
-<li>撤销与重复：<ul>
-<li><code>u</code> 撤销上一次编辑操作    </li>
+<li>撤销与重复：
+<ul>
+<li><code>u</code> 撤销上一次编辑操作</li>
 <li>圆点键<code>.</code> 重复上一次编辑操作</li>
 </ul>
 </li>
-<li>存盘：<ul>
+<li>存盘：
+<ul>
 <li><code>ZZ</code> 存盘退出</li>
 <li><code>:wq</code> 存盘退出</li>
 <li><code>:w</code> 存盘</li>
 <li><code>:q!</code> 不存盘退出</li>
 </ul>
 </li>
-<li>读取文件：<ul>
+<li>读取文件：
+<ul>
 <li><code>:r file</code> 读入文件file的内容插入到当前行之后</li>
 </ul>
 </li>
-<li>写入文件：<ul>
+<li>写入文件：
+<ul>
 <li><code>:50,$w file</code> 把第50行到文件尾的内容写到file中</li>
 <li><code>:50,$w! file</code> 同上，且强制覆盖</li>
 </ul>
 </li>
-<li>剪贴板相关：<ul>
-<li>剪切：<ul>
+<li>剪贴板相关：
+<ul>
+<li>剪切：
+<ul>
 <li><code>:10,50d</code> 剪切第10～50行</li>
 <li><code>:1,.d</code> 剪切文件首至当前行</li>
 <li><code>:.,$d</code> 剪切整个文件</li>
 </ul>
 </li>
-<li>拷贝：<ul>
+<li>拷贝：
+<ul>
 <li><code>:10,50y</code> 拷贝10～50行</li>
 </ul>
 </li>
 <li><code>p</code> 粘贴</li>
 </ul>
 </li>
-<li>块操作：<ul>
+<li>块操作：
+<ul>
 <li><code>:5,10co56</code>复制第5～10行到第56行下</li>
 <li><code>:8,34m78</code> 移动第8～34行到第78行下</li>
 </ul>
@@ -456,10 +475,12 @@
 <li><code>Ctrl-l</code> 刷行屏幕显示，字母l是load的缩写，译为“加载”</li>
 <li><code>Ctrl-g</code> 状态显示，在屏幕最下面一行列出正在编辑的文件的名字，总行数，当前行号，文件是否被修改过等信息</li>
 </ul>
-<h3 id="模式查找"><a href="#模式查找" class="headerlink" title="模式查找"></a>模式查找</h3><p>这里将模式查找相关的操作独立写出来。</p>
+<h3 id="模式查找">模式查找</h3>
+<p>这里将模式查找相关的操作独立写出来。</p>
 <p>vi使用正则表达式来描述一个字符串模式</p>
 <p>查找命令格式为：<code>/pattern</code>，如<code>/[0-9][0-9]*</code>表示查找数字；按下<code>n</code>可以向下继续查找，<code>N</code>则表示向上查找，当查找遇到文件尾则回到文件头继续搜索</p>
-<h4 id="替换命令"><a href="#替换命令" class="headerlink" title="替换命令"></a>替换命令</h4><p>还可以使用模式查找来替换字符串，格式为：<code>:n1,n2s/pattern/string/flags</code></p>
+<h4 id="替换命令">替换命令</h4>
+<p>还可以使用模式查找来替换字符串，格式为：<code>:n1,n2s/pattern/string/flags</code></p>
 <p>其中flags是选项，经查阅，flags有以下四个选项：</p>
 <ul>
 <li>c （confirm的缩写） 每次替换前询问</li>
@@ -474,20 +495,26 @@
 <li><code>:50,80s/^/    /</code> 将第50～80行右移4列（缩进）</li>
 <li><code>:1,$s/ *$//</code> 消除行尾多余空格</li>
 </ul>
-<p>转义符用<code>\</code>，分隔符不一定要使用<code>/</code>，可以使用<code>:</code>、<code>^</code>等，举例如下：<br>将buf.len/1000替换成buffer.size/1024可用以下的命令：</p>
+<p>转义符用<code>\</code>，分隔符不一定要使用<code>/</code>，可以使用<code>:</code>、<code>^</code>等，举例如下：<br>
+将buf.len/1000替换成buffer.size/1024可用以下的命令：</p>
 <ul>
 <li><code>:1,$s/buf\.len\/1000/buffer.size\/1024/g</code></li>
 <li><code>1,$s:buf\.len/1000:buffer.size/1024:g</code></li>
 <li><code>1,$s^buf\.len/1000^buffer.size/1024^g</code></li>
 </ul>
-<h4 id="和"><a href="#和" class="headerlink" title="\(和\)"></a><code>\(</code>和<code>\)</code></h4><p>在模式描述中增加<code>\(</code>和<code>\)</code>不影响匹配操作，但是替换字符串的时候可以使用<code>\1</code>，<code>\2</code>，<code>\3</code>等表示第一对<code>\(</code>和<code>\)</code>之间匹配到的内容，第二对，第三对……，<code>\0</code>表示匹配到的整个字符串</p>
-<p>例如，替换C语言源程序文件中格式如“变量名-&gt;number”的字符串替换成“变量名-&gt;num”的格式，使用如下命令：<br><code>:1,$s/\([a-zA-Z][a-zA-Z0-9]*\)-&gt;number/\1-&gt;num/g</code></p>
+<h4 id="和"><code>\(</code>和<code>\)</code></h4>
+<p>在模式描述中增加<code>\(</code>和<code>\)</code>不影响匹配操作，但是替换字符串的时候可以使用<code>\1</code>，<code>\2</code>，<code>\3</code>等表示第一对<code>\(</code>和<code>\)</code>之间匹配到的内容，第二对，第三对……，<code>\0</code>表示匹配到的整个字符串</p>
+<p>例如，替换C语言源程序文件中格式如“变量名-&gt;number”的字符串替换成“变量名-&gt;num”的格式，使用如下命令：<br>
+<code>:1,$s/\([a-zA-Z][a-zA-Z0-9]*\)-&gt;number/\1-&gt;num/g</code></p>
 <p>–</p>
-<h2 id="疑难杂症"><a href="#疑难杂症" class="headerlink" title="疑难杂症"></a>疑难杂症</h2><h3 id="“死机”问题"><a href="#“死机”问题" class="headerlink" title="“死机”问题"></a>“死机”问题</h3><p>记录下刚开始使用vi/vim，因为不熟悉，可能导致“死机”的解决方式。</p>
+<h2 id="疑难杂症">疑难杂症</h2>
+<h3 id="“死机”问题">“死机”问题</h3>
+<p>记录下刚开始使用vi/vim，因为不熟悉，可能导致“死机”的解决方式。</p>
 <p>“死机”症状：vi编辑完后执行存盘操作，结果屏幕卡死，输入任何信息都没有响应</p>
 <p>原因：vi编辑结束后按下Ctrl-S（大部分Windows编辑器的保存按键），Linux进入流量控制状态</p>
 <p>解决方法：按下Ctrl-Q键解除流量控制</p>
-<h4 id="RS232接口连接主机和终端时的流量控制方案"><a href="#RS232接口连接主机和终端时的流量控制方案" class="headerlink" title="RS232接口连接主机和终端时的流量控制方案"></a>RS232接口连接主机和终端时的流量控制方案</h4><p>源自历史原因，以前会出现终端显示速度跟不上主机发送的速度的现象，因为主机送来的数据打印出来的速度较慢，或者需要将屏幕显示的内容暂停显示来仔细分析，所以此时需要一种机制来控制主机发来的数据流量</p>
+<h4 id="RS232接口连接主机和终端时的流量控制方案">RS232接口连接主机和终端时的流量控制方案</h4>
+<p>源自历史原因，以前会出现终端显示速度跟不上主机发送的速度的现象，因为主机送来的数据打印出来的速度较慢，或者需要将屏幕显示的内容暂停显示来仔细分析，所以此时需要一种机制来控制主机发来的数据流量</p>
 <p>有两种控制方法：</p>
 <ul>
 <li>硬件方式：使用RS232接口的CTS信号线（Clear To Send），但缺点是：需要在电缆中增加一条通信线</li>
@@ -496,21 +523,31 @@
 <p>而Ctrl-S按键发送Xon字符，Ctrl-Q按键发送Xoff字符</p>
 <p>但是到了如今，网络虚拟终端在主机和终端之间使用TCP协议，TCP协议本身有流量控制的功能，终端显示速度落后于数据生成速度可以由TCP解决，而且如今因网速太快和缓冲等，很难将信息暂停到感兴趣的位置，故手动Xon/Xoff控制流量已经没什么用处了，但为了与历史机制的兼容仍保留了此机制。</p>
 <hr>
-<h3 id="“意外中止”问题"><a href="#“意外中止”问题" class="headerlink" title="“意外中止”问题"></a>“意外中止”问题</h3><p>症状：vi编辑结束后存盘，程序“意外中止”，且编辑成果丢失</p>
+<h3 id="“意外中止”问题">“意外中止”问题</h3>
+<p>症状：vi编辑结束后存盘，程序“意外中止”，且编辑成果丢失</p>
 <p>原因：vi存盘命令ZZ按键为Shift-zz，误操作为Ctrl-zz，而Ctrl-z按键导致当前运行进程被<strong>挂起</strong>，进程暂停运行</p>
-<p>解决方法：<br>    恢复进程运行即可，jobs命令可以查看当前bash后台的进程（作业）列表，使用如下命令可以恢复：<br>    + fg %1 将1号作业恢复到前台运行<br>    + %1 将1号作业恢复到前台运行</p>
-<h3 id="退格键无法使用的问题"><a href="#退格键无法使用的问题" class="headerlink" title="退格键无法使用的问题"></a>退格键无法使用的问题</h3><p>症状：bash命令输入时，Backspace键可用，但是，运行自己写的程序时Backspace键无法正常使用</p>
+<p>解决方法：<br>
+恢复进程运行即可，jobs命令可以查看当前bash后台的进程（作业）列表，使用如下命令可以恢复：<br>
++ fg %1 将1号作业恢复到前台运行<br>
++ %1 将1号作业恢复到前台运行</p>
+<h3 id="退格键无法使用的问题">退格键无法使用的问题</h3>
+<p>症状：bash命令输入时，Backspace键可用，但是，运行自己写的程序时Backspace键无法正常使用</p>
 <p>原因：当前终端的“行律”设置不正确</p>
-<p>解决方法：<br>    Backspace按键对应的ASCII码是控制字符Ctrl-H，执行<code>stty erase ^H</code>，设定行律模块把Ctrl-H为删除符，以后Ctrl-H和Backspace都可以做删除。如果需要，把命令放到<code>$HOME/.bash_profile</code>中<br>    <code>stty -a</code>可以了解终端行律的状态</p>
+<p>解决方法：<br>
+Backspace按键对应的ASCII码是控制字符Ctrl-H，执行<code>stty erase ^H</code>，设定行律模块把Ctrl-H为删除符，以后Ctrl-H和Backspace都可以做删除。如果需要，把命令放到<code>$HOME/.bash_profile</code>中<br>
+<code>stty -a</code>可以了解终端行律的状态</p>
 <hr>
-<h3 id="乱码问题"><a href="#乱码问题" class="headerlink" title="乱码问题"></a>乱码问题</h3><h4 id="屏幕显示乱码"><a href="#屏幕显示乱码" class="headerlink" title="屏幕显示乱码"></a>屏幕显示乱码</h4><p>症状：<code>cat /bin/bash</code>或<code>head -n 1 /bin/bash</code>导致屏幕乱码，键盘输入也只能看到画表用的制表符</p>
+<h3 id="乱码问题">乱码问题</h3>
+<h4 id="屏幕显示乱码">屏幕显示乱码</h4>
+<p>症状：<code>cat /bin/bash</code>或<code>head -n 1 /bin/bash</code>导致屏幕乱码，键盘输入也只能看到画表用的制表符</p>
 <p>原因：/bin/bash文件不是文本文件，这些二进制内容逐字节送到终端，凑巧一个序列被终端理解为一个转义序列，执行动作，修改了终端字符集</p>
 <p>解决方法：</p>
 <ul>
 <li>断开连接，重复登录</li>
 <li>注意不要把非文本信息在终端输出</li>
 </ul>
-<h4 id="文本文件格式问题"><a href="#文本文件格式问题" class="headerlink" title="文本文件格式问题"></a>文本文件格式问题</h4><p>症状：Linux下的文本文件在Windows用notepad（记事本）打开，所有内容粘在一行</p>
+<h4 id="文本文件格式问题">文本文件格式问题</h4>
+<p>症状：Linux下的文本文件在Windows用notepad（记事本）打开，所有内容粘在一行</p>
 <p>原因：Linux和Windows的文本文件的存储格式不同</p>
 <p>解决方法：在Linux完成格式转换后再用Windows处理，或者用Windows中可容忍Linux文本文件格式的其它编辑器</p>
 <p>文本文件的存储格式：</p>
@@ -519,7 +556,8 @@
 <li>Windows：行尾处存回车和换行符 \r\n</li>
 </ul>
 <p>相关命令：dos2unix/unix2dos，todos/frodos、file（查看文件数据类型）</p>
-<h4 id="中文编码问题"><a href="#中文编码问题" class="headerlink" title="中文编码问题"></a>中文编码问题</h4><p>症状：从Windows迁来的文件，只有在显示中文字符时是乱码。Linux本生的中文信息正常显示</p>
+<h4 id="中文编码问题">中文编码问题</h4>
+<p>症状：从Windows迁来的文件，只有在显示中文字符时是乱码。Linux本生的中文信息正常显示</p>
 <p>原因：中文字符集GBK和UTF8不兼容，Windows使用GBK，而Linux使用UTF8</p>
 <p>GBK编码：Windows默认中文编码方案，两个字节表示一个汉字，字节的最高位为1，以区别ASCII码（最高位为0）</p>
 <p>UTF8编码：众多Linux默认中文编码方案，三个字节表示一个汉字，字节的最高位为1</p>
@@ -528,7 +566,8 @@
 <li><code>iconv -f gbk -t utf8 file1 -o file2</code> 从gbk转换到utf8</li>
 <li><code>iconv -f utf8 -t gbk file1 -o file2</code> 从utf8转换到gbk</li>
 </ul>
-<h4 id="终端乱码"><a href="#终端乱码" class="headerlink" title="终端乱码"></a>终端乱码</h4><p>症状：终端中文显示乱码</p>
+<h4 id="终端乱码">终端乱码</h4>
+<p>症状：终端中文显示乱码</p>
 <p>原因：还是字符集的问题</p>
 <p>解决方法：调整终端仿真软件的终端类型和字符编码，具体方式与所用的软件有关</p>
 
@@ -622,13 +661,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -217,7 +217,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -345,17 +345,18 @@
     <div class="post-body" itemprop="articleBody">
         <p>这篇文章的起因是：本人笔记本电脑的硬盘太小了，换了个大的，需要重新配置系统（manjaro），重新虚拟机环境过于繁琐且没必要，于是乎考虑直接迁移虚拟机</p>
 <span id="more"></span>
-
 <blockquote>
-<p><del>其实有一个非常粗暴的方法，直接把相关目录全拷贝一遍就好了</del></p>
+<p><s>其实有一个非常粗暴的方法，直接把相关目录全拷贝一遍就好了</s></p>
 </blockquote>
-<h2 id="一些前提"><a href="#一些前提" class="headerlink" title="一些前提"></a>一些前提</h2><p>这篇文章是基于笔者的笔记本环境的，其中的一些操作要根据读者实际情况自行调整</p>
+<h2 id="一些前提">一些前提</h2>
+<p>这篇文章是基于笔者的笔记本环境的，其中的一些操作要根据读者实际情况自行调整</p>
 <ul>
 <li>系统：manjaro linux</li>
 <li>分区情况：<code>/</code> 和 <code>/home</code> 独立分区，之后打算虚拟机放到 <code>/home</code> 分区里，主要考虑到了重装系统，重装系统也只要覆盖根分区就好了，只需要简单调整下配置就能无缝衔接了</li>
-<li>虚拟机环境：由 libvirt 工具管理的 kvm 虚拟机，一个 windows 10 ，一个 ubuntu 20.04（<del>不要问为什么主系统是 linux 还要配虚拟机 ubuntu</del>）</li>
+<li>虚拟机环境：由 libvirt 工具管理的 kvm 虚拟机，一个 windows 10 ，一个 ubuntu 20.04（<s>不要问为什么主系统是 linux 还要配虚拟机 ubuntu</s>）</li>
 </ul>
-<h2 id="备份虚拟机"><a href="#备份虚拟机" class="headerlink" title="备份虚拟机"></a>备份虚拟机</h2><blockquote>
+<h2 id="备份虚拟机">备份虚拟机</h2>
+<blockquote>
 <p>因为笔者的笔记本只有一个硬盘插槽，所以在换硬盘前得做好虚拟机的备份</p>
 </blockquote>
 <p><strong>首先</strong>，要备份的虚拟机首先要处于<strong>关机</strong>状态，其他情况本文不考虑</p>
@@ -366,40 +367,35 @@
 </blockquote>
 <p><strong>然后</strong>，备份虚拟机的<strong>硬盘镜像文件</strong>，虚拟机的镜像存储在 <code>/var/lib/libvirt/images/</code> 目录下，把对应虚拟机的镜像备份好就行，例</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">cp</span> /var/lib/libvirt/images/ubuntu20.04.qcow2 <span class="token variable">$backup</span>/ubuntu/ubuntu20.04.qcow2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-
 <blockquote>
-<p>在这一步，突然意识到了问题，就是原有的盘存储空间不足以再存放一份镜像，并且笔者的 U 盘也无法存储足足有 100G 的镜像文件，直接上传到云盘上得等到猴年马月<br>于是乎马上下单外置硬盘盒，打算换好新硬盘装完系统后，直接把旧的硬盘插硬盘盒里接上电脑用，所以这一步笔者其实是直接从外置硬盘拷贝到换好新硬盘的笔记本上的</p>
+<p>在这一步，突然意识到了问题，就是原有的盘存储空间不足以再存放一份镜像，并且笔者的 U 盘也无法存储足足有 100G 的镜像文件，直接上传到云盘上得等到猴年马月<br>
+于是乎马上下单外置硬盘盒，打算换好新硬盘装完系统后，直接把旧的硬盘插硬盘盒里接上电脑用，所以这一步笔者其实是直接从外置硬盘拷贝到换好新硬盘的笔记本上的</p>
 </blockquote>
 <p><strong>最后</strong>，理论上第三步就做好了，<strong>但是</strong>，<strong>虚拟机快照</strong>还没有备份，如果读者不需要备份虚拟机快照可以跳过这一步</p>
 <p>笔者虚拟机使用的硬盘镜像格式都是 <strong>qcow2</strong>，快照是记录在镜像里的，使用如下命令查看：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">qemu-img snapshot -l xxx.qcow2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p><img src="/images/8c042604/pasted-0.png" alt="snapshot1"></p>
 <p>第一步已经备份好了镜像，那么快照是不是也备份好了呢？</p>
 <p>是，也<strong>不完全是</strong>，对于镜像而言，快照就存储在镜像里，但是 libvirt 工具并不知道这些快照的状态，就是处于这些快照的时候，<strong>配置文件</strong>是什么样的无法通过镜像文件得知，所以还需要备份这些快照的配置文件</p>
-<p>这些快照文件存储在 <code>/var/lib/libvirt/qemu/snapshot</code> 目录下：<br><img src="/images/8c042604/pasted-1.png" alt="snapshot2"></p>
+<p>这些快照文件存储在 <code>/var/lib/libvirt/qemu/snapshot</code> 目录下：<br>
+<img src="/images/8c042604/pasted-1.png" alt="snapshot2"></p>
 <p>由于全部虚拟机都要迁移，所以直接备份整个目录就行了</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">cp</span> -r /var/lib/libvirt/qemu/snapshot <span class="token variable">$backup</span>/snapshot<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<h2 id="恢复虚拟机"><a href="#恢复虚拟机" class="headerlink" title="恢复虚拟机"></a>恢复虚拟机</h2><p>在上一步中备份好了虚拟机，然后把 $backup 的内容都拷贝到了新硬盘的 <code>$HOME/virtualmachine</code> 目录下，接下来就是恢复虚拟机了</p>
+<h2 id="恢复虚拟机">恢复虚拟机</h2>
+<p>在上一步中备份好了虚拟机，然后把 $backup 的内容都拷贝到了新硬盘的 <code>$HOME/virtualmachine</code> 目录下，接下来就是恢复虚拟机了</p>
 <p><strong>第一歩</strong>，导入虚拟机配置</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">virsh</span> define --file <span class="token environment constant">$HOME</span>/virtualmachine/ubuntu/ubuntu20.04.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p><strong>第二步</strong>，恢复镜像</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">cp</span> <span class="token environment constant">$HOME</span>/virtualmachine/ubuntu/ubuntu20.04.qcow2 /var/lib/libvirt/images/ubuntu20.04.qcow2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>笔者并不打算把虚拟机拷贝到根分区使用，重装系统前还得重新备份，所以这一步实际上笔者是直接用<strong>软连接</strong></p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">ln</span> -sf <span class="token environment constant">$HOME</span>/virtualmachine/ubuntu/ubuntu20.04.qcow2 /var/lib/libvirt/images/ubuntu20.04.qcow2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p><strong>第三步</strong>，恢复快照</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">cp</span> -r <span class="token environment constant">$HOME</span>/virtualmachine/snapshot/ubuntu20.04 /var/lib/libvirt/qemu/snapshot/ubuntu20.04<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>同理，笔者这一步用的也是软连接</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">ln</span> -sf <span class="token environment constant">$HOME</span>/virtualmachine/snapshot/ubuntu20.04 /var/lib/libvirt/qemu/snapshot/ubuntu20.04<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p>最后将虚拟机开启验证就好了，如果备份虚拟机的镜像文件名有更改，记得在配置文件里也修改为对应的路径</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<h2 id="参考">参考</h2>
+<ol>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/djlsunshine/p/10278363.html">https://www.cnblogs.com/djlsunshine/p/10278363.html</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cloud.tencent.com/developer/article/1671091">https://cloud.tencent.com/developer/article/1671091</a></li>
 </ol>
@@ -495,13 +491,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">

