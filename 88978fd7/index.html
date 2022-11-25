@@ -356,8 +356,8 @@
     <div class="post-body" itemprop="articleBody">
         <p>buuoj刷pwn题之ACTF_2019_babyheap</p>
 <span id="more"></span>
-<p>PIE没开，got表不可改<br>
-<img src="/images/88978fd7/1.png" alt="checksec"></p>
+
+<p>PIE没开，got表不可改<br><img src="/images/88978fd7/1.png" alt="checksec"></p>
 <p>有add，delete，show功能，libc为2.27（有tcache）</p>
 <p>system函数有了，都不用leak了：</p>
 <p><img src="/images/88978fd7/2.png" alt="menu"></p>
@@ -367,8 +367,8 @@
 <p><img src="/images/88978fd7/4.png" alt="show"></p>
 <p>node的格式：</p>
 <p><img src="/images/88978fd7/5.png" alt="node"></p>
-<p>直接uaf，改func成system，mem为指向<code>'/bin/sh'</code>字符串的指针</p>
-<p>因为node的格式，覆盖func，也要覆盖mem，还是得先leak出，<code>'/bin/sh'</code>的位置</p>
+<p>直接uaf，改func成system，mem为指向<code>&#39;/bin/sh&#39;</code>字符串的指针</p>
+<p>因为node的格式，覆盖func，也要覆盖mem，还是得先leak出，<code>&#39;/bin/sh&#39;</code>的位置</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf8</span>
 
 <span class="token keyword">from</span> PwnContext <span class="token keyword">import</span> <span class="token operator">*</span>
@@ -446,6 +446,8 @@ show<span class="token punctuation">(</span><span class="token number">0</span><
 
 irt<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 
     </div>
 
@@ -538,13 +540,13 @@ irt<span class="token punctuation">(</span><span class="token punctuation">)</sp
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

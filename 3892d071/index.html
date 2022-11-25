@@ -330,7 +330,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.3k</span>
+      <span>3.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -350,72 +350,67 @@
     <div class="post-body" itemprop="articleBody">
         <p>本文整理了Linux文件与目录的管理相关知识</p>
 <span id="more"></span>
-<h3 id="目录管理">目录管理</h3>
-<h4 id="和"><code>.</code>和<code>..</code></h4>
-<p>每个目录下都必有两个文件，<code>.</code>和<code>..</code>，它们分别代表着当前目录和上级目录，这两个目录由系统创建和删除</p>
+
+<h3 id="目录管理"><a href="#目录管理" class="headerlink" title="目录管理"></a>目录管理</h3><h4 id="和"><a href="#和" class="headerlink" title=".和.."></a><code>.</code>和<code>..</code></h4><p>每个目录下都必有两个文件，<code>.</code>和<code>..</code>，它们分别代表着当前目录和上级目录，这两个目录由系统创建和删除</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ls</span> -a
 <span class="token builtin class-name">.</span>  <span class="token punctuation">..</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h4 id="主目录">主目录</h4>
-<p>每个用户都有自己独立的目录，一般是<code>/home/用户名</code>，可以用env命令查看环境变量HOME的值来看当前用户的主目录路径。</p>
+
+<h4 id="主目录"><a href="#主目录" class="headerlink" title="主目录"></a>主目录</h4><p>每个用户都有自己独立的目录，一般是<code>/home/用户名</code>，可以用env命令查看环境变量HOME的值来看当前用户的主目录路径。</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">env</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token environment constant">HOME</span>
 <span class="token assign-left variable"><span class="token environment constant">HOME</span></span><span class="token operator">=</span>/home/featherm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>大多数的shell都会把符号<code>~</code>解释成主目录的路径，所以可以用<code>~</code>代替主目录，但是要注意的是，但是<code>~</code>只是shell解释的，编写程序涉及路径的时候，最好不要用<code>~</code>，因为所用的程序函数不一定支持<code>~</code>的解释。</p>
-<h4 id="绝对路径和相对路径">绝对路径和相对路径</h4>
-<p>路径分隔符使用的是<code>/</code>（不同于Windows用<code>\</code>），以根目录<code>/</code>开头的路径为<strong>绝对路径</strong>，如<code>/home/featherm</code>；否则为<strong>相对路径</strong>，相对路径是指相对于当前目录的路径，如：当前目录下有一文件1.txt，则路径<code>1.txt</code>指的是当前目录下的1.txt</p>
-<h4 id="当前工作目录">当前工作目录</h4>
-<p>当前工作目录是进程属性的一部分，每个进程都有</p>
+<h4 id="绝对路径和相对路径"><a href="#绝对路径和相对路径" class="headerlink" title="绝对路径和相对路径"></a>绝对路径和相对路径</h4><p>路径分隔符使用的是<code>/</code>（不同于Windows用<code>\</code>），以根目录<code>/</code>开头的路径为<strong>绝对路径</strong>，如<code>/home/featherm</code>；否则为<strong>相对路径</strong>，相对路径是指相对于当前目录的路径，如：当前目录下有一文件1.txt，则路径<code>1.txt</code>指的是当前目录下的1.txt</p>
+<h4 id="当前工作目录"><a href="#当前工作目录" class="headerlink" title="当前工作目录"></a>当前工作目录</h4><p>当前工作目录是进程属性的一部分，每个进程都有</p>
 <p>在shell中可以用pwd命令打印当前工作目录：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token builtin class-name">pwd</span>        
 /home/featherm/tmp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>可用cd命令改变当前工作目录，如切换到根目录：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token builtin class-name">cd</span> /
 $ <span class="token builtin class-name">pwd</span>
 /<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>若不传递参数，则回到主目录：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token builtin class-name">cd</span> 
 $ <span class="token builtin class-name">pwd</span>
 /home/featherm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p><em>cd是shell的一个内部命令，功能由shell完成</em></p>
-<h4 id="创建-删除目录">创建/删除目录</h4>
-<p>创建目录用命令mkdir，如下创建tmp目录：</p>
+<h4 id="创建-删除目录"><a href="#创建-删除目录" class="headerlink" title="创建/删除目录"></a>创建/删除目录</h4><p>创建目录用命令mkdir，如下创建tmp目录：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">mkdir</span> tmp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>添加选项-p，可自动创建路径中不存在的目录，如：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">mkdir</span> -p database/2019/6/17/log<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>删除目录用命令rmdir：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">rmdir</span> tmp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>使用rmdir时，被删除的目录必须是空的，如果想删除非空目录，可以使用前一篇文章中介绍的<code>rm -r dir</code></p>
-<h4 id="复制目录">复制目录</h4>
-<p>前一篇文章已经介绍了，使用cp命令，添加-r选项即可：</p>
+<h4 id="复制目录"><a href="#复制目录" class="headerlink" title="复制目录"></a>复制目录</h4><p>前一篇文章已经介绍了，使用cp命令，添加-r选项即可：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cp</span> -r dir1 dir2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h5 id="cp的其它常用选项">cp的其它常用选项</h5>
-<h5 id="冗长模式">冗长模式</h5>
-<p>选项-v，冗长（Verbose）模式：可以实时列出正在复制的n文件</p>
-<h6 id="增量拷贝">增量拷贝</h6>
-<p>选项-u，增量拷贝（Update），一般用于备份目录。可根据文件的时间戳，不拷贝相同的或者过时的版本的文件，以提高速度。</p>
+
+<h5 id="cp的其它常用选项"><a href="#cp的其它常用选项" class="headerlink" title="cp的其它常用选项"></a>cp的其它常用选项</h5><h5 id="冗长模式"><a href="#冗长模式" class="headerlink" title="冗长模式"></a>冗长模式</h5><p>选项-v，冗长（Verbose）模式：可以实时列出正在复制的n文件</p>
+<h6 id="增量拷贝"><a href="#增量拷贝" class="headerlink" title="增量拷贝"></a>增量拷贝</h6><p>选项-u，增量拷贝（Update），一般用于备份目录。可根据文件的时间戳，不拷贝相同的或者过时的版本的文件，以提高速度。</p>
 <p><em>命令touch可将文件最后一次修改时间设置为当前时间，但不修改文件的内容，如<code>touch 1.txt</code></em></p>
 <p>关于增量拷贝，Linux下还有一款工具：rsync，该工具可以远程同步目录，具体用法查看man手册：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">man</span> <span class="token function">rsync</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <hr>
-<h4 id="目录遍历">目录遍历</h4>
-<p>目录遍历主要用到命令find，该命令从指定的<em>查找范围</em>开始，递归地查找子目录，对满足<em>条件</em>的文件或目录，执行指定的<em>动作</em></p>
-<p>例：<br>
-<code>find ver1.d ver2.d -name '*.c' -print</code></p>
+<h4 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历"></a>目录遍历</h4><p>目录遍历主要用到命令find，该命令从指定的<em>查找范围<em>开始，递归地查找子目录，对满足</em>条件<em>的文件或目录，执行指定的</em>动作</em></p>
+<p>例：<br><code>find ver1.d ver2.d -name &#39;*.c&#39; -print</code></p>
 <ul>
 <li>范围：目录ver1.d和目录ver2.d</li>
 <li>条件：与名字<code>*.c</code>匹配</li>
 <li>动作：把查找到的文件的路径名打印出来</li>
 </ul>
-<h5 id="条件选项">条件选项</h5>
-<h6 id="name-wildcard">-name wildcard</h6>
-<ul>
+<h5 id="条件选项"><a href="#条件选项" class="headerlink" title="条件选项"></a>条件选项</h5><h6 id="name-wildcard"><a href="#name-wildcard" class="headerlink" title="-name wildcard"></a>-name wildcard</h6><ul>
 <li>文件名与wildcard匹配（wildcard的中文意识是通配符）</li>
 <li>通配符的解释由find完成，所以wildcard两边要有引号，否则通配符会被shell展开</li>
 <li>文件名指路径名的最后一部分</li>
 </ul>
-<h6 id="regex-pattern">-regex pattern</h6>
-<p><strong>整个路径名</strong>与正则表达式pattern匹配</p>
-<h6 id="type">-type</h6>
-<ul>
+<h6 id="regex-pattern"><a href="#regex-pattern" class="headerlink" title="-regex pattern"></a>-regex pattern</h6><p><strong>整个路径名</strong>与正则表达式pattern匹配</p>
+<h6 id="type"><a href="#type" class="headerlink" title="-type"></a>-type</h6><ul>
 <li>f 普通文件</li>
 <li>d 目录</li>
 <li>l 符号连接文件</li>
@@ -424,68 +419,48 @@ $ <span class="token builtin class-name">pwd</span>
 <li>p 管道文件</li>
 </ul>
 <p>例如，打印tmp目录下的所有文件：<code>find tmp -type f -print</code></p>
-<h6 id="size-n单位">-size +/- n单位</h6>
-<p>指定文件大小，单位有c（字符），b（块，512字节），k，M，G，<strong>默认为b</strong><br>
-如：大于10M：<code>+10M</code>、小于10M：<code>-10M</code>、等于10M：<code>10M</code></p>
-<h6 id="mtime-ndays">-mtime +/- ndays</h6>
-<p>文件的最近修改时间离现在有多少天</p>
-<h6 id="newer-file">-newer file</h6>
-<p>所匹配文件最近修改时间比file要晚，也就是所匹配的文件要比file新</p>
-<h6 id="其它条件选项">其它条件选项</h6>
-<ul>
+<h6 id="size-n单位"><a href="#size-n单位" class="headerlink" title="-size +/- n单位"></a>-size +/- n单位</h6><p>指定文件大小，单位有c（字符），b（块，512字节），k，M，G，<strong>默认为b</strong><br>如：大于10M：<code>+10M</code>、小于10M：<code>-10M</code>、等于10M：<code>10M</code></p>
+<h6 id="mtime-ndays"><a href="#mtime-ndays" class="headerlink" title="-mtime +/- ndays"></a>-mtime +/- ndays</h6><p>文件的最近修改时间离现在有多少天</p>
+<h6 id="newer-file"><a href="#newer-file" class="headerlink" title="-newer file"></a>-newer file</h6><p>所匹配文件最近修改时间比file要晚，也就是所匹配的文件要比file新</p>
+<h6 id="其它条件选项"><a href="#其它条件选项" class="headerlink" title="其它条件选项"></a>其它条件选项</h6><ul>
 <li>-user 指定文件主（所属用户）</li>
 <li>-nouser 文件的所属用户已经不存在（被删除）</li>
 <li>-group 文件所属用户的组</li>
 <li>…</li>
 </ul>
 <p>其余可查阅man手册</p>
-<h6 id="复合条件">复合条件</h6>
-<p>可以用<code>()</code>、<code>-o</code>、<code>!</code>表示条件的“与（且）”、“或”、“非”</p>
+<h6 id="复合条件"><a href="#复合条件" class="headerlink" title="复合条件"></a>复合条件</h6><p>可以用<code>()</code>、<code>-o</code>、<code>!</code>表示条件的“与（且）”、“或”、“非”</p>
 <hr>
-<h5 id="动作选项">动作选项</h5>
-<h6 id="print">-print</h6>
-<p>打印匹配的文件的路径名</p>
-<h6 id="exec">-exec</h6>
-<p>对匹配的目标执行一条命令。在-exec及随后分号之间的内容作为一条命令</p>
-<h6 id="ok">-ok</h6>
-<p>与-exec类似，但每一条命令执行前需操作员确认</p>
+<h5 id="动作选项"><a href="#动作选项" class="headerlink" title="动作选项"></a>动作选项</h5><h6 id="print"><a href="#print" class="headerlink" title="-print"></a>-print</h6><p>打印匹配的文件的路径名</p>
+<h6 id="exec"><a href="#exec" class="headerlink" title="-exec"></a>-exec</h6><p>对匹配的目标执行一条命令。在-exec及随后分号之间的内容作为一条命令</p>
+<h6 id="ok"><a href="#ok" class="headerlink" title="-ok"></a>-ok</h6><p>与-exec类似，但每一条命令执行前需操作员确认</p>
 <hr>
 <p><strong>注意</strong>：动作也可以有多个</p>
-<h5 id="目录遍历举例">目录遍历举例</h5>
-<ul>
+<h5 id="目录遍历举例"><a href="#目录遍历举例" class="headerlink" title="目录遍历举例"></a>目录遍历举例</h5><ul>
 <li><code>find . type -d -print</code> 从当前目录开始，打印所有目录路径</li>
-<li><code>find / -name 'stud*' -type d -print</code> 打印名字与<code>stud*</code>匹配，<em>且</em>为目录的路径</li>
+<li><code>find / -name &#39;stud*&#39; -type d -print</code> 打印名字与<code>stud*</code>匹配，<em>且</em>为目录的路径</li>
 <li><code>find / -type f -mtime -10 -print</code> 查找根目录下最近10天内修改过的普通磁盘文件</li>
 <li><code>find . ! -type -d -links +2 -print</code> 从当前目录开始查找link数大于2的非目录文件</li>
-<li><code>find～ -size +100k '(' -name core -o -name '*.tmp' ')' -print</code> 从主目录开始查找大于100KB的名叫core <em>或者</em> 有.tmp后缀的文件或目录等</li>
-<li><code>find ~ -size +100k \( -name core -o -name '*.tmp' \) -print</code> 同上</li>
-<li><code>find /lib /usr -name 'libc*.so' -exec ls -lh &#123;&#125; \;</code> 对匹配条件的路径执行ls命令，其中的<code>&#123;&#125;</code>代表匹配的路径</li>
-<li><code>find src -name '*.c' -exec grep -n -- --help &#123;&#125; /dev/null \;</code> 搜索src目录下的匹配<code>*.c</code>的文件，并用grep搜索文件中的字符串<code>--help</code>，显示出行号（-n选项）。由于grep命令操作一个文件时，不显示文件名，故加上一个“虚拟的”文件<code>/dev/null</code>（该文件是一个特殊的设备文件，读取不到数据，是空的，写入什么数据都被丢弃）</li>
+<li><code>find～ -size +100k &#39;(&#39; -name core -o -name &#39;*.tmp&#39; &#39;)&#39; -print</code> 从主目录开始查找大于100KB的名叫core <em>或者</em> 有.tmp后缀的文件或目录等</li>
+<li><code>find ~ -size +100k \( -name core -o -name &#39;*.tmp&#39; \) -print</code> 同上</li>
+<li><code>find /lib /usr -name &#39;libc*.so&#39; -exec ls -lh &#123;&#125; \;</code> 对匹配条件的路径执行ls命令，其中的<code>&#123;&#125;</code>代表匹配的路径</li>
+<li><code>find src -name &#39;*.c&#39; -exec grep -n -- --help &#123;&#125; /dev/null \;</code> 搜索src目录下的匹配<code>*.c</code>的文件，并用grep搜索文件中的字符串<code>--help</code>，显示出行号（-n选项）。由于grep命令操作一个文件时，不显示文件名，故加上一个“虚拟的”文件<code>/dev/null</code>（该文件是一个特殊的设备文件，读取不到数据，是空的，写入什么数据都被丢弃）</li>
 </ul>
-<h5 id="xargs命令">xargs命令</h5>
-<p>上面最后一个例子的效率特别低，因为每匹配到一个路径，都要创建一个进程来执行grep命令。<br>
-可以结合xargs命令提高效率，高效率的方法应该如下：<br>
-<code>find src -name '*.c' -print | xargs grep -n -- --help</code></p>
+<h5 id="xargs命令"><a href="#xargs命令" class="headerlink" title="xargs命令"></a>xargs命令</h5><p>上面最后一个例子的效率特别低，因为每匹配到一个路径，都要创建一个进程来执行grep命令。<br>可以结合xargs命令提高效率，高效率的方法应该如下：<br><code>find src -name &#39;*.c&#39; -print | xargs grep -n -- --help</code></p>
 <p>xargs命令会把标准输入追加到它的第一个参数（grep）后面，再作为一个命令执行。</p>
 <p>如果标准输入的数据量很大，xargs指定的处理程序会启动多个进程进行，每个进程处理一批，一般是几千个参数（命令行参数占满128K字节）。可以用-n选项指定每批处理最多多少个参数</p>
 <p>xargs常用场景：</p>
 <ul>
-<li>shell通配符展开，超出缓冲区空间大小而失败<br>
-<code>rm -f *.dat</code> 文件名<code>*.dat</code>展开失败，文件过多，超出缓冲区空间大小，可用xargs改造：<br>
-<code>ls | grep &quot;.dat$&quot; | xargs rm -f</code></li>
-<li>find命中目录名因删除目录导致影响目录遍历过程<br>
-<code>find . -name CVS -exec rm -rf &#123;&#125; \;</code> 改为：<code>find . -name CVS -print | xargs rm -rf</code></li>
+<li>shell通配符展开，超出缓冲区空间大小而失败<br>  <code>rm -f *.dat</code> 文件名<code>*.dat</code>展开失败，文件过多，超出缓冲区空间大小，可用xargs改造：<br>  <code>ls | grep &quot;.dat$&quot; | xargs rm -f</code></li>
+<li>find命中目录名因删除目录导致影响目录遍历过程<br>  <code>find . -name CVS -exec rm -rf &#123;&#125; \;</code> 改为：<code>find . -name CVS -print | xargs rm -rf</code></li>
 </ul>
 <hr>
-<h3 id="打包和压缩">打包和压缩</h3>
-<p>tar最早为顺序访问的i磁带机设备而设计（Tape ARchive 磁带归档），用于保留和恢复磁带上的文件，可用来打包和压缩文件</p>
-<p>用法：<code>tar ctxv[f device] file-list</code><br>
-第一个字母选项指定功能，必须指定，有以下三个：</p>
+<h3 id="打包和压缩"><a href="#打包和压缩" class="headerlink" title="打包和压缩"></a>打包和压缩</h3><p>tar最早为顺序访问的i磁带机设备而设计（Tape ARchive 磁带归档），用于保留和恢复磁带上的文件，可用来打包和压缩文件</p>
+<p>用法：<code>tar ctxv[f device] file-list</code><br>第一个字母选项指定功能，必须指定，有以下三个：</p>
 <ul>
 <li>c 创建（Create）新磁带，从头开始写，以前存于磁带上的数据会被覆盖掉</li>
 <li>t 列表（Table），列出磁带上的文件名列表，当不指定文件名时，将列出所有的文件</li>
-<li>x 抽取（eXtract），从磁带中抽取指定文件，当不指定文件名时，抽取所有文件<br>
-其他选项：</li>
+<li>x 抽取（eXtract），从磁带中抽取指定文件，当不指定文件名时，抽取所有文件<br>其他选项：</li>
 <li>v 冗长（Verbose），每处理一个文件就打印文件的名字，并在文件名前冠以功能字母</li>
 <li>f File，指定设备文件名</li>
 <li>z 采用压缩格式（gzip算法）</li>
@@ -590,13 +565,13 @@ $ <span class="token builtin class-name">pwd</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -350,36 +350,35 @@
     <div class="post-body" itemprop="articleBody">
         <p>学习使用几个常用命令来了解系统的状态</p>
 <span id="more"></span>
-<h3 id="了解系统状态">了解系统状态</h3>
-<h4 id="who">who</h4>
-<p>who命令用于列出当前已登入系统的用户，如下：</p>
+
+<h3 id="了解系统状态"><a href="#了解系统状态" class="headerlink" title="了解系统状态"></a>了解系统状态</h3><h4 id="who"><a href="#who" class="headerlink" title="who"></a>who</h4><p>who命令用于列出当前已登入系统的用户，如下：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">who</span>
 feather  tty7         <span class="token number">2019</span>-02-01 <span class="token number">12</span>:23 <span class="token punctuation">(</span>:0<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <ul>
 <li>第一列：用户名</li>
 <li>第二列：终端设备的设备文件名，设备文件一般位于目录/dev下</li>
 </ul>
 <p>命令<code>who am i</code> 列出当前终端上的登录用户，我的系统貌似不行</p>
-<h4 id="whoami">whoami</h4>
-<p>whoami命令仅仅列出当前终端上的登录用户</p>
+<h4 id="whoami"><a href="#whoami" class="headerlink" title="whoami"></a>whoami</h4><p>whoami命令仅仅列出当前终端上的登录用户</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">whoami</span>
 feather<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h4 id="tty">tty</h4>
-<p>tty命令打印当前终端的设备文件名</p>
+
+<h4 id="tty"><a href="#tty" class="headerlink" title="tty"></a>tty</h4><p>tty命令打印当前终端的设备文件名</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">tty</span>
 /dev/pts/0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h4 id="uptime">uptime</h4>
-<p>uptime命令打印系统已开机的时间</p>
+
+<h4 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h4><p>uptime命令打印系统已开机的时间</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uptime</span>
  <span class="token number">20</span>:22:40 up  <span class="token number">7</span>:59,  <span class="token number">1</span> user,  load average: <span class="token number">1.62</span>, <span class="token number">1.43</span>, <span class="token number">1.54</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <ul>
 <li><code>20:22:40</code> 当前时间</li>
 <li><code>up  7:59</code> 系统已经开机的时间</li>
 <li><code>1 user</code> 当前登入系统的用户数</li>
 <li><code>load average: 1.62, 1.43, 1.54</code> 近期1分钟，5分钟，15分钟内系统CPU的负载平均调度队列长度</li>
 </ul>
-<h4 id="top">top</h4>
-<p>top命令列出资源占用排名靠前的进程</p>
+<h4 id="top"><a href="#top" class="headerlink" title="top"></a>top</h4><p>top命令列出资源占用排名靠前的进程</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">top</span> - <span class="token number">20</span>:29:37 up  <span class="token number">8</span>:06,  <span class="token number">1</span> user,  load average: <span class="token number">1.33</span>, <span class="token number">1.35</span>, <span class="token number">1.46</span>
 Tasks: <span class="token number">165</span> total,   <span class="token number">3</span> running, <span class="token number">162</span> sleeping,   <span class="token number">0</span> stopped,   <span class="token number">0</span> zombie
 %Cpu0  <span class="token builtin class-name">:</span> <span class="token number">38.9</span> us, <span class="token number">11.1</span> sy,  <span class="token number">0.0</span> ni, <span class="token number">50.0</span> id,  <span class="token number">0.0</span> wa,  <span class="token number">0.0</span> hi,  <span class="token number">0.0</span> si,  <span class="token number">0.0</span> st
@@ -388,12 +387,12 @@ KiB Mem <span class="token builtin class-name">:</span>  <span class="token numb
 KiB Swap:  <span class="token number">5242876</span> total,  <span class="token number">4300428</span> free,   <span class="token number">942448</span> used.   <span class="token number">611412</span> avail Mem 
 
   PID <span class="token environment constant">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li>第一行和uptime命令的输出是类似的</li>
 <li>Tasks 系统的任务信息</li>
 <li>%Cpu cpu的占用率</li>
-<li>top命令最下面列出一张进程表，比较重要的信息有：
-<ul>
+<li>top命令最下面列出一张进程表，比较重要的信息有：<ul>
 <li>VIRT 进程逻辑地址空间大小（virtual），不断增大有可能是内存泄漏</li>
 <li>RES 驻留内存数（Resident），即占用物理内存数</li>
 <li>SHR 与其它进程共享的内存数（share）</li>
@@ -403,26 +402,29 @@ KiB Swap:  <span class="token number">5242876</span> total,  <span class="token 
 </ul>
 </li>
 </ul>
-<h4 id="ps">ps</h4>
-<p>ps命令用于查阅进程状态（process status）</p>
+<h4 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h4><p>ps命令用于查阅进程状态（process status）</p>
 <p>无选项运行ps命令，只列出当前终端上启动的进程</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ps</span>
   PID TTY          TIME CMD
 <span class="token number">10691</span> pts/0    00:00:01 <span class="token function">zsh</span>
 <span class="token number">12044</span> pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>e选项，列出系统中所有的进程：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ps</span> -e<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>f选项，以full格式列出每一个进程</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ps</span> -f
 <span class="token environment constant">UID</span>        PID  <span class="token environment constant">PPID</span>  C STIME TTY          TIME CMD
 feather  <span class="token number">10691</span> <span class="token number">10687</span>  <span class="token number">0</span> <span class="token number">19</span>:27 pts/0    00:00:01 <span class="token function">zsh</span>
 feather  <span class="token number">12090</span> <span class="token number">10691</span>  <span class="token number">0</span> <span class="token number">20</span>:39 pts/0    00:00:00 <span class="token function">ps</span> -f
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>l选项，以long格式列出每一个进程</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ps</span> -l
 F S   <span class="token environment constant">UID</span>   PID  <span class="token environment constant">PPID</span>  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
 <span class="token number">0</span> S  <span class="token number">1000</span> <span class="token number">10691</span> <span class="token number">10687</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> -  <span class="token number">4137</span> -      pts/0    00:00:01 <span class="token function">zsh</span>
 <span class="token number">0</span> R  <span class="token number">1000</span> <span class="token number">12085</span> <span class="token number">10691</span>  <span class="token number">0</span>  <span class="token number">80</span>   <span class="token number">0</span> -  <span class="token number">3923</span> -      pts/0    00:00:00 <span class="token function">ps</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>常见信息：</p>
 <ul>
 <li>UID：用户ID</li>
@@ -438,30 +440,29 @@ F S   <span class="token environment constant">UID</span>   PID  <span class="to
 <li>PRI：优先级</li>
 <li>S：状态，S=&gt;Sleep，R=&gt;Run，Z=&gt;Zombie（僵尸）</li>
 </ul>
-<h4 id="free">free</h4>
-<p>free命令用来了解内存使用情况，单位是KB</p>
+<h4 id="free"><a href="#free" class="headerlink" title="free"></a>free</h4><p>free命令用来了解内存使用情况，单位是KB</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">free</span>
               total        used        <span class="token function">free</span>      shared  buff/cache   available
 Mem:        <span class="token number">1778508</span>      <span class="token number">868072</span>      <span class="token number">211360</span>      <span class="token number">159220</span>      <span class="token number">699076</span>      <span class="token number">593808</span>
 Swap:       <span class="token number">5242876</span>      <span class="token number">942448</span>     <span class="token number">4300428</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>buff/cache：Linux为提高效率，利用程序暂时不用的内存，缓冲读写过的磁盘信息</p>
 <p>available：加上释放可用的buffers/cache，系统实际可利用的内存</p>
-<h4 id="vmstat">vmstat</h4>
-<p>vmstat了解系统负载</p>
+<h4 id="vmstat"><a href="#vmstat" class="headerlink" title="vmstat"></a>vmstat</h4><p>vmstat了解系统负载</p>
 <p>每隔1秒打印一行信息：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">vmstat</span> <span class="token number">1</span>
 procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
  r  b   swpd   <span class="token function">free</span>   buff  cache   si   so    bi    bo   <span class="token keyword">in</span>   cs us sy <span class="token function">id</span> wa st
  <span class="token number">6</span>  <span class="token number">0</span> <span class="token number">942448</span> <span class="token number">181600</span>  <span class="token number">89104</span> <span class="token number">614040</span>    <span class="token number">4</span>   <span class="token number">20</span>   <span class="token number">142</span>   <span class="token number">155</span>  <span class="token number">620</span>  <span class="token number">641</span> <span class="token number">12</span>  <span class="token number">5</span> <span class="token number">81</span>  <span class="token number">2</span>  <span class="token number">0</span>
  <span class="token number">0</span>  <span class="token number">0</span> <span class="token number">942448</span> <span class="token number">188876</span>  <span class="token number">89104</span> <span class="token number">611288</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>     <span class="token number">0</span> <span class="token number">3095</span> <span class="token number">5923</span> <span class="token number">21</span> <span class="token number">10</span> <span class="token number">69</span>  <span class="token number">0</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>其中的信息有：</p>
 <ul>
 <li>procs：r=&gt;等待运行的进程数，b=&gt;处在非中断睡眠状态的进程数</li>
 <li>memory：free=&gt;空闲的内存，buff/cache=&gt;用做缓存的内存数</li>
 <li>swap：磁盘/内存的交换页数量</li>
 <li>io：块设备I/O块数，单位：块/秒</li>
-<li>system：
-<ul>
+<li>system： <ul>
 <li>in=&gt;每秒的硬件中断数（interrupt），包括时钟中断</li>
 <li>cs=&gt;每秒的环境切换次数（context switch）</li>
 </ul>
@@ -559,13 +560,13 @@ procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

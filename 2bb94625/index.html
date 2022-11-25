@@ -330,7 +330,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>5.7k</span>
+      <span>5.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -350,30 +350,31 @@
     <div class="post-body" itemprop="articleBody">
         <p>本文介绍本系列教程最后一个数据结构——字典</p>
 <span id="more"></span>
+
 <hr>
 <p>在现实生活中，查英语字典的时候，我们通常根据单词来查找意思。而python中的<strong>字典</strong>也是类似的，根据特定的 <strong>“键”</strong>（单词）来查找 <strong>“值”</strong>（意思）。</p>
-<h2 id="字典的基本使用">字典的基本使用</h2>
-<p>下面以电话簿为例，我们的电话簿记录的是电话号码。当要查找电话号码时，我们根据人名来查找其电话号码，所以人名就是字典的键，电话号码就是字典的值。假设有下面这样的人名和电话号码的电话簿：</p>
+<h2 id="字典的基本使用"><a href="#字典的基本使用" class="headerlink" title="字典的基本使用"></a>字典的基本使用</h2><p>下面以电话簿为例，我们的电话簿记录的是电话号码。当要查找电话号码时，我们根据人名来查找其电话号码，所以人名就是字典的键，电话号码就是字典的值。假设有下面这样的人名和电话号码的电话簿：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">人名<span class="token operator">=</span><span class="token operator">></span>电话
 Aganzo<span class="token operator">=</span><span class="token operator">></span><span class="token number">1230</span>
 Jack<span class="token operator">=</span><span class="token operator">></span><span class="token number">0221</span>
 Lee<span class="token operator">=</span><span class="token operator">></span><span class="token number">1354</span>
 Emilie<span class="token operator">=</span><span class="token operator">></span><span class="token number">2479</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="创建字典">创建字典</h3>
-<p>现在我们来创建一个字典来表示这个电话簿：</p>
+
+<h3 id="创建字典"><a href="#创建字典" class="headerlink" title="创建字典"></a>创建字典</h3><p>现在我们来创建一个字典来表示这个电话簿：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> phonebook<span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token string">'Aganzo'</span><span class="token punctuation">:</span><span class="token string">'1230'</span><span class="token punctuation">,</span> <span class="token string">'Jack'</span><span class="token punctuation">:</span><span class="token string">'0221'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">:</span><span class="token string">'1354'</span><span class="token punctuation">,</span> <span class="token string">'Emilie'</span><span class="token punctuation">:</span><span class="token string">'2479'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> phonebook
 <span class="token punctuation">&#123;</span><span class="token string">'Aganzo'</span><span class="token punctuation">:</span> <span class="token string">'1230'</span><span class="token punctuation">,</span> <span class="token string">'Jack'</span><span class="token punctuation">:</span> <span class="token string">'0221'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">:</span> <span class="token string">'1354'</span><span class="token punctuation">,</span> <span class="token string">'Emilie'</span><span class="token punctuation">:</span> <span class="token string">'2479'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>从上面可以看出，创建字典的基本格式为<code>&#123; 键1:值1, 键2:值2, 键3:值3 ...&#125;</code>。除了这种方法，我们还可以通过dict函数传递关键字参数来创建字典，像下面这样：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> phonebook <span class="token operator">=</span> <span class="token builtin">dict</span><span class="token punctuation">(</span>Aganzo<span class="token operator">=</span><span class="token string">'1230'</span><span class="token punctuation">,</span> Jack<span class="token operator">=</span><span class="token string">'0221'</span><span class="token punctuation">,</span> Lee<span class="token operator">=</span><span class="token string">'1354'</span><span class="token punctuation">,</span> Emilie<span class="token operator">=</span><span class="token string">'2479'</span><span class="token punctuation">)</span> <span class="token comment"># 关键字参数就是字典的键，参数值就是字典的值</span>
 <span class="token operator">>></span><span class="token operator">></span> phonebook
 <span class="token punctuation">&#123;</span><span class="token string">'Aganzo'</span><span class="token punctuation">:</span> <span class="token string">'1230'</span><span class="token punctuation">,</span> <span class="token string">'Jack'</span><span class="token punctuation">:</span> <span class="token string">'0221'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">:</span> <span class="token string">'1354'</span><span class="token punctuation">,</span> <span class="token string">'Emilie'</span><span class="token punctuation">:</span> <span class="token string">'2479'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>我们常用第一种方式创建字典，第二种方式比较少用，而且第二种方式有一个缺点：因为关键字参数会变为字典的键，所以键必须符合参数的命名规则（字母或下划线<code>_</code>开头，其后是数字、字母或下划线）。</p>
 <p><strong>补充</strong>：创建空字典有两种方法，一种是直接使用<code>&#123;&#125;</code>；另一种是调用dict函数时，参数留空，即<code>dict()</code>；像<code>键:值</code>这样的东西叫做字典的 <strong>“项”</strong>。</p>
-<h3 id="字典基本操作">字典基本操作</h3>
-<p>字典的基本操作有：<strong>增</strong>、<strong>删</strong>、<strong>改</strong>、<strong>查</strong>。</p>
+<h3 id="字典基本操作"><a href="#字典基本操作" class="headerlink" title="字典基本操作"></a>字典基本操作</h3><p>字典的基本操作有：<strong>增</strong>、<strong>删</strong>、<strong>改</strong>、<strong>查</strong>。</p>
 <p>先来说“查”：我们可以通过名字来查找电话簿中的电话号码，在字典中类似这样，通过“键”来查“值”，基本格式为<code>字典[键]</code>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> phonebook<span class="token punctuation">[</span><span class="token string">'Aganzo'</span><span class="token punctuation">]</span>
 <span class="token string">'1230'</span>
@@ -384,12 +385,14 @@ Traceback <span class="token punctuation">(</span>most recent call last<span cla
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
 KeyError<span class="token punctuation">:</span> <span class="token string">'Lily'</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>从上面的代码可以看出，我们的“电话簿”中不存在Lily的电话号码，可知，当字典中不存在要查的元素时，python会提示报错。我们可以在查之前确认字典中是否有对应的项，使用成员运算符<code>in</code>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token string">'Lily'</span> <span class="token keyword">in</span> phonebook <span class="token comment"># 不存在</span>
 <span class="token boolean">False</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token string">'Jack'</span> <span class="token keyword">in</span> phonebook <span class="token comment"># 存在</span>
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>或者查看“电话簿”中所有人的电话号码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">for</span> key <span class="token keyword">in</span> phonebook<span class="token punctuation">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'%s=>%s'</span> <span class="token operator">%</span> <span class="token punctuation">(</span>key<span class="token punctuation">,</span> phonebook<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
@@ -399,27 +402,30 @@ Jack<span class="token operator">=</span><span class="token operator">></span><s
 Lee<span class="token operator">=</span><span class="token operator">></span><span class="token number">1354</span>
 Emilie<span class="token operator">=</span><span class="token operator">></span><span class="token number">2479</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>再来说“改”：此时得知Lee更换了电话号码为112233，需要对电话簿进行更改，使用如下代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> phonebook<span class="token punctuation">[</span><span class="token string">'Lee'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'112233'</span>
 <span class="token operator">>></span><span class="token operator">></span> phonebook
 <span class="token punctuation">&#123;</span><span class="token string">'Aganzo'</span><span class="token punctuation">:</span> <span class="token string">'1230'</span><span class="token punctuation">,</span> <span class="token string">'Jack'</span><span class="token punctuation">:</span> <span class="token string">'0221'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">:</span> <span class="token string">'112233'</span><span class="token punctuation">,</span> <span class="token string">'Emilie'</span><span class="token punctuation">:</span> <span class="token string">'2479'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>再到“增”：假设新认识了一位朋友Zieg，得到了朋友的电话号码为123456，需要在“电话簿”中新增一项，和“改”操作一样，使用赋值运算符<code>=</code>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> phonebook<span class="token punctuation">[</span><span class="token string">'Zieg'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'123456'</span>
 <span class="token operator">>></span><span class="token operator">></span> phonebook
 <span class="token punctuation">&#123;</span><span class="token string">'Aganzo'</span><span class="token punctuation">:</span> <span class="token string">'1230'</span><span class="token punctuation">,</span> <span class="token string">'Jack'</span><span class="token punctuation">:</span> <span class="token string">'0221'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">:</span> <span class="token string">'112233'</span><span class="token punctuation">,</span> <span class="token string">'Emilie'</span><span class="token punctuation">:</span> <span class="token string">'2479'</span><span class="token punctuation">,</span> <span class="token string">'Zieg'</span><span class="token punctuation">:</span> <span class="token string">'123456'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>最后说“删”：朋友Jack与你绝交了（世事无常<code>╮(╯▽╰)╭</code>），你决定删除他的联系方式，此时你狠心地运行了下面的代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">del</span> phonebook<span class="token punctuation">[</span><span class="token string">'Jack'</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> phonebook
 <span class="token punctuation">&#123;</span><span class="token string">'Aganzo'</span><span class="token punctuation">:</span> <span class="token string">'1230'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">:</span> <span class="token string">'112233'</span><span class="token punctuation">,</span> <span class="token string">'Emilie'</span><span class="token punctuation">:</span> <span class="token string">'2479'</span><span class="token punctuation">,</span> <span class="token string">'Zieg'</span><span class="token punctuation">:</span> <span class="token string">'123456'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>“电话簿”中再也没有了Jack的电话号码……</p>
-<h3 id="小结">小结</h3>
-<p>好了，一个简单的示例过后，相信大家能理解字典的使用方法了，让我们来一个小小的总结：</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>好了，一个简单的示例过后，相信大家能理解字典的使用方法了，让我们来一个小小的总结：</p>
 <p>创建字典的方法：</p>
 <ul>
 <li>通过花括号创建 <code>x = &#123;键1:值1, 键2:值2, 键3:值3 ...&#125;</code></li>
@@ -428,20 +434,18 @@ Emilie<span class="token operator">=</span><span class="token operator">></span>
 </ul>
 <p>字典的基本操作：</p>
 <ul>
-<li>增：<code>x['abc'] = 123</code> （键’abc’不存在）</li>
-<li>删：<code>del x['abc']</code></li>
-<li>改：<code>x['abc] += 1</code>、<code>x['abc'] = 2</code>、<code>x['abc'] *= 10</code>……（键’abc’存在）</li>
-<li>查：<code>result = x['abc']</code>、<code>print(x['abc'])</code>……（键’abc’存在）</li>
+<li>增：<code>x[&#39;abc&#39;] = 123</code> （键’abc’不存在）</li>
+<li>删：<code>del x[&#39;abc&#39;]</code></li>
+<li>改：<code>x[&#39;abc] += 1</code>、<code>x[&#39;abc&#39;] = 2</code>、<code>x[&#39;abc&#39;] *= 10</code>……（键’abc’存在）</li>
+<li>查：<code>result = x[&#39;abc&#39;]</code>、<code>print(x[&#39;abc&#39;])</code>……（键’abc’存在）</li>
 </ul>
 <p><strong>补充</strong>：字典的用法和列表类似，只不过列表索引元素的时候使用的是数字作键，而字典大多数时候使用字符串索引元素。</p>
 <hr>
 <p>关于字典的键，还有一点是要说清楚的：前面我们使用字典的时候都是使用了字符串类型的键，可我没有说字典的键只能是字符串！</p>
 <p>实际上，字典的键可以是任意的不可变类型，如：字符串（最常用）、元组、浮点数、整数。</p>
 <hr>
-<h2 id="字典方法">字典方法</h2>
-<p>字典也是对象，和列表一样，字典也提供了一些实用的方法，下面是介绍</p>
-<h3 id="clear">clear</h3>
-<p>clear方法用于清空字典中的所有项：</p>
+<h2 id="字典方法"><a href="#字典方法" class="headerlink" title="字典方法"></a>字典方法</h2><p>字典也是对象，和列表一样，字典也提供了一些实用的方法，下面是介绍</p>
+<h3 id="clear"><a href="#clear" class="headerlink" title="clear"></a>clear</h3><p>clear方法用于清空字典中的所有项：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> d <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'feather'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> d
 <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token string">'feather'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">&#125;</span>
@@ -449,6 +453,7 @@ Emilie<span class="token operator">=</span><span class="token operator">></span>
 <span class="token operator">>></span><span class="token operator">></span> d
 <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这个方法是原地的操作，意思就是操作对象是在字典本身，这和直接将变量赋值为空字典是不一样的，从下面的例子可以看出：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'a'</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> y <span class="token operator">=</span> x <span class="token comment"># y变量引用的字典和x变量引用的是同一个字典</span>
@@ -458,8 +463,8 @@ Emilie<span class="token operator">=</span><span class="token operator">></span>
 <span class="token operator">>></span><span class="token operator">></span> y <span class="token comment"># y变量引用的字典没有被改变</span>
 <span class="token punctuation">&#123;</span><span class="token string">'a'</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="copy">copy</h3>
-<p>copy方法用于返回一个新字典，这个新字典和原来的字典拥有相同的项：</p>
+
+<h3 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h3><p>copy方法用于返回一个新字典，这个新字典和原来的字典拥有相同的项：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'feather'</span><span class="token punctuation">,</span> <span class="token string">'blog'</span><span class="token punctuation">:</span><span class="token punctuation">[</span><span class="token string">'https://blog.csdn.net/lonely_feather'</span><span class="token punctuation">,</span> <span class="token string">'https://featherl.gitee.io/'</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> y <span class="token operator">=</span> x<span class="token punctuation">.</span>copy<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> y<span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'Lee'</span>
@@ -469,7 +474,8 @@ Emilie<span class="token operator">=</span><span class="token operator">></span>
 <span class="token operator">>></span><span class="token operator">></span> y
 <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token string">'Lee'</span><span class="token punctuation">,</span> <span class="token string">'blog'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'https://blog.csdn.net/lonely_feather'</span><span class="token punctuation">,</span> <span class="token string">'https://featherl.gitee.io/'</span><span class="token punctuation">,</span> <span class="token string">'https://www.cnblogs.com/featherl/'</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到，y字典是从x复制而来的，所以改变y字典的键为’name’的项的时候并不影响x字典，要注意的是，<code>y['blog'].append('https://www.cnblogs.com/featherl/') </code>这句代码不属于修改y字典，这是修改y字典的键为’blog’的项引用的列表，而y字典和x字典的’blog’项引用的是同一个列表（因为y字典的项是从x字典中复制而来的），所以修改这个列表的时候，在x和y两个字典上都可以看到效果。</p>
+
+<p>可以看到，y字典是从x复制而来的，所以改变y字典的键为’name’的项的时候并不影响x字典，要注意的是，<code>y[&#39;blog&#39;].append(&#39;https://www.cnblogs.com/featherl/&#39;)</code>这句代码不属于修改y字典，这是修改y字典的键为’blog’的项引用的列表，而y字典和x字典的’blog’项引用的是同一个列表（因为y字典的项是从x字典中复制而来的），所以修改这个列表的时候，在x和y两个字典上都可以看到效果。</p>
 <p>这种问题是因为copy方法是“浅复制”，copy方法仅仅把相同的值存储到了一个新的字典里，要想避免这种问题，需要使用“深复制”，可以使用copy模块的deepcopy函数来实现：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">from</span> copy <span class="token keyword">import</span> deepcopy
 <span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'list'</span><span class="token punctuation">:</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span>
@@ -480,46 +486,48 @@ Emilie<span class="token operator">=</span><span class="token operator">></span>
 <span class="token operator">>></span><span class="token operator">></span> y
 <span class="token punctuation">&#123;</span><span class="token string">'list'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="fromkeys">fromkeys</h3>
-<p>fromkeys方法用给定的键创建新字典，每个键对应的默认值都为None：</p>
+
+<h3 id="fromkeys"><a href="#fromkeys" class="headerlink" title="fromkeys"></a>fromkeys</h3><p>fromkeys方法用给定的键创建新字典，每个键对应的默认值都为None：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">.</span>fromkeys<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token boolean">None</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">dict</span><span class="token punctuation">.</span>fromkeys<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token boolean">None</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span> <span class="token boolean">None</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面代码的第一个例子中，我们创建了一个空字典，然后使用这个空字典的fromkeys方法创建了一个新字典，第二个例子中，我们直接使用dict这个类（实际上dict不是函数，是一个“类”）的fromkeys方法创建新字典。</p>
 <p>我们还可以自己设置默认值：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">dict</span><span class="token punctuation">.</span>fromkeys<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'???'</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token string">'???'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span> <span class="token string">'???'</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h3 id="get">get</h3>
-<p>get方法使用给定的键访问字典中的项，不过，如果字典中不存在该项时，get方法返回默认值None，而不是报错：</p>
+
+<h3 id="get"><a href="#get" class="headerlink" title="get"></a>get</h3><p>get方法使用给定的键访问字典中的项，不过，如果字典中不存在该项时，get方法返回默认值None，而不是报错：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'Lee'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'age'</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>x<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'name'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 Lee
 <span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>x<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'age'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 <span class="token boolean">None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>同样的，这个默认值也是可以自己设定的：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'Lee'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token string">'???'</span><span class="token punctuation">)</span>
 <span class="token string">'???'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="update">update</h3>
-<p>update方法将一个新字典合并到当前字典，当存在相同的键，用新字典的值进行覆盖：</p>
+
+<h3 id="update"><a href="#update" class="headerlink" title="update"></a>update</h3><p>update方法将一个新字典合并到当前字典，当存在相同的键，用新字典的值进行覆盖：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'Lee'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'Lee'</span><span class="token punctuation">,</span> <span class="token string">'blog'</span><span class="token punctuation">:</span><span class="token string">'https://featherl.gitee.io'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> y <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'feather'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>update<span class="token punctuation">(</span>y<span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token string">'feather'</span><span class="token punctuation">,</span> <span class="token string">'blog'</span><span class="token punctuation">:</span> <span class="token string">'https://featherl.gitee.io'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="pop">pop</h3>
-<p>pop方法用来返回指定键的项，并将该项从字典中移除：</p>
+
+<h3 id="pop"><a href="#pop" class="headerlink" title="pop"></a>pop</h3><p>pop方法用来返回指定键的项，并将该项从字典中移除：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 <span class="token number">1</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的例子同时也证明了字典的键不一定是字符串。</p>
-<h3 id="popitem">popitem</h3>
-<p>popitem方法随机挑选一个项返回，并删除这个项。字典不同于列表，字典的项是没有顺序，不同的机器或者不同版本的python，其字典存储项的顺序可能是不一样的，故popitem方法具体处理哪一项是没法预测的。</p>
+<h3 id="popitem"><a href="#popitem" class="headerlink" title="popitem"></a>popitem</h3><p>popitem方法随机挑选一个项返回，并删除这个项。字典不同于列表，字典的项是没有顺序，不同的机器或者不同版本的python，其字典存储项的顺序可能是不一样的，故popitem方法具体处理哪一项是没法预测的。</p>
 <p>使用举例如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>pop
@@ -536,14 +544,15 @@ x<span class="token punctuation">.</span>pop<span class="token punctuation">(</s
 Traceback <span class="token punctuation">(</span>most recent call last<span class="token punctuation">)</span><span class="token punctuation">:</span>
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
 KeyError<span class="token punctuation">:</span> <span class="token string">'popitem(): dictionary is empty'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>当字典为空的时候，该方法抛出错误。</p>
-<h3 id="items">items</h3>
-<p>items方法返回字典的所有的项，每个项为一个形式为<code>(key, value)</code>的元组，返回的类型是一种类似列表的类型，可以使用<code>for</code>循环迭代，但是没有列表的方法，最好先使用list转换成列表：</p>
+<h3 id="items"><a href="#items" class="headerlink" title="items"></a>items</h3><p>items方法返回字典的所有的项，每个项为一个形式为<code>(key, value)</code>的元组，返回的类型是一种类似列表的类型，可以使用<code>for</code>循环迭代，但是没有列表的方法，最好先使用list转换成列表：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'name'</span><span class="token punctuation">:</span><span class="token string">'Lee'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span>
 dict_items<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token number">18</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">list</span><span class="token punctuation">(</span>x<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 转换成列表</span>
 <span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token number">18</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>注意</strong>：在python2中此方法还有后面的keys、values方法返回的就是列表类型，不过我们学的是python3，要注意区分。</p>
 <p>类似items的方法还有：</p>
 <ul>
@@ -644,13 +653,13 @@ dict_items<span class="token punctuation">(</span><span class="token punctuation
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

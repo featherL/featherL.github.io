@@ -366,60 +366,28 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>python的环境搭建总的来说分为两大步：下载、安装（废话<code>@_@</code>）。在这里以<strong>windows</strong>为例<span id="more"></span>（<strong>Linux</strong>通常内置了python，就算没有内置，相信Linux用户也非常清楚软件的安装方法）</p>
-<h3 id="第一步-下载解释器">第一步-下载解释器</h3>
-<p>前面说到，python是一门解释型语言，它需要一个解释器，或者说虚拟机，来翻译python代码并运行。因此，我们需要一个解释器，现在先去官方网站。</p>
+<h3 id="第一步-下载解释器"><a href="#第一步-下载解释器" class="headerlink" title="第一步-下载解释器"></a>第一步-下载解释器</h3><p>前面说到，python是一门解释型语言，它需要一个解释器，或者说虚拟机，来翻译python代码并运行。因此，我们需要一个解释器，现在先去官方网站。</p>
 <p>官方网站地址是：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.python.org">https://www.python.org</a>。</p>
 <p>或者利用搜索引擎，如百度搜索，搜索关键词 <strong>“python”</strong>，情况如下，第一个链接就是:<img src="/images/8447b565/search_python.png" alt="百度搜索python"></p>
-<p>在这多说一句，无论是下载什么软件都最好能去<strong>官方网站</strong>上下载，一般情况下，搜索引擎都会有一定的<strong>标识</strong>来指示官方的网站的。千万不要去什么<s>下载站</s>那些地方下载软件，也不知道会有什么<strong>病毒</strong>。</p>
-<p>进入官网后如下图，点击导航栏中的<strong>Downloads</strong>按钮<br>
-<img src="/images/8447b565/python_org.png" alt="官网界面"><br>
-直接点击<strong>最大的黄色按钮</strong>即可，网站会自动检测系统（按钮中的显示<strong>python3.7.1</strong>，可见python3.x是将来的发展趋势）<br>
-<img src="/images/8447b565/python_org_download.png" alt="下载选择"><br>
-点击后，在网页底部选择<strong>箭头所指处</strong>，下载。</p>
-<p><em><strong>注意</strong></em>：这是<strong>32位</strong>的安装包，若系统是<strong>64位</strong>则选择 <strong>“Windows x86-64 executable installer”</strong>。<br>
-<img src="/images/8447b565/python_org_download_37.png" alt="python37"></p>
-<h3 id="第二步-安装">第二步-安装</h3>
-<p>下载完成后，双击安装包。</p>
-<h4 id="1">1</h4>
-<p>勾选下面的<code>Add Python 3.7 to PATH</code>，这个是将python添加到<strong>环境变量</strong>，如果忘记勾选，不用担心，后面有讲怎么手动添加<strong>环境变量</strong>。然后点击上面的<code>Install Now</code>，这个是<strong>默认安装</strong>，很明显默认安装路径是<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32</code>，而且一同安装<code>IDLE</code>（python自带的IDE，即集成开发环境），<code>pip</code>（python的一个包管理工具）等。若是点击了下面的<code>Customize installation</code>则是自定义安装，有需要的读者可自定义安装，但要记得勾选安装<code>pip</code>，其他默认即可<br>
-<img src="/images/8447b565/python_install_0.png" alt="step1"></p>
-<h4 id="2">2</h4>
-<p><img src="/images/8447b565/python_install_1.png" alt="step2"></p>
-<h4 id="3">3</h4>
-<p>安装成功，点击<code>Close</code><br>
-<img src="/images/8447b565/python_install_2.png" alt="step3"></p>
+<p>在这多说一句，无论是下载什么软件都最好能去<strong>官方网站</strong>上下载，一般情况下，搜索引擎都会有一定的<strong>标识</strong>来指示官方的网站的。千万不要去什么<del>下载站</del>那些地方下载软件，也不知道会有什么<strong>病毒</strong>。</p>
+<p>进入官网后如下图，点击导航栏中的<strong>Downloads</strong>按钮<br><img src="/images/8447b565/python_org.png" alt="官网界面"><br>直接点击<strong>最大的黄色按钮</strong>即可，网站会自动检测系统（按钮中的显示<strong>python3.7.1</strong>，可见python3.x是将来的发展趋势）<br><img src="/images/8447b565/python_org_download.png" alt="下载选择"><br>点击后，在网页底部选择<strong>箭头所指处</strong>，下载。</p>
+<p><strong><em>注意</em></strong>：这是<strong>32位</strong>的安装包，若系统是<strong>64位</strong>则选择 <strong>“Windows x86-64 executable installer”</strong>。<br><img src="/images/8447b565/python_org_download_37.png" alt="python37"></p>
+<h3 id="第二步-安装"><a href="#第二步-安装" class="headerlink" title="第二步-安装"></a>第二步-安装</h3><p>下载完成后，双击安装包。</p>
+<h4 id="1"><a href="#1" class="headerlink" title="1"></a>1</h4><p>勾选下面的<code>Add Python 3.7 to PATH</code>，这个是将python添加到<strong>环境变量</strong>，如果忘记勾选，不用担心，后面有讲怎么手动添加<strong>环境变量</strong>。然后点击上面的<code>Install Now</code>，这个是<strong>默认安装</strong>，很明显默认安装路径是<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32</code>，而且一同安装<code>IDLE</code>（python自带的IDE，即集成开发环境），<code>pip</code>（python的一个包管理工具）等。若是点击了下面的<code>Customize installation</code>则是自定义安装，有需要的读者可自定义安装，但要记得勾选安装<code>pip</code>，其他默认即可<br><img src="/images/8447b565/python_install_0.png" alt="step1"></p>
+<h4 id="2"><a href="#2" class="headerlink" title="2"></a>2</h4><p><img src="/images/8447b565/python_install_1.png" alt="step2"></p>
+<h4 id="3"><a href="#3" class="headerlink" title="3"></a>3</h4><p>安装成功，点击<code>Close</code><br><img src="/images/8447b565/python_install_2.png" alt="step3"></p>
 <p><a name="step4"></a></p>
-<h4 id="4">4</h4>
-<p>按下组合键<kbd>win</kbd> + <kbd>R</kbd>，<kbd>win</kbd>键就是键盘上有windows徽标的那个键，输入<code>cmd</code>，按下确定，即可打开<strong>命令提示符</strong>，（也可以用鼠标点击<code>开始</code>-&gt;<code>所有程序</code>-&gt;<code>附件</code>-&gt;<code>命令提示符</code>）<br>
-<img src="/images/8447b565/python_install_3.png" alt="step4"></p>
-<h4 id="5">5</h4>
-<p>在<strong>命令提示符</strong>窗口中输入<code>python</code>，显示如下界面即证明安装成功<br>
-<img src="/images/8447b565/python_install_4.png" alt="step5"></p>
-<h4 id="6">6</h4>
-<p>若没有上述界面出现，那么可能是安装的时候忘记添加环境变量，即忘记勾选了<code>Add Python 3.7 to PATH</code>，此时需要手动配置环境变量，按如下操作添加环境变量，点击<code>开始</code>-&gt;右键<code>计算机</code>-&gt;选择<code>属性</code><br>
-<img src="/images/8447b565/python_install_5.png" alt="step6"></p>
-<h4 id="7">7</h4>
-<p>点击<code>高级系统设置</code><br>
-<img src="/images/8447b565/python_install_6.png" alt="step7"></p>
-<h4 id="8">8</h4>
-<p>点击选项卡<code>高级</code>，再点击<code>环境变量</code><br>
-<img src="/images/8447b565/python_install_7.png" alt="step8"></p>
-<h4 id="9">9</h4>
-<p>新建一个<strong>用户变量</strong>（若是<strong>系统变量</strong>则每个用户都可以使用，前提是安装第一步时勾选了<code>install launcher for all users</code>，<strong>用户变量</strong>则只是当前用户可使用）点击<code>新建</code>。<br>
-<img src="/images/8447b565/python_install_8.png" alt="step9"></p>
-<h4 id="10">10</h4>
-<p><strong>变量名</strong>为<code>PYTHON</code>（可以填其他名字），<strong>变量值</strong>为python的<strong>安装路径</strong>，若是默认安装一般为<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\</code>，若是自定义安装则填写安装时自己填下的路径，点击<code>确定</code><br>
-<img src="/images/8447b565/python_install_9.png" alt="step10"></p>
-<h4 id="11">11</h4>
-<p>以同样的方式再新建一个变量，名为<code>PYTHON_SCRIPT</code>（可以填其他名字）,值为python安装路径下的<code>Scripts</code>目录，默认为<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\Scripts\</code>。<br>
-<img src="/images/8447b565/python_install_10.png" alt="step11"></p>
-<h4 id="12">12</h4>
-<p>再新建一个变量，名为<code>PATH</code>，<strong>注意</strong>，这个名字是<strong>固定的</strong>，不可以随便填。值为<code>%PYTHON%;%PYTHON_SCRIPT%;</code>，<code>%变量名%</code>的意思是<strong>变量的值</strong>，所以读者也可以直接在<code>PATH</code>变量里填写<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\; C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\Scripts\;</code>。<strong>注意</strong>，若是选择将变量添加到<strong>系统变量</strong>，<strong>系统变量</strong>那一栏原来就有<code>PATH</code>变量，不用新建，直接把值添加到里面即可，注意用分号<code>;</code>隔开每个值。<br>
-<img src="/images/8447b565/python_install_11.png" alt="step12"></p>
-<h4 id="13">13</h4>
-<p>然后在<strong>命令提示符</strong>中输入<code>python</code>验证，具体看<a href="#step4">第4步</a></p>
-<h3 id="敬请期待">敬请期待</h3>
-<p>环境搭建到此完成，下面将进入python的基础教程。</p>
+<h4 id="4"><a href="#4" class="headerlink" title="4"></a>4</h4><p>按下组合键<kbd>win</kbd> + <kbd>R</kbd>，<kbd>win</kbd>键就是键盘上有windows徽标的那个键，输入<code>cmd</code>，按下确定，即可打开<strong>命令提示符</strong>，（也可以用鼠标点击<code>开始</code>-&gt;<code>所有程序</code>-&gt;<code>附件</code>-&gt;<code>命令提示符</code>）<br><img src="/images/8447b565/python_install_3.png" alt="step4"></p>
+<h4 id="5"><a href="#5" class="headerlink" title="5"></a>5</h4><p>在<strong>命令提示符</strong>窗口中输入<code>python</code>，显示如下界面即证明安装成功<br><img src="/images/8447b565/python_install_4.png" alt="step5"></p>
+<h4 id="6"><a href="#6" class="headerlink" title="6"></a>6</h4><p>若没有上述界面出现，那么可能是安装的时候忘记添加环境变量，即忘记勾选了<code>Add Python 3.7 to PATH</code>，此时需要手动配置环境变量，按如下操作添加环境变量，点击<code>开始</code>-&gt;右键<code>计算机</code>-&gt;选择<code>属性</code><br><img src="/images/8447b565/python_install_5.png" alt="step6"></p>
+<h4 id="7"><a href="#7" class="headerlink" title="7"></a>7</h4><p>点击<code>高级系统设置</code><br><img src="/images/8447b565/python_install_6.png" alt="step7"></p>
+<h4 id="8"><a href="#8" class="headerlink" title="8"></a>8</h4><p>点击选项卡<code>高级</code>，再点击<code>环境变量</code><br><img src="/images/8447b565/python_install_7.png" alt="step8"></p>
+<h4 id="9"><a href="#9" class="headerlink" title="9"></a>9</h4><p>新建一个<strong>用户变量</strong>（若是<strong>系统变量</strong>则每个用户都可以使用，前提是安装第一步时勾选了<code>install launcher for all users</code>，<strong>用户变量</strong>则只是当前用户可使用）点击<code>新建</code>。<br><img src="/images/8447b565/python_install_8.png" alt="step9"></p>
+<h4 id="10"><a href="#10" class="headerlink" title="10"></a>10</h4><p><strong>变量名</strong>为<code>PYTHON</code>（可以填其他名字），<strong>变量值</strong>为python的<strong>安装路径</strong>，若是默认安装一般为<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\</code>，若是自定义安装则填写安装时自己填下的路径，点击<code>确定</code><br><img src="/images/8447b565/python_install_9.png" alt="step10"></p>
+<h4 id="11"><a href="#11" class="headerlink" title="11"></a>11</h4><p>以同样的方式再新建一个变量，名为<code>PYTHON_SCRIPT</code>（可以填其他名字）,值为python安装路径下的<code>Scripts</code>目录，默认为<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\Scripts\</code>。<br><img src="/images/8447b565/python_install_10.png" alt="step11"></p>
+<h4 id="12"><a href="#12" class="headerlink" title="12"></a>12</h4><p>再新建一个变量，名为<code>PATH</code>，<strong>注意</strong>，这个名字是<strong>固定的</strong>，不可以随便填。值为<code>%PYTHON%;%PYTHON_SCRIPT%;</code>，<code>%变量名%</code>的意思是<strong>变量的值</strong>，所以读者也可以直接在<code>PATH</code>变量里填写<code>C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\; C:\User\你的用户名\AppData\Local\Programs\Python\Python37-32\Scripts\;</code>。<strong>注意</strong>，若是选择将变量添加到<strong>系统变量</strong>，<strong>系统变量</strong>那一栏原来就有<code>PATH</code>变量，不用新建，直接把值添加到里面即可，注意用分号<code>;</code>隔开每个值。<br><img src="/images/8447b565/python_install_11.png" alt="step12"></p>
+<h4 id="13"><a href="#13" class="headerlink" title="13"></a>13</h4><p>然后在<strong>命令提示符</strong>中输入<code>python</code>验证，具体看<a href="#step4">第4步</a></p>
+<h3 id="敬请期待"><a href="#敬请期待" class="headerlink" title="敬请期待"></a>敬请期待</h3><p>环境搭建到此完成，下面将进入python的基础教程。</p>
 
     </div>
 
@@ -511,13 +479,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

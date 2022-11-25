@@ -349,21 +349,19 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>条件语句一般用来判断给定的条件是否成立，根据结果来执行不同的代码，也就是说，有了条件语句，才可以根据不同的情况做不同的事，从而控制程序的流程。<span id="more"></span></p>
-<h3 id="布尔类型">布尔类型</h3>
-<p>前面说到数据类型的时候，其中有一种叫 <strong>“布尔”</strong> 的类型，对于读者们来说应该有一点困惑的，作者当初接触到布尔类型的时候也想过：</p>
+<h3 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h3><p>前面说到数据类型的时候，其中有一种叫 <strong>“布尔”</strong> 的类型，对于读者们来说应该有一点困惑的，作者当初接触到布尔类型的时候也想过：</p>
 <blockquote>
 <p>“这东西能有什么用？”</p>
 </blockquote>
 <p>其实，布尔类型和条件语句是密不可分的，判断一个条件是否成立，就是这个条件是“真”（True）还是“假”（False）。</p>
-<h3 id="关键字-if">关键字-if</h3>
-<p><code>if</code>是python的一个关键字，我们的条件语句就是<code>if</code>语句，基本语法格式如下：</p>
+<h3 id="关键字-if"><a href="#关键字-if" class="headerlink" title="关键字-if"></a>关键字-if</h3><p><code>if</code>是python的一个关键字，我们的条件语句就是<code>if</code>语句，基本语法格式如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 代码</span>
 <span class="token keyword">if</span> condition <span class="token punctuation">:</span>
     <span class="token comment"># 在这里写下条件condition成立要执行的代码</span>
 <span class="token comment"># 代码</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h4 id="代码块">代码块</h4>
-<p>冒号<code>:</code>表示一个<strong>代码块</strong>的开始，代码块里可以有多行语句，一个代码块被视为一个整体，可以认为一个代码块就是一条语句，<code>if</code>语句中的条件（上面的<code>condition</code>）成立，就执行后面的一个代码块。</p>
+<h4 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h4><p>冒号<code>:</code>表示一个<strong>代码块</strong>的开始，代码块里可以有多行语句，一个代码块被视为一个整体，可以认为一个代码块就是一条语句，<code>if</code>语句中的条件（上面的<code>condition</code>）成立，就执行后面的一个代码块。</p>
 <p>在C语言中，代码块是花括号括起的：<code>&#123;代码块&#125;</code>。而在python中，代码块是以<strong>缩进</strong>为准的，同一个代码块的行首空格数必须<strong>相同</strong>，否则执行时就会报错。python并不强制要求缩进的空格数量，官方建议用4个空格来作为代码块的缩进，也有人用制表符<code>tab</code>来缩进代码，这两种选择是网络上的两大对立阵营。其实用哪种也没必要纠结，按照官方的来就好了。</p>
 <blockquote>
 <p>“但是每次都打那么多空格很费劲啊！”</p>
@@ -377,23 +375,25 @@
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"10是大于3的"</span><span class="token punctuation">)</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"if代码块结束"</span><span class="token punctuation">)</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"程序结束"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>代码是从上往下一行一行的执行的，首先会打印<code>程序开始</code>，进入条件的判断，<code>10 &gt; 3</code>成立，结果为True，所以进入代码块，执行代码块中的三条语句，最后一行代码的缩进与前面的不同，所以<code>if</code>的代码块已结束，执行最后一行语句，最终输出如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">程序开始
 if代码块开始
 10是大于3的
 if代码块结束
 程序结束<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="关键字-else">关键字-else</h3>
-<p>我们还可以用关键字<code>else</code>形成的<code>else</code>语句，追加一个代码块，来表示条件不成立时执行：</p>
+
+<h3 id="关键字-else"><a href="#关键字-else" class="headerlink" title="关键字-else"></a>关键字-else</h3><p>我们还可以用关键字<code>else</code>形成的<code>else</code>语句，追加一个代码块，来表示条件不成立时执行：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">age <span class="token operator">=</span> <span class="token number">17</span>
 <span class="token keyword">if</span> age <span class="token operator">>=</span> <span class="token number">18</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"你是个成年人"</span><span class="token punctuation">)</span>
 <span class="token keyword">else</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"你还未成年"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的代码中，条件<code>age&gt;=18</code>不成立，为False，进入<code>else</code>的代码块，所以输出为：</p>
 <pre class="line-numbers language-none"><code class="language-none">你还未成年<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="关键字-elif">关键字-elif</h3>
-<p>上面的例子中，仅仅做了一个条件的判断，如果18岁以下再细分为16岁以上和16岁以下要怎么做才好？</p>
+
+<h3 id="关键字-elif"><a href="#关键字-elif" class="headerlink" title="关键字-elif"></a>关键字-elif</h3><p>上面的例子中，仅仅做了一个条件的判断，如果18岁以下再细分为16岁以上和16岁以下要怎么做才好？</p>
 <p>或许有些读者还是很聪明的。我们可以在<code>else</code>语句中，嵌套一个代码块，像这样：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">age <span class="token operator">=</span> <span class="token number">17</span>
 <span class="token keyword">if</span> age <span class="token operator">>=</span> <span class="token number">18</span><span class="token punctuation">:</span>
@@ -403,6 +403,7 @@ if代码块结束
         <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"你还未成年，但你已经超过16岁了！"</span><span class="token punctuation">)</span>
     <span class="token keyword">else</span><span class="token punctuation">:</span>
         <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"你还没到16岁"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的代码可以解决刚刚提出的问题，可是如果16岁以下还要细分怎么办？再嵌套？</p>
 <p>当然不行，如果嵌套过多会出现如下情况：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">if</span> condition1<span class="token punctuation">:</span>
@@ -417,6 +418,7 @@ if代码块结束
             <span class="token keyword">if</span> condition4<span class="token punctuation">:</span>
                 code4
             <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这就像是灾难！代码不仅不美观，而且可读性变差，不易于理解。</p>
 <p>那么怎么办？</p>
 <p><code>elif</code>该登场了<code>&lt;(￣︶￣)&gt;</code>，用上<code>elif</code>语句后，问题迎刃而解：</p>
@@ -427,10 +429,12 @@ if代码块结束
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"你还未成年，但你已经超过16岁了"</span><span class="token punctuation">)</span>
 <span class="token keyword">elif</span> age <span class="token operator">>=</span><span class="token number">14</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"你还是个14岁不到的小孩，无忧无虑"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的<code>if</code>条件不成立，所以跳到第一个<code>elif</code>中继续判断条件，条件仍然不成立，到下一个<code>elif</code>中继续判断，条件成立，程序输出：</p>
 <pre class="line-numbers language-none"><code class="language-none">你还是个14岁不到的小孩，无忧无虑<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="比较运算符">比较运算符</h3>
-<p>通常在写代码中很少直接出现布尔值<code>True</code>和<code>False</code>，而是通过比较运算得出来的，像上面的<code>&gt;=</code>、<code>&gt;</code>就是比较运算符了，下面是python所有的比较运算符：</p>
+
+
+<h3 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h3><p>通常在写代码中很少直接出现布尔值<code>True</code>和<code>False</code>，而是通过比较运算得出来的，像上面的<code>&gt;=</code>、<code>&gt;</code>就是比较运算符了，下面是python所有的比较运算符：</p>
 <table>
 <thead>
 <tr>
@@ -439,8 +443,7 @@ if代码块结束
 <th>例子</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>==</td>
 <td>等于</td>
 <td><code>1==1</code>为True，<code>1==2</code>为False</td>
@@ -470,11 +473,9 @@ if代码块结束
 <td>小于或等于</td>
 <td><code>1&lt;=2</code>为True，<code>2&lt;=2</code>为True，<code>4&lt;=3</code>为False</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p><strong>注意</strong>：其中的“等于”用的是连续的两个等号<code>==</code>，而一个等号<code>=</code>是赋值运算符，不要写错了。</p>
-<h3 id="逻辑运算符">逻辑运算符</h3>
-<p>其实之前讲布尔类型的时候也提到过逻辑运算符，同样给出一个表格：</p>
+<h3 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h3><p>其实之前讲布尔类型的时候也提到过逻辑运算符，同样给出一个表格：</p>
 <table>
 <thead>
 <tr>
@@ -483,8 +484,7 @@ if代码块结束
 <th>例子</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>and</td>
 <td>并且，数学中的 且（∧），两个都为True才为True</td>
 <td><code>100&gt;3 and 3&lt;=4</code>为True</td>
@@ -499,11 +499,9 @@ if代码块结束
 <td>非，数学中的非（┐），取反</td>
 <td><code>not True</code>为False，<code>not False</code>为True</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>多用用就可以记住了，读者们没必要死记硬背。</p>
-<h3 id="再谈布尔类型">再谈布尔类型</h3>
-<p>先来运行下面的代码：</p>
+<h3 id="再谈布尔类型"><a href="#再谈布尔类型" class="headerlink" title="再谈布尔类型"></a>再谈布尔类型</h3><p>先来运行下面的代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">if</span> <span class="token number">0</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'0'</span><span class="token punctuation">)</span>
     
@@ -516,10 +514,12 @@ if代码块结束
 <span class="token keyword">if</span> <span class="token string">'abc'</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'abc'</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>程序输出了：</p>
 <pre class="line-numbers language-none"><code class="language-none">1
 2
 abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>这是什么回事？？为什么1与True有同样的效果？？为什么0与False有同样的效果？？……</p>
 <p>其实这是python自动的将一些值转换成了布尔类型，不同的数据类型有不同的转换方式，常见的有以下的几种：</p>
 <table>
@@ -529,8 +529,7 @@ abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <th>转换方式</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>整数int</td>
 <td><code>0</code>转换成<code>False</code>，其它值转换成<code>True</code></td>
 </tr>
@@ -554,8 +553,7 @@ abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <td>集合set</td>
 <td>空集合<code>set()</code>转换成<code>False</code>，其他转换成<code>True</code></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>后面三个是即将要学到的三种数据结构，是python的基本数据类型，可先忽略。</p>
 <p>如果不清楚转换方式，可以自己手动转换看看结果，用<code>bool()</code>包起来，如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">bool</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
@@ -563,6 +561,7 @@ abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">bool</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">)</span>
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>注意</strong>：上面用词为“转换”，意味着不是“等于”，也就是说，<code>123</code>不等于<code>True</code>，只是转换之后是<code>True</code>，我们可以实验一下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">123</span><span class="token operator">==</span><span class="token boolean">True</span>
 <span class="token boolean">False</span>
@@ -573,6 +572,7 @@ abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span><span class="token operator">==</span><span class="token boolean">True</span>
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>刚才说过了，“转换”不意味着“等于”，所以前面两个的结果当然是<code>False</code>了，可是，后两个为什么是<code>True</code>？</p>
 <p>这个嘛，在python中bool类型是int类型的一个子类型（暂且这么说），<code>True</code>其实就是用数值<code>1</code>来表示的，<code>False</code>是用<code>0</code>来表示的，所以……希望读者不会晕<code>(@_@)</code></p>
 <hr>
@@ -668,13 +668,13 @@ abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

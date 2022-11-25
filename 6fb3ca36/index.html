@@ -340,91 +340,96 @@
     <div class="post-body" itemprop="articleBody">
         <p>距离上次的小项目已经休息了很长一段时间，是时候来继续本系列教程了。这一节开始我们将深入python中的数据结构。</p>
 <span id="more"></span>
-<h3 id="序列的概念">序列的概念</h3>
-<p>在python中，最基本的数据结构是<strong>序列</strong>，序列包含一个或多个元素，每个元素有一个序号，也就是元素的位置，也称为索引。第一个索引是0，第二个是1，以此类推。</p>
+
+<h3 id="序列的概念"><a href="#序列的概念" class="headerlink" title="序列的概念"></a>序列的概念</h3><p>在python中，最基本的数据结构是<strong>序列</strong>，序列包含一个或多个元素，每个元素有一个序号，也就是元素的位置，也称为索引。第一个索引是0，第二个是1，以此类推。</p>
 <p>说到这里，可能大家都想到了列表。确实，python中有好几种内建（自带）的序列，列表就是其中一种，当然，元组也是。其他的内建序列类型有字符串、字节串等。</p>
 <p>至于字符串，它其实就是一个由许多字符组成的序列，索引0指向第一个字符，索引1指向第二个字符……</p>
 <p>本系列教程主要学习<strong>列表</strong>、<strong>元组</strong>、<strong>字符串</strong>这三种序列，字节串不详细讨论。</p>
-<h3 id="通用序列操作">通用序列操作</h3>
-<p>所有的序列类型都有一些共同的操作，这些操作包括：<strong>索引</strong>、<strong>分片</strong>、<strong>加法</strong>、<strong>乘法</strong>还有检查某个元素是否包含在序列中。除此以外，python中还有一系列针对序列的内建函数。</p>
-<h4 id="索引">索引</h4>
-<p>索引操作其实就是通过索引访问元素的操作，十分简单，况且之前也有提过，在这里直接给出例子：</p>
+<h3 id="通用序列操作"><a href="#通用序列操作" class="headerlink" title="通用序列操作"></a>通用序列操作</h3><p>所有的序列类型都有一些共同的操作，这些操作包括：<strong>索引</strong>、<strong>分片</strong>、<strong>加法</strong>、<strong>乘法</strong>还有检查某个元素是否包含在序列中。除此以外，python中还有一系列针对序列的内建函数。</p>
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>索引操作其实就是通过索引访问元素的操作，十分简单，况且之前也有提过，在这里直接给出例子：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> s <span class="token operator">=</span> <span class="token string">'hello'</span>
 <span class="token operator">>></span><span class="token operator">></span> s<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>  <span class="token comment"># 正向索引</span>
 <span class="token string">'h'</span>
 <span class="token operator">>></span><span class="token operator">></span> s<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>  <span class="token comment"># 反向索引</span>
 <span class="token string">'o'</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>要注意的是，反向索引时，末尾元素的索引应该是-1，而不是-0，因为-0就是0，不然就与首元素索引重合了。</p>
-<h4 id="分片">分片</h4>
-<p>索引只可以访问一个元素，而分片可以访问一定区间（范围）内的元素。分片通过冒号隔开的两个索引来实现，前一个索引表示起点（包括起点），后一个索引包括终点（不包括终点）：</p>
+<h4 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h4><p>索引只可以访问一个元素，而分片可以访问一定区间（范围）内的元素。分片通过冒号隔开的两个索引来实现，前一个索引表示起点（包括起点），后一个索引包括终点（不包括终点）：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> s <span class="token operator">=</span> <span class="token string">'hello world'</span>
 <span class="token operator">>></span><span class="token operator">></span> s<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">:</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token string">'hello'</span>
 <span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>省略第一个索引表示从首元素开始：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>省略第二个索引表示索引的范围包含起点以及起点之后的<strong>所有</strong>元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">]</span>  <span class="token comment"># 两个索引都省略</span>
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>要注意的是，下面两种分片并不等价：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>注意</strong>：分片操作返回的序列是从原序列复制指定的范围内的元素而生成的，在新的序列中给元素重新赋值，并不影响原序列。</p>
 <p>我们还可以再指定一个数字来表示<strong>步长</strong>，具体看下面例子：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">:</span><span class="token number">10</span><span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的例子中，从索引0开始，每<strong>2</strong>个元素就取一个元素，这个<strong>2</strong>就是我所说的<strong>步长</strong>，在之前的例子中，我们的没有提供步长，这时的步长默认就是1。</p>
 <p>当然，步长不可以为0，步长为0将会报错。但是步长可以是负数！，这时分片从右往左提取元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> lst<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>上面例子中，分片从索引4的元素开始，每一步取一个元素，直到索引1（不包括该元素）。</p>
 <p>使用负数的步长常常会使人困惑，建议如无必要，还是不要使用负数的步长。</p>
-<h4 id="加法">加法</h4>
-<p>通过使用加法运算符<code>+</code>，我们可以进行序列的连接操作：</p>
+<h4 id="加法"><a href="#加法" class="headerlink" title="加法"></a>加法</h4><p>通过使用加法运算符<code>+</code>，我们可以进行序列的连接操作：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span>
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token string">'hello'</span> <span class="token operator">+</span> <span class="token string">'world'</span>
 <span class="token string">'helloworld'</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span>
 <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这十分简单，不过要注意，只有在<strong>相同类型</strong>的序列之间，才可以进行相加，不然就报错：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token string">'hello'</span>
 Traceback <span class="token punctuation">(</span>most recent call last<span class="token punctuation">)</span><span class="token punctuation">:</span>
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
 TypeError<span class="token punctuation">:</span> can only concatenate <span class="token builtin">list</span> <span class="token punctuation">(</span><span class="token keyword">not</span> <span class="token string">"str"</span><span class="token punctuation">)</span> to <span class="token builtin">list</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="乘法">乘法</h4>
-<p>我们把一个序列与整数n相乘来生成一个新的序列，这个新的序列将被重复n次：</p>
+
+<h4 id="乘法"><a href="#乘法" class="headerlink" title="乘法"></a>乘法</h4><p>我们把一个序列与整数n相乘来生成一个新的序列，这个新的序列将被重复n次：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">*</span> <span class="token number">5</span>
 <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token string">'hello '</span> <span class="token operator">*</span> <span class="token number">3</span>
 <span class="token string">'hello hello hello '</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="成员资格">成员资格</h4>
-<p>我们把确认一个值是否在序列中，称为检查这个值在序列中的<strong>成员资格</strong>。我们可以用运算符<code>in</code>来实现：</p>
+
+<h4 id="成员资格"><a href="#成员资格" class="headerlink" title="成员资格"></a>成员资格</h4><p>我们把确认一个值是否在序列中，称为检查这个值在序列中的<strong>成员资格</strong>。我们可以用运算符<code>in</code>来实现：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span> <span class="token keyword">in</span> lst
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token number">0</span> <span class="token keyword">in</span> lst
 <span class="token boolean">False</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>字符串比较特殊，我们不仅可以检查某个<strong>字符</strong>是否在一个字符串中，而且可以检查某个另一个<strong>字符串</strong>是否在该字符串中：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> s <span class="token operator">=</span> <span class="token string">'hello world'</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token string">'w'</span> <span class="token keyword">in</span> s
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token string">'world'</span> <span class="token keyword">in</span> s
 <span class="token boolean">True</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="操作序列的函数">操作序列的函数</h4>
-<p>除了上面的序列操作外，python还提供了一些内建函数用于操作序列，下面介绍最常用的len、min、max函数。</p>
+
+<h4 id="操作序列的函数"><a href="#操作序列的函数" class="headerlink" title="操作序列的函数"></a>操作序列的函数</h4><p>除了上面的序列操作外，python还提供了一些内建函数用于操作序列，下面介绍最常用的len、min、max函数。</p>
 <p>使用len函数可以得到序列的长度，也就是序列中元素的数量：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">len</span><span class="token punctuation">(</span>lst<span class="token punctuation">)</span>
@@ -432,17 +437,20 @@ TypeError<span class="token punctuation">:</span> can only concatenate <span cla
 <span class="token operator">>></span><span class="token operator">></span> s <span class="token operator">=</span> <span class="token string">'hello'</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">len</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
 <span class="token number">5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>min和max函数分别返回序列中的最小和最大的元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">min</span><span class="token punctuation">(</span>lst<span class="token punctuation">)</span>
 <span class="token number">1</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">max</span><span class="token punctuation">(</span><span class="token string">'hello world'</span><span class="token punctuation">)</span>
 <span class="token string">'w'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>min和max函数的参数还可以是多个参数：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">max</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span>
 <span class="token number">5</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">min</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span>
 <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这个时候相当于全部参数被收集成一个列表，再从中求出最大或最小的元素</p>
 <hr>
 <p>本节到此为止，读者们好好消化，我们下期再见！</p>
@@ -533,13 +541,13 @@ TypeError<span class="token punctuation">:</span> can only concatenate <span cla
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

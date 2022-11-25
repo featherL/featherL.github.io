@@ -350,8 +350,8 @@
     <div class="post-body" itemprop="articleBody">
         <p>syzkaller 中的 syz-manager 负责管理虚拟机，监控 crash，以及复现 crash</p>
 <span id="more"></span>
-<h2 id="main">main</h2>
-<p>从 main 函数开始，解析参数，加载 config 文件，随后调用 <code>RunManager</code></p>
+
+<h2 id="main"><a href="#main" class="headerlink" title="main"></a>main</h2><p>从 main 函数开始，解析参数，加载 config 文件，随后调用 <code>RunManager</code> </p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
 
 <span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -366,8 +366,8 @@
 	<span class="token punctuation">&#125;</span>
 	<span class="token function">RunManager</span><span class="token punctuation">(</span>cfg<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="RunManager">RunManager</h3>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
+
+<h3 id="RunManager"><a href="#RunManager" class="headerlink" title="RunManager"></a>RunManager</h3><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
 
 <span class="token keyword">func</span> <span class="token function">RunManager</span><span class="token punctuation">(</span>cfg <span class="token operator">*</span>mgrconfig<span class="token punctuation">.</span>Config<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 	<span class="token keyword">var</span> vmPool <span class="token operator">*</span>vm<span class="token punctuation">.</span>Pool
@@ -455,11 +455,10 @@
 	<span class="token punctuation">&#125;</span>
 	mgr<span class="token punctuation">.</span><span class="token function">vmLoop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 「3」</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><strong>「1」</strong> ，调用 <code>vm.Create</code> 创建 vmPool，顾名思义，vmPool 是用于管理虚拟机的一个池，这里不同的虚拟化方案都使用统一的接口来创建 vmPool，具体随后细述<br>
-<strong>「2」</strong>，开启一个 goroutine，定时记录虚拟机状态，覆盖率，crash 数量等信息<br>
-<strong>「3」</strong>，调用 <code>mgr.vmLoop</code> 开始启动虚拟机进行 fuzz，这个函数涵盖了大量的工作</p>
-<h4 id="vm-Create">vm.Create</h4>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// vm/vm.go</span>
+
+
+<p><strong>「1」</strong> ，调用 <code>vm.Create</code> 创建 vmPool，顾名思义，vmPool 是用于管理虚拟机的一个池，这里不同的虚拟化方案都使用统一的接口来创建 vmPool，具体随后细述<br><strong>「2」</strong>，开启一个 goroutine，定时记录虚拟机状态，覆盖率，crash 数量等信息<br><strong>「3」</strong>，调用 <code>mgr.vmLoop</code> 开始启动虚拟机进行 fuzz，这个函数涵盖了大量的工作</p>
+<h4 id="vm-Create"><a href="#vm-Create" class="headerlink" title="vm.Create"></a>vm.Create</h4><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// vm/vm.go</span>
 
 <span class="token comment">// Create creates a VM pool that can be used to create individual VMs.</span>
 <span class="token keyword">func</span> <span class="token function">Create</span><span class="token punctuation">(</span>cfg <span class="token operator">*</span>mgrconfig<span class="token punctuation">.</span>Config<span class="token punctuation">,</span> debug <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">*</span>Pool<span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -490,6 +489,7 @@
 		timeouts<span class="token punctuation">:</span> cfg<span class="token punctuation">.</span>Timeouts<span class="token punctuation">,</span>
 	<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token boolean">nil</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>「1」</strong>，根据配置文件的 <code>type</code> 字段获取对应 Type 对象为后续使用，<code>type</code> 字段表示虚拟机的类型，如 qemu，vmware</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// vm/vmimpl/vmimpl.go</span>
 
@@ -510,6 +510,8 @@
 		Overcommit<span class="token punctuation">:</span> allowsOvercommit<span class="token punctuation">,</span>
 	<span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p>各种虚拟化对应的模块调用 <code>Register</code> 函数注册 Type 对象，以 qemu 为例</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// vm/qemu/qemu.go</span>
 
@@ -517,6 +519,8 @@
 	<span class="token keyword">var</span> <span class="token boolean">_</span> vmimpl<span class="token punctuation">.</span>Infoer <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>instance<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">)</span>
 	vmimpl<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span><span class="token string">"qemu"</span><span class="token punctuation">,</span> ctor<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>「2」</strong>，调用对应 Type 对象的 Ctor 函数指针创建实现了 Pool 接口的对象，以 qemu 为例，观看 qemu.ctor 函数实现</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// vm/vmimpl/vmimpl.go</span>
 <span class="token keyword">type</span> Pool <span class="token keyword">interface</span> <span class="token punctuation">&#123;</span>
@@ -560,8 +564,8 @@
 	<span class="token punctuation">&#125;</span>
 	<span class="token keyword">return</span> pool<span class="token punctuation">,</span> <span class="token boolean">nil</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="mgr-vmLoop">mgr.vmLoop</h4>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
+
+<h4 id="mgr-vmLoop"><a href="#mgr-vmLoop" class="headerlink" title="mgr.vmLoop"></a>mgr.vmLoop</h4><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
 
 <span class="token keyword">func</span> <span class="token punctuation">(</span>mgr <span class="token operator">*</span>Manager<span class="token punctuation">)</span> <span class="token function">vmLoop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 <span class="token comment">// ...</span>
@@ -618,10 +622,11 @@
 <span class="token comment">// ...</span>
 	<span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>「1」</strong>，存在需要复现的 crash，且有足够的虚拟机，则取出 <strong>instancesPerRepro</strong> （4 与 vmCount 的最小值） 个虚拟机以供调用 <code>repro.Run</code> 复现 crash</p>
 <p><strong>「2」</strong>，没有 crash 且还有虚拟机可用，取出一个虚拟机调用 <code>mgr.runInstance</code> 进行 fuzz</p>
-<h5 id="mgr-runInstance">mgr.runInstance</h5>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
+<h5 id="mgr-runInstance"><a href="#mgr-runInstance" class="headerlink" title="mgr.runInstance"></a>mgr.runInstance</h5><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
 
 <span class="token keyword">func</span> <span class="token punctuation">(</span>mgr <span class="token operator">*</span>Manager<span class="token punctuation">)</span> <span class="token function">runInstance</span><span class="token punctuation">(</span>index <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">*</span>Crash<span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 	mgr<span class="token punctuation">.</span><span class="token function">checkUsedFiles</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -644,6 +649,8 @@
 	<span class="token punctuation">&#125;</span>
 	<span class="token keyword">return</span> crash<span class="token punctuation">,</span> <span class="token boolean">nil</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p>调用 <code>mgr.runInstanceInner</code>  后，整理输出返回</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// syz-manager/manager.go</span>
 
@@ -685,6 +692,7 @@
 	<span class="token keyword">return</span> rep<span class="token punctuation">,</span> vmInfo<span class="token punctuation">,</span> <span class="token boolean">nil</span>
 <span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>「1」</strong>，复制 syz-fuzzer 到虚拟机中</p>
 <p><strong>「2」</strong>，复制 syz-executor 到虚拟机中</p>
 <p><strong>「3」</strong>，ssh 执行虚拟机里的 syz-fuzzer</p>
@@ -708,9 +716,10 @@
 	cmd <span class="token operator">:=</span> osutil<span class="token punctuation">.</span><span class="token function">Command</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token operator">...</span><span class="token punctuation">)</span>
 	<span class="token comment">// ...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>「4」</strong>，监控虚拟机 oops 信息，用 <code>bytes.Contains</code> 检查是否有特征序列来查看是否出现了 crash</p>
-<h5 id="repro-Run">repro.Run</h5>
-<p>最主要就是调用了 <code>ctx.repro</code></p>
+<h5 id="repro-Run"><a href="#repro-Run" class="headerlink" title="repro.Run"></a>repro.Run</h5><p>最主要就是调用了 <code>ctx.repro</code></p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// pkg/repro/repro.go</span>
 
 <span class="token keyword">func</span> <span class="token punctuation">(</span>ctx <span class="token operator">*</span>context<span class="token punctuation">)</span> <span class="token function">repro</span><span class="token punctuation">(</span>entries <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">*</span>prog<span class="token punctuation">.</span>LogEntry<span class="token punctuation">,</span> crashStart <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">*</span>Result<span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -743,6 +752,8 @@
 
 	<span class="token keyword">return</span> res<span class="token punctuation">,</span> <span class="token boolean">nil</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>「1」</strong>，提取出造成 crash 的程序</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// pkg/repro/repro.go</span>
 
@@ -788,6 +799,8 @@
 
 <span class="token comment">// ...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>「2」</strong>，简化调用和参数</p>
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">// pkg/repro/repro.go</span>
 
@@ -846,10 +859,11 @@
 <span class="token comment">// ...</span>
 	<span class="token keyword">return</span> p0<span class="token punctuation">,</span> callIndex0
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>「3」</strong>，根据 crash 构造 C 代码</p>
 <p><strong>「4」</strong>、<strong>「5」</strong>，简化构造成功的 C 代码</p>
-<h2 id="参考">参考</h2>
-<ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bsauce.github.io/2022/05/14/syzkaller2/">syzkaller 源码阅读笔记2（syz-manager） — bsauce</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://sourcegraph.com/github.com/google/syzkaller@master">https://sourcegraph.com/github.com/google/syzkaller@master</a></li>
 </ul>
@@ -941,13 +955,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

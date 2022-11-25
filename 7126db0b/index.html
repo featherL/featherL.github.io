@@ -349,13 +349,14 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>这一节，我来简单讲讲python自带的数据结构。<span id="more"></span></p>
-<h3 id="列表（list）">列表（list）</h3>
-<p>列表是常用的python数据结构，类似于C语言的数组，用来存储多个元素，与之不同的是，C语言的数组中的元素的类型是相同的，而列表可以是不同类型的元素。</p>
+<h3 id="列表（list）"><a href="#列表（list）" class="headerlink" title="列表（list）"></a>列表（list）</h3><p>列表是常用的python数据结构，类似于C语言的数组，用来存储多个元素，与之不同的是，C语言的数组中的元素的类型是相同的，而列表可以是不同类型的元素。</p>
 <p>创建一个列表可以用一对方括号<code>[]</code>扩起的用逗号<code>,</code>分隔的值（元素）来表示：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> list1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>我们可以打印这个列表：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>list1<span class="token punctuation">)</span>
 <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">1.2</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>访问列表中的元素可以用<code>列表名[索引]</code>的方式，就像是操作一个变量一样。例如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>list1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># 输出第一个元素</span>
 a
@@ -365,6 +366,7 @@ b
 <span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>list1<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">+</span> list1<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># 用元素运算</span>
 <span class="token number">124.2</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>注意</strong>：在计算机中，索引一般是从0开始的，也就是说第一个元素的索引是0，依次类推。<strong>“索引”</strong> 还有另一种称呼——<strong>“偏移量”</strong>，一个元素的偏移量就是该元素相对于首元素位置的偏移，如第2个元素相对于首元素的偏移为1，第3个元素的偏移量为2……因为第1个元素相对于第1个元素的偏移量显然0，所以“偏移量”这个称呼更有利于记住<strong>首元素是0号元素</strong>，所以作者更倾向于这个称呼，读者请随意。</p>
 <p>访问列表中的元素要注意索引（偏移量）是否越界，比如上面4个元素的列表，如果访问第5个元素将会<strong>报错</strong>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>list1<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
@@ -372,9 +374,11 @@ Traceback <span class="token punctuation">(</span>most recent call last<span cla
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
 IndexError<span class="token punctuation">:</span> <span class="token builtin">list</span> index out of <span class="token builtin">range</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面英文的大致意思是：列表的索引超出范围，刚刚创建的列表只有4个元素，不存在第5元素，当然会报错了。</p>
 <p>我们可以创建一个空列表：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span>list1 <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 或者用 list1 = []</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>可以添加元素</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> list1 <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> list1
@@ -385,6 +389,7 @@ IndexError<span class="token punctuation">:</span> <span class="token builtin">l
 <span class="token operator">>></span><span class="token operator">></span> list1
 <span class="token punctuation">[</span><span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token number">123</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>还可以删除元素：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> list1
 <span class="token punctuation">[</span><span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token number">123</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
@@ -395,17 +400,20 @@ IndexError<span class="token punctuation">:</span> <span class="token builtin">l
 <span class="token operator">>></span><span class="token operator">></span> list1
 <span class="token punctuation">[</span><span class="token number">123</span><span class="token punctuation">]</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>我们可以用下一节要讲到的<code>for</code>循环语句来遍历列表：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">list1 <span class="token operator">=</span> <span class="token punctuation">[</span> <span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">456.0</span> <span class="token punctuation">]</span>
 <span class="token comment"># 循环将列表中的元素赋值给变量e</span>
 <span class="token keyword">for</span> e <span class="token keyword">in</span> list1<span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>输出如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">hello
 123
 456.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="元组（tuple）">元组（tuple）</h3>
-<p>元组的用法和列表类似，列表可以改变，如赋值、添加元素、删除元素等，但是元组不可以改变，所以也就<strong>不能</strong>进行赋值、添加、删除等操作。</p>
+
+
+<h3 id="元组（tuple）"><a href="#元组（tuple）" class="headerlink" title="元组（tuple）"></a>元组（tuple）</h3><p>元组的用法和列表类似，列表可以改变，如赋值、添加元素、删除元素等，但是元组不可以改变，所以也就<strong>不能</strong>进行赋值、添加、删除等操作。</p>
 <p>元组的用法如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> tuple1 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> tuple1
@@ -416,6 +424,7 @@ IndexError<span class="token punctuation">:</span> <span class="token builtin">l
 <span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span>tuple1<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span class="token number">456</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的例子中表明圆括号<code>()</code>不是必要的，其实逗号<code>,</code>才是元组所用的语法符号，但是创建一个空元组的时候用一对圆括号<code>()</code>而不是一个逗号<code>,</code>，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> tuple1 <span class="token operator">=</span> <span class="token punctuation">,</span> <span class="token comment"># 错误</span>
   File <span class="token string">"&lt;stdin>"</span><span class="token punctuation">,</span> line <span class="token number">1</span>
@@ -426,7 +435,8 @@ SyntaxError<span class="token punctuation">:</span> invalid syntax
 <span class="token operator">>></span><span class="token operator">></span> tuple1
 <span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> tuple1 <span class="token operator">=</span> <span class="token builtin">tuple</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 也可以这样创建空元组</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>之前将多个变量同时赋值时，有一句<code>a, b, c = 1, 2, 'hello'</code>，这其实是把一个元组<code>1, 2, 'hello</code>赋值给三个变量<code>a, b, c</code>，像这样把一个元组赋值给多个变量的操作称为 <strong>“解包”</strong>，列表也是可以进行解包的<code>^_^</code>，元组解包操作代码如下：</p>
+
+<p>之前将多个变量同时赋值时，有一句<code>a, b, c = 1, 2, &#39;hello&#39;</code>，这其实是把一个元组<code>1, 2, &#39;hello</code>赋值给三个变量<code>a, b, c</code>，像这样把一个元组赋值给多个变量的操作称为 <strong>“解包”</strong>，列表也是可以进行解包的<code>^_^</code>，元组解包操作代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> tuple1
 <span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">456</span><span class="token punctuation">,</span> <span class="token string">'hello'</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c <span class="token operator">=</span> tuple1
@@ -437,16 +447,18 @@ SyntaxError<span class="token punctuation">:</span> invalid syntax
 <span class="token operator">>></span><span class="token operator">></span> c
 <span class="token string">'hello'</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>元组同样可以用<code>for</code>语句来遍历：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">tuple1 <span class="token operator">=</span> <span class="token punctuation">(</span> <span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">456.0</span> <span class="token punctuation">)</span>
 <span class="token keyword">for</span> e <span class="token keyword">in</span> tuple1<span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>输出：</p>
 <pre class="line-numbers language-none"><code class="language-none">hello
 123
 456.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="字典（dict）">字典（dict）</h3>
-<p>列表按索引访问元素，索引只能是整数，而有时候我们需要一种更方便的方式操作元素，如：电话簿按照姓名查找电话号码，字典按照单词查找意思。像这样用不是整数的“索引”来访问元素的数据结构叫做字典，在C语言中也叫“关联数组”，字典的“索引”称为 <strong>“键”</strong>，<strong>“关键字”</strong>，元素称为 <strong>“值”</strong>，<strong>“键值”</strong>，字典中的每对键和值称为 <strong>“项”</strong>。</p>
+
+<h3 id="字典（dict）"><a href="#字典（dict）" class="headerlink" title="字典（dict）"></a>字典（dict）</h3><p>列表按索引访问元素，索引只能是整数，而有时候我们需要一种更方便的方式操作元素，如：电话簿按照姓名查找电话号码，字典按照单词查找意思。像这样用不是整数的“索引”来访问元素的数据结构叫做字典，在C语言中也叫“关联数组”，字典的“索引”称为 <strong>“键”</strong>，<strong>“关键字”</strong>，元素称为 <strong>“值”</strong>，<strong>“键值”</strong>，字典中的每对键和值称为 <strong>“项”</strong>。</p>
 <p>创建一个字典的方法是，用一对花括号<code>&#123;&#125;</code>扩起一系列用逗号分隔的键值对（项），其中键值对的表示方法是<code>键:值</code>，即<code>&#123; 键1:值1, 键2:值2, 键3:值3&#125;</code>，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> dict1 <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'hello'</span><span class="token punctuation">:</span><span class="token string">'你好'</span><span class="token punctuation">,</span> <span class="token string">'python'</span><span class="token punctuation">:</span><span class="token string">'一门计算机语言'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> dict1
@@ -456,6 +468,7 @@ SyntaxError<span class="token punctuation">:</span> invalid syntax
 <span class="token punctuation">&#123;</span><span class="token string">'hello'</span><span class="token punctuation">:</span> <span class="token string">'你好'</span><span class="token punctuation">,</span> <span class="token string">'python'</span><span class="token punctuation">:</span> <span class="token string">'一门计算机语言'</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>一些简单的操作：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> dict1<span class="token punctuation">[</span><span class="token string">'hello'</span><span class="token punctuation">]</span>
 <span class="token string">'你好'</span>
@@ -471,14 +484,17 @@ SyntaxError<span class="token punctuation">:</span> invalid syntax
 <span class="token operator">>></span><span class="token operator">></span> dict1
 <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>也可用<code>for</code>语句遍历字典，但是<code>for</code>语句遍历的是字典的键，得到了键自然就可以得到值：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">dict1 <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'hello'</span><span class="token punctuation">:</span><span class="token string">'你好'</span><span class="token punctuation">,</span> <span class="token string">'python'</span><span class="token punctuation">:</span><span class="token string">'一门计算机语言'</span><span class="token punctuation">&#125;</span>
 <span class="token keyword">for</span> k <span class="token keyword">in</span> dict1<span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>k<span class="token punctuation">,</span><span class="token string">' =>'</span><span class="token punctuation">,</span> dict1<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>输出如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">hello  &#x3D;&gt; 你好
 python  &#x3D;&gt; 一门计算机语言<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <hr>
 <p>本节只是简单了解python中常用的数据结构，不作深入探究，同时引出循环语句，接下来详细介绍编程中十分重要的语法——循环语句……</p>
 
@@ -572,13 +588,13 @@ python  &#x3D;&gt; 一门计算机语言<span aria-hidden="true" class="line-num
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

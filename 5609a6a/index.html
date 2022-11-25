@@ -340,9 +340,9 @@
     <div class="post-body" itemprop="articleBody">
         <p>五一假期最后一天，随便写写记录一下最近干的事情和心情。还整理了最近学习的东西，以及相关的一些文章链接，感兴趣都可以看看</p>
 <span id="more"></span>
-<h2 id="最近在学">最近在学</h2>
-<h3 id="关于-v8">关于 v8</h3>
-<p>最近一整个月都没更新文章，比较摸鱼，断断续续的学习 v8 的漏洞利用，以及打打比赛。关于 v8 的利用之前是打算一周复习一个 CVE 的，本来在 <strong>CVE-2019-5782</strong> 文章后面，应该会发一篇关于 <strong>CVE-2018-17463</strong> 的复现文章了， 但是后来发现，在没有搞懂 v8 JIT 的优化之前，很多 CVE 的复现都只能停留在看前辈的文章逐步跟着走，调试摸清楚 exp 都做了什么，而我想达到的是能够根据官方提供的 poc，能够有能力的自己构造 exp。</p>
+
+
+<h2 id="最近在学"><a href="#最近在学" class="headerlink" title="最近在学"></a>最近在学</h2><h3 id="关于-v8"><a href="#关于-v8" class="headerlink" title="关于 v8"></a>关于 v8</h3><p>最近一整个月都没更新文章，比较摸鱼，断断续续的学习 v8 的漏洞利用，以及打打比赛。关于 v8 的利用之前是打算一周复习一个 CVE 的，本来在 <strong>CVE-2019-5782</strong> 文章后面，应该会发一篇关于 <strong>CVE-2018-17463</strong> 的复现文章了， 但是后来发现，在没有搞懂 v8 JIT 的优化之前，很多 CVE 的复现都只能停留在看前辈的文章逐步跟着走，调试摸清楚 exp 都做了什么，而我想达到的是能够根据官方提供的 poc，能够有能力的自己构造 exp。</p>
 <p>所以最近在摸索 v8 的 JIT 优化编译器 <strong>Turbofan</strong>，有点难，学得比较吃力，这里扔下几篇在看的文章吧，同样感兴趣读者可以看看：</p>
 <ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://doar-e.github.io/blog/2019/01/28/introduction-to-turbofan/">https://doar-e.github.io/blog/2019/01/28/introduction-to-turbofan/</a></li>
@@ -351,31 +351,25 @@
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.anquanke.com/post/id/229554">https://www.anquanke.com/post/id/229554</a></li>
 </ul>
 <p>4 月 12 日左右的时候，chrome 爆出 0day，当时 v8 引擎已经修复了，但是 chrome 浏览器没有发布新的版本，仍然存在漏洞，编号是 <strong>CVE-2021-21220</strong>，我就去研究了一下，原理倒是搞懂了，还是那样只能停留在分析别人的 exp 上，而没法根据已有 poc 构造 exp。所以我就没打算写复现文章了。后面陆续发现了 issuse 上有 4 个不同的 poc，都是构造一个长度为 -1 的数组的方式，我打算等学习好 Turbofan 后，再来尝试根据这 4 个 poc，都构造 exp，届时会好好写篇文章（如果我还记得）</p>
-<h3 id="关于编译原理">关于编译原理</h3>
-<p>感觉编译原理挺重要的，而且这方面也有点兴趣，不过我的专业没开这门课，也不想增加自己的学业负担而去跨专业选课，就在 <em>中国大学Mooc</em> 上找了门课程自己学习。说来惭愧，本身自己的课程也没怎么认真听（可以说几乎没听），这编译原理网课倒是学得比自己专业的课程要多，不过进度也比计算机专业的学生慢了点。</p>
+<h3 id="关于编译原理"><a href="#关于编译原理" class="headerlink" title="关于编译原理"></a>关于编译原理</h3><p>感觉编译原理挺重要的，而且这方面也有点兴趣，不过我的专业没开这门课，也不想增加自己的学业负担而去跨专业选课，就在 <em>中国大学Mooc</em> 上找了门课程自己学习。说来惭愧，本身自己的课程也没怎么认真听（可以说几乎没听），这编译原理网课倒是学得比自己专业的课程要多，不过进度也比计算机专业的学生慢了点。</p>
 <p>五一过后也得好好补补自己专业的课程了哈哈哈。</p>
-<h3 id="关于操作系统">关于操作系统</h3>
-<p>这个可以说是我最大的执念，一直想着写内核，但是一直都是做了一点点又开始忙别的事情去了。这导致我每次想做的时候，都得从头开始再搞懂一些细节。</p>
+<h3 id="关于操作系统"><a href="#关于操作系统" class="headerlink" title="关于操作系统"></a>关于操作系统</h3><p>这个可以说是我最大的执念，一直想着写内核，但是一直都是做了一点点又开始忙别的事情去了。这导致我每次想做的时候，都得从头开始再搞懂一些细节。</p>
 <p>在这方面的话，这学期在看的书有两本：</p>
 <ol>
 <li>《操作系统真象还原》  这个本书的这个‘象’字就是这个字，不是错别字</li>
 <li>《一个64位操作系统的设计与实现》</li>
 </ol>
 <p>第一本书看了也有一半了，第二本书还没怎么看，希望这学期都能看完吧</p>
-<h3 id="关于编程水平">关于编程水平</h3>
-<p>最近想提高自己的 C++ 编程水平，跟着文章学习，实现一个 markdown 解析器，其实早该完成的，只是我太摸鱼了，没怎么动，写写停停，周末想起有这回事的时候去写几行代码，两个星期了都还没写完哈哈哈</p>
-<p>编程最有意思的时候当然是造轮子啦，趁着还没毕业还没工作，还有时间，当然自娱自乐造轮子啦，最近也发现一个有意思的项目：<br>
-<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/danistefanovic/build-your-own-x">https://github.com/danistefanovic/build-your-own-x</a></p>
+<h3 id="关于编程水平"><a href="#关于编程水平" class="headerlink" title="关于编程水平"></a>关于编程水平</h3><p>最近想提高自己的 C++ 编程水平，跟着文章学习，实现一个 markdown 解析器，其实早该完成的，只是我太摸鱼了，没怎么动，写写停停，周末想起有这回事的时候去写几行代码，两个星期了都还没写完哈哈哈</p>
+<p>编程最有意思的时候当然是造轮子啦，趁着还没毕业还没工作，还有时间，当然自娱自乐造轮子啦，最近也发现一个有意思的项目：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/danistefanovic/build-your-own-x">https://github.com/danistefanovic/build-your-own-x</a></p>
 <p>这个项目上汇集了很多编程项目的教程，包括我一直以来最想做的两件事情：</p>
 <ol>
 <li>从头开始，写一个系统内核，再到一个完整的操作系统</li>
 <li>写一个编译器/解释器</li>
 </ol>
-<p>第一点中，我从上面的项目中看到了一个很符合我想法的教程：<br>
-<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/playlist?list=PLHh55M_Kq4OApWScZyPl5HhgsTJS9MZ6M">https://www.youtube.com/playlist?list=PLHh55M_Kq4OApWScZyPl5HhgsTJS9MZ6M</a></p>
+<p>第一点中，我从上面的项目中看到了一个很符合我想法的教程：<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/playlist?list=PLHh55M_Kq4OApWScZyPl5HhgsTJS9MZ6M">https://www.youtube.com/playlist?list=PLHh55M_Kq4OApWScZyPl5HhgsTJS9MZ6M</a></p>
 <p>这个教程的目录就很吸引我，不仅实现了 GUI，还实现了网络通信</p>
-<h2 id="关于-ctf-比赛">关于 ctf 比赛</h2>
-<p>最近主要打了两场国际赛吧，协会一直以来都想向国际靠拢，开始尝试打打国际 ctf 比赛，确实很难。</p>
+<h2 id="关于-ctf-比赛"><a href="#关于-ctf-比赛" class="headerlink" title="关于 ctf 比赛"></a>关于 ctf 比赛</h2><p>最近主要打了两场国际赛吧，协会一直以来都想向国际靠拢，开始尝试打打国际 ctf 比赛，确实很难。</p>
 <p>先是打了 PlaidCTF，题目质量确实挺好的，前面提到的 chrome 0day 直接就用来出题了。题目挺难的，而且我也忙着其他事情，在找到一题的利用点后，交给学弟后，我就跑路了，后面没怎么看题，最后学弟确实做出来了，我也挺开心的</p>
 <p>五一假期还打了长 Defcon 的资格赛，pwn 题好多，题目好难，投入时间很多，但没什么收获，应该是题目难度和自身水平差太远了，协会最后就做出了两题 pwn 和 一题 web，只排在了 50 名左右</p>
 <p>这两场比赛给我打自闭了，就一直在想为啥别人这么强啊（难道我头发多？</p>
@@ -383,10 +377,8 @@
 <blockquote>
 <p><strong>“比你强的总有人在，不必太过纠结，好好提升自己的水平就好了”</strong></p>
 </blockquote>
-<h2 id="写在最后">写在最后</h2>
-<p>关于操作系统和编译器的两个最想写的项目，可能这学期都没空做了，学业太繁忙，只能先学学理论知识了。</p>
-<p>有一件比较开心的事情就是：暑期实习找到了，国内的某安全实验室，具体哪里就不写了<br>
-还是挺期待实习的，不知道实习后，我的认知和技术会得到什么样提升呢？</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>关于操作系统和编译器的两个最想写的项目，可能这学期都没空做了，学业太繁忙，只能先学学理论知识了。</p>
+<p>有一件比较开心的事情就是：暑期实习找到了，国内的某安全实验室，具体哪里就不写了<br>还是挺期待实习的，不知道实习后，我的认知和技术会得到什么样提升呢？</p>
 <p>现在大二，下学期就大三了，时间过得真快。留给我慢慢接触感兴趣事情的时间还有多少呢？</p>
 <p><strong>少画饼，多干事，别想太多，走着瞧吧！</strong></p>
 
@@ -479,13 +471,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

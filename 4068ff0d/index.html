@@ -351,14 +351,12 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>函数，这和数学中的函数有点关联，但又不是完全等价<span id="more"></span></p>
-<h3 id="概念">概念</h3>
-<p>不说的这么官方，我就已自己的理解来表达 <code>^_^</code></p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>不说的这么官方，我就已自己的理解来表达 <code>^_^</code></p>
 <p>在数学中，把一个或多个值（输入x）进行一定的计算或者映射，得到一个值（输出y），这个计算或者映射的过程就叫做函数，可以表达成：<code>y=f(x)</code>，其中f就是一个函数。</p>
 <p>计算机中的函数和数学中的函数是很像的，把一定的输入（x），传递到一个函数中，进行某些操作，最后也可返回结果（y）。这里说的是“也”，意味着，在计算机中，函数是可以没有输出（y）的。</p>
 <p>我们把函数的输入称为 <strong>“参数”</strong>，函数输出称为 <strong>“返回值”</strong></p>
 <p>我们可以把一段重复使用的代码定义成函数，要用的时候只需要调用即可，不需要每次都写那么大段的代码，这是一种“懒惰的智慧”。</p>
-<h3 id="函数的使用">函数的使用</h3>
-<p>在python中，有很多内置的函数，我们常用的print就是一个函数，在使用时，括号里的就是我们的参数，而这个函数是没有返回值的。</p>
+<h3 id="函数的使用"><a href="#函数的使用" class="headerlink" title="函数的使用"></a>函数的使用</h3><p>在python中，有很多内置的函数，我们常用的print就是一个函数，在使用时，括号里的就是我们的参数，而这个函数是没有返回值的。</p>
 <hr>
 <p>对了 <code>╰(￣▽￣)╭</code>，其实在python中没有返回值的函数，都隐式地返回了一个<code>None</code>空值，这打脸真快 <code>(°ー°〃)</code></p>
 <hr>
@@ -369,6 +367,7 @@
 
 <span class="token comment"># 传递多个参数，默认以空格分开输出每个参数，其它类型的值自动转换成字符串类型</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'3'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在调用函数的时候，只需写出函数名，并跟一对括号，括号里的填写函数所需的参数即可。</p>
 <p>现在再来看另一个例子，前面曾介绍过使用幂运算符<code>**</code>来计算乘方，现在我们可以用pow函数来替代这个运算符，下面是计算2<sup>3</sup>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">2</span><span class="token operator">**</span><span class="token number">3</span>
@@ -376,12 +375,13 @@
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">pow</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span>
 <span class="token number">8</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>显然，第一个参数是底数，第二个参数是幂，函数返回值为计算的结果8，这个pow函数就很符合数学中的函数的特征了，有输入（参数），有输出（返回值），我们还可以结合函数调用和运算符做更复杂的语句，像下面这样，不用<code>**</code>运算符计算 1 + 2<sup>10</sup>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">1</span> <span class="token operator">+</span> <span class="token builtin">pow</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span>
 <span class="token number">1025</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="获取用户输入">获取用户输入</h3>
-<p>到目前为止，我们还没学过怎么获取用户的输入，早就该提了，可是博主认为还是应该理解函数之后再接触较好，所以只能拖到现在了，真是不好意思</p>
+
+<h3 id="获取用户输入"><a href="#获取用户输入" class="headerlink" title="获取用户输入"></a>获取用户输入</h3><p>到目前为止，我们还没学过怎么获取用户的输入，早就该提了，可是博主认为还是应该理解函数之后再接触较好，所以只能拖到现在了，真是不好意思 </p>
 <p>好了，废话不多说，现在来介绍主角：input函数，上代码！</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"下面计算a+b"</span><span class="token punctuation">)</span>
 
@@ -389,9 +389,8 @@ a <span class="token operator">=</span> <span class="token builtin">int</span><s
 b <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请输入b:"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"a + b = "</span><span class="token punctuation">,</span> a<span class="token operator">+</span>b<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>由于需要交互，用文字不好表达，现在放上一张动图自己感受感受！<br>
-<img src="/images/4068ff0d/input.gif" alt="input函数演示"><br>
-input函数接受一个字符串参数，并输出这个参数，等待用户的输入，按下回车后，输入的这一行字符串作为返回值返回出去。</p>
+
+<p>由于需要交互，用文字不好表达，现在放上一张动图自己感受感受！<br><img src="/images/4068ff0d/input.gif" alt="input函数演示"><br>input函数接受一个字符串参数，并输出这个参数，等待用户的输入，按下回车后，输入的这一行字符串作为返回值返回出去。</p>
 <p>上面的input函数调用是放在<code>int()</code>中的，意味着我们用<code>int()</code>将字符串转换成整数类型，这样才可以进行整数运算，如果我们输入的字符串不是数字，那么转换就会失败，强烈建议读者亲自尝试一下！</p>
 <hr>
 <p>其它有用的函数，这里直接给出例子，具体看注释：</p>
@@ -402,19 +401,21 @@ input函数接受一个字符串参数，并输出这个参数，等待用户的
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># 将一个列表或者类似的数据类型中的所有元素加起来</span>
 <span class="token number">15</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>round函数用于四舍五入，有时候我们需要把数值向下取整，我们可以利用<code>int()</code>转换成整数时截断小数来实现，也可以使用一个叫floor的函数实现，这个函数不能直接使用，它存在于一个模块中。</p>
-<h3 id="模块">模块</h3>
-<p>我们可以把功能类似的函数，比如用于数学运算的函数，放到一个模块中统一管理，python有很多优秀的内置模块，其中还真有一个数学相关的模块，称为math。</p>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>我们可以把功能类似的函数，比如用于数学运算的函数，放到一个模块中统一管理，python有很多优秀的内置模块，其中还真有一个数学相关的模块，称为math。</p>
 <p>我们可以使用关键字import导入模块，像下面这样使用前面提到的floor函数对数值向下取整：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">import</span> math <span class="token comment"># 导入模块</span>
 <span class="token operator">>></span><span class="token operator">></span> math<span class="token punctuation">.</span>floor<span class="token punctuation">(</span><span class="token number">1.9</span><span class="token punctuation">)</span> <span class="token comment"># 使用math模块中的floor函数</span>
 <span class="token number">1</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果不想每次调用函数都在前加上模块名字的话，可以使用以下的形式：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">from</span> math <span class="token keyword">import</span> ceil
 <span class="token operator">>></span><span class="token operator">></span> ceil<span class="token punctuation">(</span><span class="token number">12.1</span><span class="token punctuation">)</span> <span class="token comment"># 向上取整</span>
 <span class="token number">13</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>像上面那样，使用 <code>from 模块 import 函数1,函数2,函数3</code> 这种形式的import语句，可以直接使用函数的名字进行调用，但是要确保不要存在同名的函数，如果存在同名的函数，使用的是后导入的函数。</p>
 <p>还有一种形式的import语句，添加<code>as</code>关键字可以为函数或者模块设置别名，比如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 把floor导入使用fl作为别名，把ceil导入并使用ce作为别名</span>
@@ -428,10 +429,10 @@ input函数接受一个字符串参数，并输出这个参数，等待用户的
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'m.ceil(14.1) is'</span><span class="token punctuation">,</span> m<span class="token punctuation">.</span>ceil<span class="token punctuation">(</span><span class="token number">14.1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'m.sqrt(4) is'</span><span class="token punctuation">,</span> m<span class="token punctuation">.</span>sqrt<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># 计算4的平方根</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>小提示</strong>：其实，我们还可以把函数赋值给一个变量，使用变量来调用函数，比如<code>func=math.floor</code>，然后就可以使用<code>func(12.9)</code>来调用floor函数对12.9向下取整了</p>
 <hr>
-<h3 id="总结">总结</h3>
-<p>这一节我们学习了函数和模块的概念，并使用input函数获取输入，增加程序的交互，下一节将介绍如何自己创建函数，并在结束函数的学习后，做一个像样的小例子，敬请期待 <code>ヾ(￣▽￣)Bye~Bye~</code></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这一节我们学习了函数和模块的概念，并使用input函数获取输入，增加程序的交互，下一节将介绍如何自己创建函数，并在结束函数的学习后，做一个像样的小例子，敬请期待 <code>ヾ(￣▽￣)Bye~Bye~</code></p>
 
     </div>
 
@@ -523,13 +524,13 @@ input函数接受一个字符串参数，并输出这个参数，等待用户的
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

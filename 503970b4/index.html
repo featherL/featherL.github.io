@@ -354,9 +354,10 @@
     <div class="post-body" itemprop="articleBody">
         <p>buuoj刷pwn题之ACTF_2019_message</p>
 <span id="more"></span>
+
 <p>heap题，有add，delete，edit，show</p>
 <p>没开PIE，got表不可写</p>
-<p><s>(buuoj没有给libc，原题是有的，buuoj有原题链接，进去下载)</s></p>
+<p><del>(buuoj没有给libc，原题是有的，buuoj有原题链接，进去下载)</del></p>
 <p>delete函数没有清空指针，存在double free：</p>
 <p><img src="/images/503970b4/1.png" alt="delete"></p>
 <p>add函数无<code>\x00</code>截断字符串，加上show函数应该可以泄露信息：</p>
@@ -364,9 +365,9 @@
 <p><img src="/images/503970b4/3.png" alt="show"></p>
 <p>思路，double free，malloc到可以控制nodes的chunk</p>
 <p>修改nodes，指向got表，泄露地址，再修改nodes指向free_hook，修改成system，然后free来getshell</p>
-<p><s>本地ok，但远程偏移相差0x10（具体看注释），而且远程死活getshell不成功</s></p>
-<p><s>题目的libc是2.23，无法getshell，换成本地的2.27，成了，具体原因不太清楚</s></p>
-<p>buuoj用的是libc2.27有tcache机制，不需要fastbin范围检查，<s>exp一开始是按照2.23来写的，考虑了范围检查，就懒得改了</s></p>
+<p><del>本地ok，但远程偏移相差0x10（具体看注释），而且远程死活getshell不成功</del></p>
+<p><del>题目的libc是2.23，无法getshell，换成本地的2.27，成了，具体原因不太清楚</del></p>
+<p>buuoj用的是libc2.27有tcache机制，不需要fastbin范围检查，<del>exp一开始是按照2.23来写的，考虑了范围检查，就懒得改了</del></p>
 <p>exp:</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf8</span>
 <span class="token comment">#!/usr/bin/python2</span>
@@ -561,13 +562,13 @@ irt<span class="token punctuation">(</span><span class="token punctuation">)</sp
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

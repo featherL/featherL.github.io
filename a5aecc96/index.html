@@ -21,12 +21,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.xi4oyu.top","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="高考完后这么就才想起这系列教程，实在抱歉，现在该来继续教程了。 本节利用前面所学知识，来完成一个小工具——文本编辑器！">
+<meta name="description" content="高考完后这么就才想起这系列教程，实在抱歉，现在该来继续教程了。本节利用前面所学知识，来完成一个小工具——文本编辑器！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python小项目之文本编辑器">
 <meta property="og:url" content="http://www.xi4oyu.top/a5aecc96/index.html">
 <meta property="og:site_name" content="feather&#39;s blog">
-<meta property="og:description" content="高考完后这么就才想起这系列教程，实在抱歉，现在该来继续教程了。 本节利用前面所学知识，来完成一个小工具——文本编辑器！">
+<meta property="og:description" content="高考完后这么就才想起这系列教程，实在抱歉，现在该来继续教程了。本节利用前面所学知识，来完成一个小工具——文本编辑器！">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://www.xi4oyu.top/images/a5aecc96/1.png">
 <meta property="og:image" content="http://www.xi4oyu.top/images/a5aecc96/2.png">
@@ -356,16 +356,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>高考完后这么就才想起这系列教程，实在抱歉，现在该来继续教程了。<br>
-本节利用前面所学知识，来完成一个小工具——文本编辑器！</p>
+        <p>高考完后这么就才想起这系列教程，实在抱歉，现在该来继续教程了。<br>本节利用前面所学知识，来完成一个小工具——文本编辑器！</p>
 <span id="more"></span>
-<h3 id="tkinter">tkinter</h3>
-<p>在实现文本编辑器之前，先来了解下tkinter这个python库。</p>
+
+<h3 id="tkinter"><a href="#tkinter" class="headerlink" title="tkinter"></a>tkinter</h3><p>在实现文本编辑器之前，先来了解下tkinter这个python库。</p>
 <p>tkinter库用来实现GUI程序（<em>Graphical User Interface</em> 图形用户界面），我们实现的文本编辑器是有图形的，类似windows系统下的记事本。</p>
 <p>当然啦，写GUI程序不只有tkinter库，还有更为强大的pyqt、wxpython等，不过对于本节实现编辑器来说，简单的tkinter库就已经足够了，而且windows安装的python一般自带了这个库，不必另外安装。</p>
-<h3 id="实现文本编辑器">实现文本编辑器</h3>
-<h4 id="第一步——界面">第一步——界面</h4>
-<p>首先，我们先把编辑器的图形界面写好。</p>
+<h3 id="实现文本编辑器"><a href="#实现文本编辑器" class="headerlink" title="实现文本编辑器"></a>实现文本编辑器</h3><h4 id="第一步——界面"><a href="#第一步——界面" class="headerlink" title="第一步——界面"></a>第一步——界面</h4><p>首先，我们先把编辑器的图形界面写好。</p>
 <p>什么？还没说tkinter库怎么用就开工了？<code>@_@</code></p>
 <p>别慌！很简单，看下面代码，相信注释很清楚了：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> tkinter
@@ -398,24 +395,24 @@ text <span class="token operator">=</span> tkinter<span class="token punctuation
 text<span class="token punctuation">.</span>pack<span class="token punctuation">(</span><span class="token punctuation">)</span> 
 
 win<span class="token punctuation">.</span>mainloop<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 进入消息循环</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>使用tkinter创建GUI程序，一般有以下框架：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">win <span class="token operator">=</span> tkinter<span class="token punctuation">.</span>Tk<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 创建窗口</span>
 
 <span class="token comment"># 界面的布局，如添加按钮、文本框等等</span>
 
 win<span class="token punctuation">.</span>mainloop<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 进入消息循环</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>现在不必理解这个框架，我们就照着写就好了。</p>
 <p>现在对其中的一些地方做下解释，一般创建控件（按钮，文本框等称为控件）的第一个参数为所在的容器，我们的程序里的控件都在主窗口里，也就是<code>win</code>对象。</p>
 <p>我们首先创建了一个文本输入框，用来设置要操作文件的路径。</p>
 <p>创建按钮可以使用关键字参数<code>text</code>来设置按钮的标签（显示的文字），用关键字参数<code>command</code>来设置点击按钮所做的事，我们分别创建了两个按钮，一个用来打开文件，一个用来保存文件。</p>
 <p>最后创建了一个多行文本框，用于文件的编辑。</p>
-<p>运行程序，窗口<em>大致</em>如下：<br>
-<img src="/images/a5aecc96/1.png" alt="文本编辑器界面"></p>
-<p>大家的界面的样式可能有点不一样，这个因操作系统环境而异<br>
-（本人比较懒，因为本节重点不是图形界面，所以没有去规划界面的布局，仅仅把控件直接随意放置，如有兴趣，可以自己搜索tkinter的具体用法，画一个比这个好看得多的界面<code>^_^</code>）</p>
-<h4 id="第二步——打开文件">第二步——打开文件</h4>
-<p>现在我们来实现打开文件这个功能，还记得前面有一句这样的代码吗?</p>
+<p>运行程序，窗口<em>大致</em>如下：<br><img src="/images/a5aecc96/1.png" alt="文本编辑器界面"></p>
+<p>大家的界面的样式可能有点不一样，这个因操作系统环境而异<br>（本人比较懒，因为本节重点不是图形界面，所以没有去规划界面的布局，仅仅把控件直接随意放置，如有兴趣，可以自己搜索tkinter的具体用法，画一个比这个好看得多的界面<code>^_^</code>）</p>
+<h4 id="第二步——打开文件"><a href="#第二步——打开文件" class="headerlink" title="第二步——打开文件"></a>第二步——打开文件</h4><p>现在我们来实现打开文件这个功能，还记得前面有一句这样的代码吗?</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">btn_open <span class="token operator">=</span> tkinter<span class="token punctuation">.</span>Button<span class="token punctuation">(</span>win<span class="token punctuation">,</span> text<span class="token operator">=</span><span class="token string">'打开'</span><span class="token punctuation">,</span> command<span class="token operator">=</span>do_open<span class="token punctuation">)</span>  <span class="token comment"># 创建按钮用于打开文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>我们给创建按钮的tkinter.Button函数（<em>实际上这不是函数</em>），传递了一个参数<code>command=do_open</code>，该参数用于设置当按钮被点击时自动调用的函数，所以我们的重点就是实现这个当点击时自动调用的do_open函数。</p>
 <p>打开文件的流程是怎么样的呢？</p>
 <ol>
@@ -433,12 +430,11 @@ win<span class="token punctuation">.</span>mainloop<span class="token punctuatio
         content <span class="token operator">=</span> fr<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment">#一次性读取文件内容，对大文件不宜使用</span>
         text<span class="token punctuation">.</span>delete<span class="token punctuation">(</span><span class="token number">0.0</span><span class="token punctuation">,</span> tkinter<span class="token punctuation">.</span>END<span class="token punctuation">)</span>  <span class="token comment"># 清空文本框内容</span>
         text<span class="token punctuation">.</span>insert<span class="token punctuation">(</span>tkinter<span class="token punctuation">.</span>END<span class="token punctuation">,</span> content<span class="token punctuation">)</span>  <span class="token comment"># 在光标后插入内容</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>首先我们通过<code>file_path = entry_file.get()</code>获取到了文本输入框的内容作为文件的路径，用with代码块打开文件，读取文件数据后，将数据插入到多行文本框显示。</p>
 <p>在插入数据之前，先使用<code>text.delete(0.0, tkinter.END)</code>清空文本框，这里就不多解释了。具体用法可以自己查查。</p>
-<p>示例如下（这里我打开了python源码文件本身）：<br>
-<img src="/images/a5aecc96/2.png" alt="打开文件"></p>
-<h4 id="第三步——保存文件">第三步——保存文件</h4>
-<p>保存文件的功能实现类似打开文件，点击保存按钮后：获取多行文本框内容=&gt;打开文件=&gt;写入文件</p>
+<p>示例如下（这里我打开了python源码文件本身）：<br><img src="/images/a5aecc96/2.png" alt="打开文件"></p>
+<h4 id="第三步——保存文件"><a href="#第三步——保存文件" class="headerlink" title="第三步——保存文件"></a>第三步——保存文件</h4><p>保存文件的功能实现类似打开文件，点击保存按钮后：获取多行文本框内容=&gt;打开文件=&gt;写入文件</p>
 <p>话不多说，上代码！</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">do_save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token comment"># 保存文件</span>
@@ -446,12 +442,11 @@ win<span class="token punctuation">.</span>mainloop<span class="token punctuatio
     file_path <span class="token operator">=</span> entry_file<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 文件路径</span>
     <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>file_path<span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> fw<span class="token punctuation">:</span>
         fw<span class="token punctuation">.</span>write<span class="token punctuation">(</span>content<span class="token punctuation">)</span>  <span class="token comment"># 写入数据到文件中</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>gif动图演示：<br>
-<img src="/images/a5aecc96/3.gif" alt="保存文件"></p>
+
+<p>gif动图演示：<br><img src="/images/a5aecc96/3.gif" alt="保存文件"></p>
 <p>首先我在多行文本框中输入了<code>abcdefghijk</code>，在文本输入框输入文件路径<code>1.txt</code>，然后点击保存。</p>
 <p>之后把多行文本框的内容都删掉，再打开1.txt文件，可以看到刚刚输入的<code>abcdefghijk</code>内容，浏览目录也可以发现，当前目录下确实多了一个1.txt文件，可以用记事本查看，文件确实保存成功！</p>
-<h4 id="完整代码">完整代码</h4>
-<p>现贴出完整的代码：</p>
+<h4 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h4><p>现贴出完整的代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> tkinter
 <span class="token comment"># 导入tkinter库</span>
 
@@ -493,8 +488,8 @@ text <span class="token operator">=</span> tkinter<span class="token punctuation
 text<span class="token punctuation">.</span>pack<span class="token punctuation">(</span><span class="token punctuation">)</span> 
 
 win<span class="token punctuation">.</span>mainloop<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 进入消息循环</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="总结">总结</h3>
-<p>这个小工具很简单（也很丑 <code>(￣_,￣ )</code>），但也将文件读写的知识应用到了实际。</p>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这个小工具很简单（也很丑 <code>(￣_,￣ )</code>），但也将文件读写的知识应用到了实际。</p>
 <p>如果大家对tkinter有兴趣的话，可以自己搜索学习，相信大家能做出有趣的程序来。</p>
 
     </div>
@@ -587,13 +582,13 @@ win<span class="token punctuation">.</span>mainloop<span class="token punctuatio
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

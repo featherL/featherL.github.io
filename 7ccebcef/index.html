@@ -350,8 +350,8 @@
     <div class="post-body" itemprop="articleBody">
         <p>介绍Linux中的文本信息，以及学习文本文件处理的相关命令。</p>
 <span id="more"></span>
-<h3 id="Linux中的文本信息">Linux中的文本信息</h3>
-<p>主要分为以下几类：</p>
+
+<h3 id="Linux中的文本信息"><a href="#Linux中的文本信息" class="headerlink" title="Linux中的文本信息"></a>Linux中的文本信息</h3><p>主要分为以下几类：</p>
 <ul>
 <li>C语言，Java语言等编程文件的源程序文本文件</li>
 <li>文本格式的数据文件</li>
@@ -359,15 +359,13 @@
 <li>系统配置信息 如/etc下的配置文件</li>
 <li>程序的输出</li>
 </ul>
-<h4 id="文本型网络协议">文本型网络协议</h4>
-<p>因特网大部分传输层以上的协议是文本型协议</p>
+<h4 id="文本型网络协议"><a href="#文本型网络协议" class="headerlink" title="文本型网络协议"></a>文本型网络协议</h4><p>因特网大部分传输层以上的协议是文本型协议</p>
 <p>例如：</p>
 <ul>
 <li>会话层协议：HTTP，POP3，SMTP，IMAP</li>
 <li>表示层协议：HTML，XML，MIME，JSON</li>
 </ul>
-<h3 id="文本文件处理常用命令">文本文件处理常用命令</h3>
-<p>可以使用重定向机制和管道机制，把多个命令组合使用。</p>
+<h3 id="文本文件处理常用命令"><a href="#文本文件处理常用命令" class="headerlink" title="文本文件处理常用命令"></a>文本文件处理常用命令</h3><p>可以使用重定向机制和管道机制，把多个命令组合使用。</p>
 <p>Linux中的文本文件处理命令的特点：</p>
 <ul>
 <li>不指定处理对象文件名时，从标准输入获得数据</li>
@@ -386,8 +384,7 @@
 <li>tr：翻译字符（替换字符）</li>
 <li>uniq：筛选重复行</li>
 </ul>
-<h4 id="more与less">more与less</h4>
-<p>more使用方法举例：</p>
+<h4 id="more与less"><a href="#more与less" class="headerlink" title="more与less"></a>more与less</h4><p>more使用方法举例：</p>
 <ul>
 <li><code>more shudu.c</code> 指定一个文件</li>
 <li><code>more *.[ch]</code> 指定多个文件</li>
@@ -410,8 +407,7 @@
 <li>用Home键翻到第一页，或者用End键翻到最后一页</li>
 </ul>
 <p>more和less都可以同时处理多个文件</p>
-<h4 id="cat与od">cat与od</h4>
-<p>cat命名来源于英文concatenate——串结，查字典查到意思是“把 （一系列事件、事情等）联系起来”。这个命令用于打印文件内容，选项-n可以显示行号。</p>
+<h4 id="cat与od"><a href="#cat与od" class="headerlink" title="cat与od"></a>cat与od</h4><p>cat命名来源于英文concatenate——串结，查字典查到意思是“把 （一系列事件、事情等）联系起来”。这个命令用于打印文件内容，选项-n可以显示行号。</p>
 <p>od octal dump 逐字节打印。常用选项有：</p>
 <ul>
 <li>-c 按照字符打印，如果这个字节为ascii码就显示为对应的字符，字符如果不可打印就显示为八进制码</li>
@@ -421,8 +417,7 @@
 <li>-t u1 每一字节不可见字符显示为无符号的十进制码</li>
 </ul>
 <p>cat和od命令都可以同时处理多个文件</p>
-<h4 id="head与tail">head与tail</h4>
-<p>head显示文件内容前10行，tail显示文件内容最后10行，-n选项可以指定显示的行数。</p>
+<h4 id="head与tail"><a href="#head与tail" class="headerlink" title="head与tail"></a>head与tail</h4><p>head显示文件内容前10行，tail显示文件内容最后10行，-n选项可以指定显示的行数。</p>
 <p>一些用法：</p>
 <ul>
 <li><code>head -n 15 ab.c</code> 显示文件ab.c的前15行</li>
@@ -431,29 +426,32 @@
 <li><code>tail -f debug.txt</code> 实时打印文件尾部被追加的内容</li>
 </ul>
 <p>head和tail命令都可以同时处理多个文件</p>
-<h4 id="tee">tee</h4>
-<p>tee命令将从标准输入得到的数据抄送到标准输出显示，与此同时，把数据存入磁盘文件中，也可以同时写入多个文件。</p>
+<h4 id="tee"><a href="#tee" class="headerlink" title="tee"></a>tee</h4><p>tee命令将从标准输入得到的数据抄送到标准输出显示，与此同时，把数据存入磁盘文件中，也可以同时写入多个文件。</p>
 <p>用法举例：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">vim</span> <span class="token number">1</span>.txt <span class="token operator">|</span> <span class="token function">tee</span> /dev/pts/1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p><code>/dev/pts/1</code>是一个终端设备文件，这条命令使用vim编辑文件1.txt，并同时显示在<code>/dev/pts/1</code>终端的屏幕上。</p>
-<h4 id="wc">wc</h4>
-<p>wc命令的功能主要是统计文件行数，单词数，字符数。</p>
+<h4 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h4><p>wc命令的功能主要是统计文件行数，单词数，字符数。</p>
 <p>文件shudu.c有240行，576个单词，5264个字符：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">wc</span> shudu.c 
  <span class="token number">240</span>  <span class="token number">576</span> <span class="token number">5264</span> shudu.c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>使用选项-l，只列出行数：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">wc</span> -l shudu.c
 <span class="token number">240</span> shudu.c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>当同时处理多个文件的时候，还列出一个合计：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">wc</span> shudu.c arg.c 
  <span class="token number">240</span>  <span class="token number">576</span> <span class="token number">5264</span> shudu.c
    <span class="token number">9</span>   <span class="token number">24</span>  <span class="token number">153</span> arg.c
  <span class="token number">249</span>  <span class="token number">600</span> <span class="token number">5417</span> total<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>结合管道和ps命令，查看系统所有进程的个数</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">wc</span> -l
 <span class="token number">166</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h4 id="sort">sort</h4>
-<p>sort命令按照字符串排序，每一行为一个字符串，默认为升序。</p>
+
+
+<h4 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h4><p>sort命令按照字符串排序，每一行为一个字符串，默认为升序。</p>
 <p>文件test.txt内容是：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt 
 aasd
@@ -461,6 +459,7 @@ zxcaw
 <span class="token number">456</span>
 <span class="token number">1234</span>
 as<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>用sort排序：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sort</span> test.txt   
 <span class="token number">1234</span>
@@ -468,6 +467,7 @@ as<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><
 aasd
 as
 zxcaw<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>使用-n选项，对数字按照算术值大小排序，而不是按照字符串比较规则排序。</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sort</span> test.txt -n
 aasd
@@ -475,9 +475,9 @@ as
 zxcaw
 <span class="token number">456</span>
 <span class="token number">1234</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>更多选项可以用man命令查看</p>
-<h4 id="tr">tr</h4>
-<p>基本用法：<code>tr string1 string2</code> 把标准输入拷贝到标准输出，string1中出现的字符替换为string2中的对应字符。</p>
+<h4 id="tr"><a href="#tr" class="headerlink" title="tr"></a>tr</h4><p>基本用法：<code>tr string1 string2</code> 把标准输入拷贝到标准输出，string1中出现的字符替换为string2中的对应字符。</p>
 <p>把前面提到的test.txt文件中的字符转换成大写：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">tr</span> axcwdzs <span class="token string">'AXCWDZS'</span>
 AASD
@@ -485,6 +485,7 @@ ZXCAW
 <span class="token number">456</span>
 <span class="token number">1234</span>
 AS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>或者直接使用[]指定一个集合：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">tr</span> <span class="token string">'[a-z]'</span> <span class="token string">'[A-Z]'</span>
 AASD
@@ -492,6 +493,7 @@ ZXCAW
 <span class="token number">456</span>
 <span class="token number">1234</span>
 AS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>可以用<code>\</code>加一个八进制数值来表示一个字符，下面是把字符<code>1</code>换成换行符（<code>\012</code>）</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">tr</span> <span class="token string">'1'</span> <span class="token string">'\012'</span>    
 aasd
@@ -500,8 +502,9 @@ zxcaw
 
 <span class="token number">234</span>
 as<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="uniq">uniq</h4>
-<p>uniq命令用与筛选文件中重复的行，重复的行是指<strong>连续的</strong>、<strong>相同的</strong>行。</p>
+
+
+<h4 id="uniq"><a href="#uniq" class="headerlink" title="uniq"></a>uniq</h4><p>uniq命令用与筛选文件中重复的行，重复的行是指<strong>连续的</strong>、<strong>相同的</strong>行。</p>
 <p>与大部分命令不同，这个命令最多指定两个文件，第一个文件为输入文件，第二个文件为输出文件。</p>
 <p>现有name.txt文件，内容如下：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cat</span> name.txt 
@@ -511,6 +514,7 @@ Lee
 lee
 feather
 Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>不带选项运行uniq命令，打印没有重复的行和有重复的行，重复的行只打印一次</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> name.txt 
 feather
@@ -518,15 +522,18 @@ Lee
 lee
 feather
 Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>使用-u （uniqe）选项，打印没有重复的行</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> -u name.txt 
 Lee
 lee
 feather
 Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>使用-d （duplicated）选项，打印有重复的行，重复的行只打印一次</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> -d name.txt
 feather<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>使用-c选项，统计每行的重复次数</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">uniq</span> -c name.txt  
       <span class="token number">2</span> feather
@@ -534,6 +541,7 @@ feather<span aria-hidden="true" class="line-numbers-rows"><span></span><span></s
       <span class="token number">1</span> lee
       <span class="token number">1</span> feather
       <span class="token number">1</span> Linux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>注意</strong>：重复的行是指<strong>连续的</strong>、<strong>相同的</strong>行</p>
 
     </div>
@@ -626,13 +634,13 @@ feather<span aria-hidden="true" class="line-numbers-rows"><span></span><span></s
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

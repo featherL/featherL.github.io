@@ -349,8 +349,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>在介绍了函数定义的方法后，再来介绍一些进阶知识<span id="more"></span></p>
-<h3 id="参数收集">参数收集</h3>
-<p>有时候我们需要参数的数量是任意的，比如print函数的参数的数量是任意的，print函数的内部实现我们不探究，但是单单是参数数量可变这一方面实现起来不难，我们只需像下面这样定义函数：</p>
+<h3 id="参数收集"><a href="#参数收集" class="headerlink" title="参数收集"></a>参数收集</h3><p>有时候我们需要参数的数量是任意的，比如print函数的参数的数量是任意的，print函数的内部实现我们不探究，但是单单是参数数量可变这一方面实现起来不难，我们只需像下面这样定义函数：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">print_params</span><span class="token punctuation">(</span><span class="token operator">*</span>params<span class="token punctuation">)</span><span class="token punctuation">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> 
@@ -365,6 +364,7 @@
 <span class="token operator">>></span><span class="token operator">></span> print_params<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span>
 <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>可以看到，我们在函数的定义时，只定义了一个参数，但参数前面带有一个星号<code>*</code>，并且调用函数时，输出的结果显示，这个参数是一个元组，这个元组有我们调用时的所有参数。</p>
 <p>实际上，参数前的星号的作用是，将<strong>剩下</strong>的值收集起来做为元组一个整体，给这个参数，何谓”剩下“？我们再来一段代码:</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">print_params</span><span class="token punctuation">(</span>p1<span class="token punctuation">,</span> <span class="token operator">*</span>params<span class="token punctuation">)</span><span class="token punctuation">:</span>
@@ -378,6 +378,7 @@
 <span class="token number">1</span>
 <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>可见，所谓“剩下”，就是除了开头的p1位置参数外，<strong>剩下</strong>的所有位置参数。</p>
 <p>没错！是剩下的<strong>位置参数</strong>，收集<strong>剩下</strong>的关键字参数需要两个星号：<code>**</code></p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">print_params</span><span class="token punctuation">(</span>p1<span class="token punctuation">,</span> <span class="token operator">*</span>params<span class="token punctuation">,</span> <span class="token operator">**</span>kwparams<span class="token punctuation">)</span><span class="token punctuation">:</span>
@@ -390,10 +391,10 @@ hello
 <span class="token punctuation">(</span><span class="token string">'feather'</span><span class="token punctuation">,</span> <span class="token string">'Lee'</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span><span class="token string">'x'</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'y'</span><span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'z'</span><span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">&#125;</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这样看来很显而易见了，收集关键字参数的是元组，而收集关键字参数的是字典</p>
 <p><strong>注意咯</strong>，在一个函数中只能定义一个<code>*</code>前缀参数和一个<code>**</code>前缀参数，为什么？可以想想python解释器怎么识别</p>
-<h3 id="参数收集的逆过程">参数收集的逆过程</h3>
-<p>使用<code>*</code>和<code>**</code>在函数的定义时用于收集参数，而在调用时使用就是用于分配参数了</p>
+<h3 id="参数收集的逆过程"><a href="#参数收集的逆过程" class="headerlink" title="参数收集的逆过程"></a>参数收集的逆过程</h3><p>使用<code>*</code>和<code>**</code>在函数的定义时用于收集参数，而在调用时使用就是用于分配参数了</p>
 <p>在元组前加上一个星号<code>*</code>，就会对元组（列表也可以）进行展开</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">return</span> x<span class="token operator">+</span>y
@@ -402,8 +403,9 @@ hello
 <span class="token operator">>></span><span class="token operator">></span> add<span class="token punctuation">(</span><span class="token operator">*</span>params<span class="token punctuation">)</span>
 <span class="token number">3</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的<code>add(*params)</code>中的<code>*params</code>会被展开成<code>add(1,2)</code>，这不正是把收集起来的位置参数再分配出来吗？</p>
-<p>正如你所想，字典<code>&#123;'x':1,'y':2,'z':3&#125;</code>，可以使用两个星号即<code>**</code>，展开成关键字参数调用的方式<code>x=1,y=2,z=3</code>，比如下面这段代码：</p>
+<p>正如你所想，字典<code>&#123;&#39;x&#39;:1,&#39;y&#39;:2,&#39;z&#39;:3&#125;</code>，可以使用两个星号即<code>**</code>，展开成关键字参数调用的方式<code>x=1,y=2,z=3</code>，比如下面这段代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">def</span> <span class="token function">printzyx</span><span class="token punctuation">(</span>z<span class="token punctuation">,</span> y<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">:</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span>z<span class="token punctuation">)</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>     <span class="token keyword">print</span><span class="token punctuation">(</span>y<span class="token punctuation">)</span>
@@ -414,9 +416,9 @@ hello
 <span class="token number">3</span>
 <span class="token number">2</span>
 <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的<code>printzyx(**keys)</code>相当于<code>printzyx(x=1,y=2,z=3)</code></p>
-<h3 id="递归">递归</h3>
-<p>函数里可以调用其他函数，这是必然的，然而，函数还可以调用自身，上面说到，每次调用函数时都会生成一个新的命名空间，所以函数调用自身，实际上运行了两个不同的函数，这也是为什么函数可以调用“自身”了，这种现象称为<strong>递归</strong>。</p>
+<h3 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h3><p>函数里可以调用其他函数，这是必然的，然而，函数还可以调用自身，上面说到，每次调用函数时都会生成一个新的命名空间，所以函数调用自身，实际上运行了两个不同的函数，这也是为什么函数可以调用“自身”了，这种现象称为<strong>递归</strong>。</p>
 <p>递归这个词的意思简单说就是自己引用自己，递归有一个幽默的定义：</p>
 <blockquote>
 <p>递归[名词]：参见递归</p>
@@ -424,16 +426,17 @@ hello
 <p>像这样自己解释自己，自己引用自己的都可以称为递归，像上面那样的递归，这是一个<strong>无穷递归</strong>，永远没有停止，如果定义一个函数像下面这样：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     func<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>这个函数也是个<em>无穷递归</em>，运行不一会，程序就会崩溃，理论上，它应该永远运行下去，然而，每次调用函数都会用掉一点内存，这点内存要在函数结束时才会回收，递归达到一定深度后，python解释器提供的内存不够了，就会抛出错误信息结束程序。</p>
 <p>显然，无穷递归做不了任何事情，如果想要做一些有用的事情，就要用到<em>有穷递归</em>，就好像循环语句中的使用break一样，在特定的条件下退出递归，当然啦，结束递归可不是用break，下面来个经典的递归函数</p>
-<h4 id="计算阶乘">计算阶乘</h4>
-<p>n的阶乘定义为<code>n * (n-1) * (n-2) * ... * 1</code>，就是从n一直乘到1或者从1一直乘到n，我也不清楚它的用途，但是它的计算可以作为经典的递归例子</p>
+<h4 id="计算阶乘"><a href="#计算阶乘" class="headerlink" title="计算阶乘"></a>计算阶乘</h4><p>n的阶乘定义为<code>n * (n-1) * (n-2) * ... * 1</code>，就是从n一直乘到1或者从1一直乘到n，我也不清楚它的用途，但是它的计算可以作为经典的递归例子</p>
 <p>我们可以用循环来计算：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">factorial</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">:</span>
     result <span class="token operator">=</span> n
     <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">:</span>
         result <span class="token operator">*=</span> i
     <span class="token keyword">return</span> result<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>那么递归怎么用？阶乘的定义用递归来说就是：</p>
 <ul>
 <li>1的阶乘是1</li>
@@ -445,6 +448,7 @@ hello
         <span class="token keyword">return</span> <span class="token number">1</span>
     <span class="token keyword">else</span><span class="token punctuation">:</span>
         <span class="token keyword">return</span> n <span class="token operator">*</span> factorial<span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这是定义的直接实现，这并不难，可就是困扰了大部分计算机入门的同学</p>
 <p>递归大部分情况下是可以用循环代替的，而且使用循环效率更高，但有些时候递归更加易读，尤其是懂得递归函数的定义的时候。</p>
 <p>尽管可以避免编写使用递归的程序，但理解递归仍是一个非常重要的基本功，希望读者重视</p>
@@ -541,13 +545,13 @@ hello
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

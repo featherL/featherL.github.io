@@ -353,61 +353,46 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>这是中国大学MOOC中的课程：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.icourse163.org/course/BUPT-1003557006">《linux开发环境及应用》</a>的学习笔记……<span id="more"></span>与其说是笔记，不如说是照抄ppt<code>^_^</code></p>
-<h2 id="Linux字符终端">Linux字符终端</h2>
-<h3 id="终端（Terminal）">终端（Terminal）</h3>
-<h4 id="UNIX-Linux是多用户系统">UNIX/Linux是多用户系统</h4>
-<ul>
+<h2 id="Linux字符终端"><a href="#Linux字符终端" class="headerlink" title="Linux字符终端"></a>Linux字符终端</h2><h3 id="终端（Terminal）"><a href="#终端（Terminal）" class="headerlink" title="终端（Terminal）"></a>终端（Terminal）</h3><h4 id="UNIX-Linux是多用户系统"><a href="#UNIX-Linux是多用户系统" class="headerlink" title="UNIX/Linux是多用户系统"></a>UNIX/Linux是多用户系统</h4><ul>
 <li>主机连接多台字符终端</li>
 <li>字符终端作为交互式输入输出设备</li>
 </ul>
-<h4 id="终端的构成">终端的构成</h4>
-<ul>
+<h4 id="终端的构成"><a href="#终端的构成" class="headerlink" title="终端的构成"></a>终端的构成</h4><ul>
 <li>键盘</li>
 <li>显示器</li>
 <li>RS232串行通信接口</li>
 </ul>
-<h4 id="字符终端的历史">字符终端的历史</h4>
-<ul>
+<h4 id="字符终端的历史"><a href="#字符终端的历史" class="headerlink" title="字符终端的历史"></a>字符终端的历史</h4><ul>
 <li>英文打字机 typewriter</li>
 <li>电传打字机 teletypewriter 简写tty</li>
 <li>字符终端，以屏幕代替卷纸打印机（同样称为tty设备）</li>
 </ul>
 <hr>
-<h4 id="主机与终端的连接">主机与终端的连接</h4>
-<ul>
+<h4 id="主机与终端的连接"><a href="#主机与终端的连接" class="headerlink" title="主机与终端的连接"></a>主机与终端的连接</h4><ul>
 <li>主机中的串口卡（硬件）引出多个RS232串口</li>
 <li>每个RS232接口通过电缆连接一台终端</li>
-<li>RS232电缆的长度限制
-<ul>
+<li>RS232电缆的长度限制<ul>
 <li>早期要求小于10米</li>
 <li>现在可达百米</li>
 </ul>
 </li>
 </ul>
 <hr>
-<h4 id="终端与主机的功能分工">终端与主机的功能分工</h4>
-<h5 id="终端：主机的输入和输出设备">终端：主机的输入和输出设备</h5>
-<p>终端通过电缆把用户的按键信息送到主机，把主机发来的信息在屏幕上显示</p>
-<h5 id="主机：程序和数据的存储及处理">主机：程序和数据的存储及处理</h5>
-<p>数据及程序存放在主机的硬盘上，程序的运行由主机完成</p>
+<h4 id="终端与主机的功能分工"><a href="#终端与主机的功能分工" class="headerlink" title="终端与主机的功能分工"></a>终端与主机的功能分工</h4><h5 id="终端：主机的输入和输出设备"><a href="#终端：主机的输入和输出设备" class="headerlink" title="终端：主机的输入和输出设备"></a>终端：主机的输入和输出设备</h5><p>终端通过电缆把用户的按键信息送到主机，把主机发来的信息在屏幕上显示</p>
+<h5 id="主机：程序和数据的存储及处理"><a href="#主机：程序和数据的存储及处理" class="headerlink" title="主机：程序和数据的存储及处理"></a>主机：程序和数据的存储及处理</h5><p>数据及程序存放在主机的硬盘上，程序的运行由主机完成</p>
 <hr>
-<h4 id="行律与驱动程序">行律与驱动程序</h4>
-<h5 id="驱动程序">驱动程序</h5>
-<ul>
+<h4 id="行律与驱动程序"><a href="#行律与驱动程序" class="headerlink" title="行律与驱动程序"></a>行律与驱动程序</h4><h5 id="驱动程序"><a href="#驱动程序" class="headerlink" title="驱动程序"></a>驱动程序</h5><ul>
 <li>不同的硬件需要不同的驱动程序</li>
 <li>与行律模块的接口：上行和下行字符流</li>
 </ul>
-<h5 id="行律的作用">行律的作用</h5>
-<ul>
+<h5 id="行律的作用"><a href="#行律的作用" class="headerlink" title="行律的作用"></a>行律的作用</h5><ul>
 <li>一行内字符的缓冲、回显与编辑，直到按下回车键</li>
 <li>数据加工，如：将<code>\n</code>转化为<code>\r\n</code></li>
 <li>将<code>Ctrl-C</code>字符转化为中止进程运行的信号</li>
 </ul>
 <p><img src="/images/4fa6d7c7/0.png" alt="行律与驱动程序"></p>
 <hr>
-<h4 id="主机与终端之间的通信">主机与终端之间的通信</h4>
-<h5 id="一个程序例子">一个程序例子</h5>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
+<h4 id="主机与终端之间的通信"><a href="#主机与终端之间的通信" class="headerlink" title="主机与终端之间的通信"></a>主机与终端之间的通信</h4><h5 id="一个程序例子"><a href="#一个程序例子" class="headerlink" title="一个程序例子"></a>一个程序例子</h5><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
 
 <span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#123;</span>
@@ -418,50 +403,37 @@
 	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"N * N = %d\n"</span><span class="token punctuation">,</span> n <span class="token operator">*</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
 	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Bye!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="终端按键">终端按键</h5>
-<p>1 7 Backspace 6 Enter</p>
+
+<h5 id="终端按键"><a href="#终端按键" class="headerlink" title="终端按键"></a>终端按键</h5><p>1 7 Backspace 6 Enter</p>
 <p><img src="/images/4fa6d7c7/1.png" alt="主机与终端之间的通信"></p>
 <hr>
-<h4 id="行律功能的调整">行律功能的调整</h4>
-<ul>
+<h4 id="行律功能的调整"><a href="#行律功能的调整" class="headerlink" title="行律功能的调整"></a>行律功能的调整</h4><ul>
 <li>程序中通过编程的方法</li>
-<li>相关命令stty
-<ul>
+<li>相关命令stty<ul>
 <li>stty erase ^H – 终端默认ctrl + backspace 为删除，这样设置后直接backspace就能删除了。</li>
 <li>stty -a  – 以人可读的方式打印所有当前设置</li>
 </ul>
 </li>
 </ul>
 <hr>
-<h4 id="终端转义序列">终端转义序列</h4>
-<h5 id="转义字符">转义字符</h5>
-<p>Esc: ASCII码1B（十进制27，八进制033）</p>
-<h5 id="主机发往终端方向数据中的转义序列的功能">主机发往终端方向数据中的转义序列的功能</h5>
-<ul>
+<h4 id="终端转义序列"><a href="#终端转义序列" class="headerlink" title="终端转义序列"></a>终端转义序列</h4><h5 id="转义字符"><a href="#转义字符" class="headerlink" title="转义字符"></a>转义字符</h5><p>Esc: ASCII码1B（十进制27，八进制033）</p>
+<h5 id="主机发往终端方向数据中的转义序列的功能"><a href="#主机发往终端方向数据中的转义序列的功能" class="headerlink" title="主机发往终端方向数据中的转义序列的功能"></a>主机发往终端方向数据中的转义序列的功能</h5><ul>
 <li>控制光标位置、字符颜色、字符大小等等</li>
 <li>选择终端的字符集</li>
-<li>控制终端上的打印机、刷卡机、磁条器、密码键盘</li>
-</ul>
-<h5 id="举例">举例</h5>
-<ul>
+<li>控制终端上的打印机、刷卡机、磁条器、密码键盘<h5 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h5></li>
 <li>Esc[2J 由主机送到终端的四字节序列： 1B 5B 32 4A 功能：清除屏幕</li>
 <li>Esc[8A 四字节序列，光标上移8行</li>
 <li>Esc[16;8H 七字节序列，光标移动到16行8列</li>
 <li>Esc[1;31m 七字节序列，红色字符</li>
 </ul>
 <hr>
-<h4 id="终端类型">终端类型</h4>
-<p>主机根据终端类型，实现相应功能时发送对应的控制码；当终端类型设置不对，可能一些全屏幕操作的软件运行失败</p>
+<h4 id="终端类型"><a href="#终端类型" class="headerlink" title="终端类型"></a>终端类型</h4><p>主机根据终端类型，实现相应功能时发送对应的控制码；当终端类型设置不对，可能一些全屏幕操作的软件运行失败</p>
 <hr>
-<h4 id="仿真终端和虚拟终端">仿真终端和虚拟终端</h4>
-<h5 id="仿真终端">仿真终端</h5>
-<ul>
-<li>PC机RS232串口，运行终端仿真软件来仿一个真正的终端设备的功能<br>
-例如：早期DOS操作系统下的CrossTalk、Windows中的“超级终端”</li>
+<h4 id="仿真终端和虚拟终端"><a href="#仿真终端和虚拟终端" class="headerlink" title="仿真终端和虚拟终端"></a>仿真终端和虚拟终端</h4><h5 id="仿真终端"><a href="#仿真终端" class="headerlink" title="仿真终端"></a>仿真终端</h5><ul>
+<li>PC机RS232串口，运行终端仿真软件来仿一个真正的终端设备的功能<br>例如：早期DOS操作系统下的CrossTalk、Windows中的“超级终端”</li>
 </ul>
 <p>仿真的内容包括实现终端的转义码序列功能</p>
-<h5 id="虚拟终端">虚拟终端</h5>
-<ul>
+<h5 id="虚拟终端"><a href="#虚拟终端" class="headerlink" title="虚拟终端"></a>虚拟终端</h5><ul>
 <li>终端与主机之间的通信由串口替代为一个TCP连接，双向传递字节流</li>
 <li>主机与PC通过网络相连，客户端运行telnet、服务器端telnetd，成为Linux的基于TCP通信的虚拟终端</li>
 <li>安全终端，在TCP连接上<strong>加密</strong>和<strong>压缩</strong>数据，如：SecureCRT、putty</li>
@@ -558,13 +530,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

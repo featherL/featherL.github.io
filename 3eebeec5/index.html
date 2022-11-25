@@ -354,8 +354,7 @@
 </blockquote>
 <p>这是一段很长很长的解释，其实，作者认为没必要这么机械式的去理解。简单说，<span id="more"></span>变量就是一个“盒子”，这个“盒子”可以装一些数据，当然，这些数据的类型可以是任意的，因为归根结底，任何类型的数据在内存中的表示都是二进制0、1组合。</p>
 <hr>
-<h2 id="变量的使用">变量的使用</h2>
-<p>先从一段代码说起：</p>
+<h2 id="变量的使用"><a href="#变量的使用" class="headerlink" title="变量的使用"></a>变量的使用</h2><p>先从一段代码说起：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">a <span class="token operator">=</span> <span class="token number">123</span>
 b <span class="token operator">=</span> <span class="token number">456</span>
 c <span class="token operator">=</span> <span class="token string">"a + b ="</span>
@@ -363,9 +362,9 @@ c <span class="token operator">=</span> <span class="token string">"a + b ="</sp
 <span class="token keyword">print</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> a<span class="token operator">+</span>b<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最后输出：</p>
 <pre class="line-numbers language-none"><code class="language-none">a + b &#x3D; 579<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>代码中就使用了三个变量：<code>a</code>、<code>b</code>和<code>c</code>，并在<code>print</code>中使用。第1行<code>a = 123</code>就创建了一个变量，变量名为<code>a</code>，2、3行同样也创建了变量，不同的是，变量<code>a</code>和<code>b</code>整数型的，而变量<code>c</code>的类型是字符串类型，这不同于C语言，在C语言中，使用变量之前是需要“声明”类型的，而在python中，在通过等号<code>=</code>赋值后，就创建了一个变量，变量的类型是python自动识别的。</p>
-<h3 id="创建变量">创建变量</h3>
-<p>前面说过，变量在赋值后被创建，赋值运算符是等号<code>=</code>，等号<code>=</code>左边是变量名，右边是存储在变量中的值。变量创建后，可以同过变量名来使用变量。例如：</p>
+<h3 id="创建变量"><a href="#创建变量" class="headerlink" title="创建变量"></a>创建变量</h3><p>前面说过，变量在赋值后被创建，赋值运算符是等号<code>=</code>，等号<code>=</code>左边是变量名，右边是存储在变量中的值。变量创建后，可以同过变量名来使用变量。例如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">name <span class="token operator">=</span> <span class="token string">'Mike'</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'My name is'</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span>
@@ -375,29 +374,31 @@ b <span class="token operator">=</span> <span class="token number">456</span>
 c <span class="token operator">=</span> a <span class="token operator">+</span> b
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token string">'+'</span><span class="token punctuation">,</span> b<span class="token punctuation">,</span> <span class="token string">'='</span><span class="token punctuation">,</span> c <span class="token punctuation">)</span>  <span class="token comment"># 123 + 456 = 579</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>赋值运算符是<strong>从右往左</strong>执行的，在<code>c = a + b</code>中，先对右边的<code>a + b</code>求值，在赋值给变量<code>c</code>。</p>
 <p>读者可以复制上面代码，保存到文件再运行试试。</p>
 <hr>
-<h3 id="多个变量赋值">多个变量赋值</h3>
-<p>python可以同时给多个变量赋值，比如：</p>
+<h3 id="多个变量赋值"><a href="#多个变量赋值" class="headerlink" title="多个变量赋值"></a>多个变量赋值</h3><p>python可以同时给多个变量赋值，比如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">a <span class="token operator">=</span> b <span class="token operator">=</span> c <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>前面说到了，赋值运算符是从右往左执行的，而赋值语句本身也是有值的，语句<code>a = 1</code>的值是<code>1</code>，学过C语言的同学或许很清楚，所以上面例子等价于：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">c <span class="token operator">=</span> <span class="token number">1</span>
 b <span class="token operator">=</span> c
 a <span class="token operator">=</span> b<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>注意咯，<code>a = b = c</code> 是等价于<code>a = b;b = c</code>（在同一行中写两句以上代码可用分号<code>;</code>分开），而不是等价于<code>a=c;b=c</code>，其实只要记住了 <strong>“赋值运算符是从右往左执行的”</strong> 这句话就OK了。</p>
 <p>还有一种多个变量同时赋值的操作，像这样：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'hello'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>显而易见，右边的值<code>1</code>、<code>2</code>、<code>'hello'</code>依次分配给<code>a</code>、<code>b</code>、<code>c</code>。</p>
-<h3 id="变量命名规则">变量命名规则</h3>
-<p>变量的命名可不是爱怎么来就怎么来的，是有一定的语法规则的：</p>
+
+<p>显而易见，右边的值<code>1</code>、<code>2</code>、<code>&#39;hello&#39;</code>依次分配给<code>a</code>、<code>b</code>、<code>c</code>。</p>
+<h3 id="变量命名规则"><a href="#变量命名规则" class="headerlink" title="变量命名规则"></a>变量命名规则</h3><p>变量的命名可不是爱怎么来就怎么来的，是有一定的语法规则的：</p>
 <ol>
 <li>变量名使用的字符必须是字母、数字、或者下划线<code>_</code></li>
 <li>变量名的第一个字符不可以是数字</li>
 <li>不能使用关键字作为变量名</li>
 </ol>
 <p>这三条规则几乎在所有计算机语言中通用，变量名使用的字符只能是字母<code>a~z</code>或大写<code>A～Z</code>，数字<code>0～9</code>，或者下划线<code>_</code>，并且第一个字符不可以是数字。</p>
-<p>针对第三点，在计算机语言中，会有一些有特殊意义，用于语法的单词，称为 <strong>“关键字”</strong>，您可以在python的交互式解释器中输入<code>help('keywords')</code>查看python的所有关键字，还是演示一下吧：</p>
+<p>针对第三点，在计算机语言中，会有一些有特殊意义，用于语法的单词，称为 <strong>“关键字”</strong>，您可以在python的交互式解释器中输入<code>help(&#39;keywords&#39;)</code>查看python的所有关键字，还是演示一下吧：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">help</span><span class="token punctuation">(</span><span class="token string">'keywords'</span><span class="token punctuation">)</span>
 
 Here <span class="token keyword">is</span> a <span class="token builtin">list</span> of the Python keywords<span class="token punctuation">.</span>  Enter <span class="token builtin">any</span> keyword to get more <span class="token builtin">help</span><span class="token punctuation">.</span>
@@ -413,6 +414,7 @@ Here <span class="token keyword">is</span> a <span class="token builtin">list</s
 <span class="token keyword">break</span>               <span class="token keyword">for</span>                 <span class="token keyword">not</span>                 
 
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>让我们看看几个例子，以下几个变量名是有效的：</p>
 <pre class="line-numbers language-none"><code class="language-none">counter
 _abc
@@ -421,12 +423,13 @@ a1
 a2b_cD
 A1
 def_123<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>而以下几个变量名是无效的：</p>
 <pre class="line-numbers language-none"><code class="language-none">1ae          变量名不能以数字开头
 a*b          变量名只能包含字母、数字和下划线_
 def          def是python中的关键字<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="变量命名规范">变量命名规范</h3>
-<p>注意小标题，是 <strong>“规范”</strong>，不是 <strong>“规则”</strong>，这是不一样的，规则是人家python定死的，必须遵守，否则就是语法错误了，而规范是人们的一种共识，方便的是人，相信我，按照规范来，你会感谢我的<code>&lt;(￣︶￣)&gt;</code></p>
+
+<h3 id="变量命名规范"><a href="#变量命名规范" class="headerlink" title="变量命名规范"></a>变量命名规范</h3><p>注意小标题，是 <strong>“规范”</strong>，不是 <strong>“规则”</strong>，这是不一样的，规则是人家python定死的，必须遵守，否则就是语法错误了，而规范是人们的一种共识，方便的是人，相信我，按照规范来，你会感谢我的<code>&lt;(￣︶￣)&gt;</code></p>
 <p>一些常见的命名规范如下：</p>
 <ol>
 <li>变量名尽量有意义，如 <code>name</code>表示存储名字的变量</li>
@@ -434,13 +437,11 @@ def          def是python中的关键字<span aria-hidden="true" class="line-num
 </ol>
 <p>这仅仅是变量的命名规范，在程序中还有很多要命名的东西，如函数、类、包……现在就先到这，等讲到了会一一说明的。</p>
 <hr>
-<h2 id="注释">注释</h2>
-<p>不知道读者是否有注意到，前文讲变量的创建的时候，有一行这样的代码：</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>不知道读者是否有注意到，前文讲变量的创建的时候，有一行这样的代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token string">'+'</span><span class="token punctuation">,</span> b<span class="token punctuation">,</span> <span class="token string">'='</span><span class="token punctuation">,</span> c <span class="token punctuation">)</span>  <span class="token comment"># 123 + 456 = 579</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>上面有一行<code># 123 + 456 = 579</code>作者并没有解释，而运行过代码的同学会发现，程序输出<code>123 + 456 = 579</code>，难道加了这句程序就输出这个？现在请读者把<code># 123 + 456 = 579</code>一句删除再运行试试……</p>
 <p>怎么回事？程序的输出和之前一样？这东西到底是何方神圣？作者就不再绕关子了，这行字符叫做 <strong>“注释”</strong>，它的有无对程序的运行没有任何影响，它是为了在程序中解释代码的用途，方便人理解用的。</p>
-<h3 id="注释的使用">注释的使用</h3>
-<p>python的注释有多种方式，话不多说，在这里直接上代码：</p>
+<h3 id="注释的使用"><a href="#注释的使用" class="headerlink" title="注释的使用"></a>注释的使用</h3><p>python的注释有多种方式，话不多说，在这里直接上代码：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 这是单行注释</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Hello World!"</span><span class="token punctuation">)</span> <span class="token comment"># 从符号井号开始到行末是注释</span>
 
@@ -455,6 +456,7 @@ def          def是python中的关键字<span aria-hidden="true" class="line-num
 <span class="token triple-quoted-string string">'''
 这也是多行注释，用一对三个单引号括起。
 '''</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>终于写完了<code>&lt;(￣︶￣)&gt;</code>，下期再见……</p>
 
@@ -548,13 +550,13 @@ def          def是python中的关键字<span aria-hidden="true" class="line-num
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

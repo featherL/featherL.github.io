@@ -330,7 +330,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.5k</span>
+      <span>2.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -349,8 +349,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>数据类型，顾名思义就是数据的类型，数据到底有哪些类型呢？在python中，最基本的数据类型有好几种，让我来逐个介绍。<span id="more"></span></p>
-<h3 id="整数类型（int）">整数类型（int）</h3>
-<p>python中只有一种整数类型，就是int类型，在程序中的写法和运算和数学一般相同，如<code>123</code>、<code>-456</code>等。除此之外，还可以用其它的表示方法：</p>
+<h3 id="整数类型（int）"><a href="#整数类型（int）" class="headerlink" title="整数类型（int）"></a>整数类型（int）</h3><p>python中只有一种整数类型，就是int类型，在程序中的写法和运算和数学一般相同，如<code>123</code>、<code>-456</code>等。除此之外，还可以用其它的表示方法：</p>
 <ul>
 <li>前缀<code>0b</code>，是零和字母<code>b</code>（大写<code>B</code>也可以），表示这是一个二进制数，如<code>0b110</code></li>
 <li>前缀<code>0o</code>，是零和字母<code>o</code>（大写<code>O</code>也可以），表示这是一个八进制数，如<code>0o10</code></li>
@@ -361,17 +360,18 @@
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token number">123</span><span class="token operator">+</span><span class="token number">456</span>
 <span class="token number">579</span>
 <span class="token operator">>></span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="浮点数（float）">浮点数（float）</h3>
-<p>浮点数就是小数，如<code>1.2</code>，<code>1.3</code>等，浮点数的写法还可以是科学计数法，如1.23x10<sup>4</sup>在程序中表示为<code>1.23e4</code>或<code>12.3e3</code>，1.2x10<sup>-3</sup>可以表示为<code>1.2e-3</code>等，也就是说用字母<code>e</code>（或<code>E</code>）代替10。</p>
+
+<h3 id="浮点数（float）"><a href="#浮点数（float）" class="headerlink" title="浮点数（float）"></a>浮点数（float）</h3><p>浮点数就是小数，如<code>1.2</code>，<code>1.3</code>等，浮点数的写法还可以是科学计数法，如1.23x10<sup>4</sup>在程序中表示为<code>1.23e4</code>或<code>12.3e3</code>，1.2x10<sup>-3</sup>可以表示为<code>1.2e-3</code>等，也就是说用字母<code>e</code>（或<code>E</code>）代替10。</p>
 <p>由于整数和浮点数在计算机内部存储方式不同，整数运算是完全准确的，而浮点数的运算是有误差的，具体原因可以百度 <strong>“浮点数误差”</strong></p>
 <p>前面提到的<code>//</code>运算符，其实是整数除法的运算符，整数和整数运算，结果还是整数，也就是说，10除以3结果应该是3<strong>而不是3.33</strong>……，这就是为什么我说整数运算是准确的。</p>
 <p>而<code>/</code>是浮点数的除法运算符，python是将整数类型自动地转化为浮点数再进行浮点数运算，最后的结果自然也是浮点数了。</p>
-<h3 id="字符串类型（str）">字符串类型（str）</h3>
-<p>字符串是用一对单引号<code>'</code>或一对双引号<code>&quot;</code>括起来的文本，如<code>'123'</code>，<code>&quot;456&quot;</code>。引号<code>'</code>、<code>&quot;</code>只是用来表示字符串，不是字符串的一部分，如<code>'123'</code>只是一串<strong>字符</strong><code>1</code>、<code>2</code>、<code>3</code>，如果字符串中包含单引号<code>'</code>那么可以用双引号括起：<code>&quot;单引号（'）&quot;</code>，同理，若字符串中包含双引号，可以是用单引号来表示：<code>'双引号（&quot;）'</code>。</p>
+<h3 id="字符串类型（str）"><a href="#字符串类型（str）" class="headerlink" title="字符串类型（str）"></a>字符串类型（str）</h3><p>字符串是用一对单引号<code>&#39;</code>或一对双引号<code>&quot;</code>括起来的文本，如<code>&#39;123&#39;</code>，<code>&quot;456&quot;</code>。引号<code>&#39;</code>、<code>&quot;</code>只是用来表示字符串，不是字符串的一部分，如<code>&#39;123&#39;</code>只是一串<strong>字符</strong><code>1</code>、<code>2</code>、<code>3</code>，如果字符串中包含单引号<code>&#39;</code>那么可以用双引号括起：<code>&quot;单引号（&#39;）&quot;</code>，同理，若字符串中包含双引号，可以是用单引号来表示：<code>&#39;双引号（&quot;）&#39;</code>。</p>
 <p>如果字符串中即有单引号又有双引号呢？这时就需要用转义字符<code>\</code>了，比如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token string">"这有一个单引号\'，还有一个双引号\""</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>表示的字符串是：</p>
 <pre class="line-numbers language-none"><code class="language-none">这有一个单引号&#39;，还有一个双引号&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>转义字符<code>\</code>常用于表示一些无法用键盘打出来的字符，如换行符<code>\n</code>，<code>print()</code>默认在输出字符串后换行，就是自动加了换行符<code>\n</code>，制表府<code>\t</code>，而<code>\\</code>表示字符<code>\</code>本身。</p>
 <p>用<code>print()</code>打印些字符串试试：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"制表符\t制表符"</span><span class="token punctuation">)</span>
@@ -382,11 +382,13 @@
 <span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\\是转义字符"</span><span class="token punctuation">)</span>
 \是转义字符
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果字符串中有很多字符需要转义，每一个都加上<code>\</code>？这也太麻烦了，python还有一种更简单的表示方法，字符串引号前加一个前缀<code>r</code>，表示raw字符串，raw是原生的意思，也就是说，你看到的是什么字符就是什么字符，即不转义。如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">r"换行符为\n"</span><span class="token punctuation">,</span> <span class="token string">r"转义符为\\"</span><span class="token punctuation">,</span> <span class="token string">r"制表符为\t"</span><span class="token punctuation">,</span> <span class="token string">r"引号为\'和\""</span><span class="token punctuation">)</span>
 换行符为\n 转义符为\\ 制表符为\t 引号为\'和\"
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>当然啦，如果你要换行，那么就不能写成<code>r&quot;\n&quot;</code>了，因为<code>r&quot;&quot;</code>中的字符串是不转义的，如果有很多换行，还可以用这种形式，<code>'''字符串'''</code>或<code>&quot;&quot;&quot;字符串&quot;&quot;&quot;</code>：</p>
+
+<p>当然啦，如果你要换行，那么就不能写成<code>r&quot;\n&quot;</code>了，因为<code>r&quot;&quot;</code>中的字符串是不转义的，如果有很多换行，还可以用这种形式，<code>&#39;&#39;&#39;字符串&#39;&#39;&#39;</code>或<code>&quot;&quot;&quot;字符串&quot;&quot;&quot;</code>：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token triple-quoted-string string">'''
 ... 第一行
 ... 第二行
@@ -398,16 +400,17 @@
 第三行
 
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中的<code>...</code>是交互式解释器输出的提示字符，不是字符串的一部分，这提示你这一条命令是多行的，还没完，后面的<code>'''</code>闭合了前面的<code>'''</code>，<code>)</code>闭合了前面的<code>(</code>，所以多行的命令结束，执行命令输出结果。在文件中表示为：</p>
+
+<p>其中的<code>...</code>是交互式解释器输出的提示字符，不是字符串的一部分，这提示你这一条命令是多行的，还没完，后面的<code>&#39;&#39;&#39;</code>闭合了前面的<code>&#39;&#39;&#39;</code>，<code>)</code>闭合了前面的<code>(</code>，所以多行的命令结束，执行命令输出结果。在文件中表示为：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token triple-quoted-string string">'''
 第一行
 第二行
 第三行
 '''</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>r</code>前缀同样可以使用在<code>'''多行的字符'''</code>。</p>
+
+<p><code>r</code>前缀同样可以使用在<code>&#39;&#39;&#39;多行的字符&#39;&#39;&#39;</code>。</p>
 <p><strong>注意了</strong>：前面涉及python语法的标点符号都是<strong>半角</strong>的，当你确信自己的代码和作者的一样却不能正常运行，那么就要看看是不是标点符号的问题了。</p>
-<h3 id="布尔型-bool">布尔型(bool)</h3>
-<p>布尔类型只有两种值：<code>True</code>，<code>False</code>，即“真”和“假”。比如<code>1&gt;2</code>是假的，所以为<code>False</code>，<code>4&lt;5</code>是真的，所以为<code>True</code>。示例代码如下：</p>
+<h3 id="布尔型-bool"><a href="#布尔型-bool" class="headerlink" title="布尔型(bool)"></a>布尔型(bool)</h3><p>布尔类型只有两种值：<code>True</code>，<code>False</code>，即“真”和“假”。比如<code>1&gt;2</code>是假的，所以为<code>False</code>，<code>4&lt;5</code>是真的，所以为<code>True</code>。示例代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">True</span>
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">False</span>
@@ -417,6 +420,7 @@
 <span class="token operator">>></span><span class="token operator">></span> <span class="token number">4</span><span class="token operator">&lt;</span><span class="token number">5</span>
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>还可以用<code>and</code>、<code>or</code>、<code>not</code>进行逻辑运算，分别对应数学中的 <strong>“且”</strong>、<strong>“或”</strong>、<strong>“非”</strong>，代码如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token boolean">True</span> <span class="token keyword">and</span> <span class="token boolean">True</span>
 <span class="token boolean">True</span>
@@ -431,16 +435,16 @@
 <span class="token operator">>></span><span class="token operator">></span> <span class="token number">10</span><span class="token operator">></span><span class="token number">3</span> <span class="token keyword">and</span> <span class="token number">3</span><span class="token operator">></span><span class="token number">1</span>
 <span class="token boolean">True</span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>布尔值的常用于<strong>条件语句</strong>中，如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">if</span> <span class="token number">10</span><span class="token operator">></span><span class="token number">3</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"10大于3"</span><span class="token punctuation">)</span>
 <span class="token keyword">else</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"10不大于3"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>条件语句之后会单独讲解，不过聪明的读者应该能理解上面的代码的意思。</p>
-<h3 id="空值（None）">空值（None）</h3>
-<p>python中还有一种特殊的类型，叫做空类型，只有一个值，就是<code>None</code>，表示什么都没有。暂时还没用到，用到再说。</p>
-<h3 id="其它类型">其它类型</h3>
-<p>python中还有其它数据类型：列表（list）、元组（tuple）、字典（dict），还可以自定义类型，后面会提到，现在就到这。</p>
+<h3 id="空值（None）"><a href="#空值（None）" class="headerlink" title="空值（None）"></a>空值（None）</h3><p>python中还有一种特殊的类型，叫做空类型，只有一个值，就是<code>None</code>，表示什么都没有。暂时还没用到，用到再说。</p>
+<h3 id="其它类型"><a href="#其它类型" class="headerlink" title="其它类型"></a>其它类型</h3><p>python中还有其它数据类型：列表（list）、元组（tuple）、字典（dict），还可以自定义类型，后面会提到，现在就到这。</p>
 <hr>
 <p>你还可以用<code>type()</code>获取数据的类型，如：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">type</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">)</span>
@@ -452,6 +456,7 @@
 <span class="token operator">>></span><span class="token operator">></span> <span class="token builtin">type</span><span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">)</span>
 <span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token string">'NoneType'</span><span class="token operator">></span>
 <span class="token operator">>></span><span class="token operator">></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的<code>class</code>表明这是一个“类”，<code>int</code>、<code>str</code>、<code>bool</code>、<code>NoneType</code>都是“类”，解释这个暂时来说太早了，就当这是类型的名字，先忽略吧。</p>
 
     </div>
@@ -544,13 +549,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

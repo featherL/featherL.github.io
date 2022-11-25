@@ -351,12 +351,10 @@
     <div class="post-body" itemprop="articleBody">
         <p>因为是高三学生，空闲时间比较少，所以这些笔记整理出来比较慢，见谅，见谅。</p>
 <p>既然是做笔记，这一次就不全部照抄ppt了，要加入自己的理解。<span id="more"></span></p>
-<h3 id="用户">用户</h3>
-<p>Linux中的用户分为，普通用户和超级用户（root）。</p>
+<h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><p>Linux中的用户分为，普通用户和超级用户（root）。</p>
 <p>root用户（超级用户）不受权限的制约，可以随意修改和删除文件，甚至是删除整个根目录：<code>rm -rf /</code> 千万不要作死用root权限运行上述命令！在root权限下一定要小心、谨慎地操作 <code>(°ー°〃)</code></p>
 <p>普通用户由root用户使用useradd命令创建，用户的信息放在/etc/passwd文件中，包括 <strong>用户名</strong> 和 <strong>用户ID</strong>，以及 <strong>Home目录</strong> 的位置。</p>
-<h3 id="登录Shell">登录Shell</h3>
-<p>登录Shell一般为bash，也可以选择其它shell，其它系统程序，甚至自己设计的程序。</p>
+<h3 id="登录Shell"><a href="#登录Shell" class="headerlink" title="登录Shell"></a>登录Shell</h3><p>登录Shell一般为bash，也可以选择其它shell，其它系统程序，甚至自己设计的程序。</p>
 <p>用户可以从普通终端或者网络虚拟终端登入系统。</p>
 <p>登入shell后，出现的shell提示符有以下两种</p>
 <ul>
@@ -364,16 +362,14 @@
 <li><code>#</code> 表示当前用户为root用户</li>
 </ul>
 <p>出现shell提示符就可以输入命令了，Linux的系统命令是区分大小写的，比如：<code>ls</code>和<code>LS</code>是两个不同的命令，只是举个例子，<code>LS</code>这个命令不一定存在。</p>
-<h3 id="基本命令">基本命令</h3>
-<ul>
+<h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><ul>
 <li>man 查阅手册</li>
 <li>date 日期和时间</li>
 <li>cal 日历</li>
 <li>bc 计算器</li>
 <li>passwd 修改口令</li>
 </ul>
-<h4 id="man">man</h4>
-<p>man命令用户查阅联机手册，内容包括：</p>
+<h4 id="man"><a href="#man" class="headerlink" title="man"></a>man</h4><p>man命令用户查阅联机手册，内容包括：</p>
 <ul>
 <li>各种命令的说明书</li>
 <li>系统调用的使用手册</li>
@@ -420,11 +416,12 @@
 描述
        man         是系统的手册分页程序。指定给        man        的        页
  Manual page man(1) line 1 (press h for help or q to quit)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
-<h4 id="date">date</h4>
-<p>date命令最基本用法就是不带任何参数运行：</p>
+<h4 id="date"><a href="#date" class="headerlink" title="date"></a>date</h4><p>date命令最基本用法就是不带任何参数运行：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">date</span>
 <span class="token number">2019</span>年 01月 <span class="token number">19</span>日 星期六 <span class="token number">13</span>:45:33 CST<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>我们还可以带一个参数来控制输出格式。</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">date</span> <span class="token string">'+%Y-%m-%d'</span>
 <span class="token number">2019</span>-01-19<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -447,6 +444,7 @@
 <p>代码如下：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">date</span> <span class="token string">'+%% %Y年 %m月%d日 %A 第%j天 时间 -> %H:%M:%S 时间戳 -> %s %%'</span>
 % <span class="token number">2019</span>年 01月19日 星期六 第019天 时间 -<span class="token operator">></span> <span class="token number">14</span>:12:05 时间戳 -<span class="token operator">></span> <span class="token number">1547878325</span> %<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>date还可以设置系统时间，不过需要root权限，更详细的用法可用man命令查看</p>
 <p>可以通过NTP协议校准系统时间，命令为ntpdate：</p>
 <ul>
@@ -454,8 +452,7 @@
 <li><code>ntpdate 0.pool.ntp.org</code> 设置时间，必须为root用户</li>
 </ul>
 <hr>
-<h4 id="cal">cal</h4>
-<p>直接输入<code>cal</code>不带任何参数则显示当前月份，如下：</p>
+<h4 id="cal"><a href="#cal" class="headerlink" title="cal"></a>cal</h4><p>直接输入<code>cal</code>不带任何参数则显示当前月份，如下：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">cal</span>
       一月 <span class="token number">2019</span>     
 日 一 二 三 四 五 六
@@ -464,6 +461,7 @@
 <span class="token number">13</span> <span class="token number">14</span> <span class="token number">15</span> <span class="token number">16</span> <span class="token number">17</span> <span class="token number">18</span> <span class="token number">19</span>
 <span class="token number">20</span> <span class="token number">21</span> <span class="token number">22</span> <span class="token number">23</span> <span class="token number">24</span> <span class="token number">25</span> <span class="token number">26</span>
 <span class="token number">27</span> <span class="token number">28</span> <span class="token number">29</span> <span class="token number">30</span> <span class="token number">31</span>               <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的<code>19</code>背景颜色是不一样的，表明今天是19日。</p>
 <p>其它用法：</p>
 <ul>
@@ -471,8 +469,7 @@
 <li><code>cal month year</code> 例：打印2019年1月的日历 <code>cal 1 2019</code></li>
 </ul>
 <hr>
-<h4 id="bc">bc</h4>
-<p>bc是一个功能强大的计算器，除了基本计算外，还支持变量，函数，条件和循环等编程功能，使用类似C语言语法的小型编程语言，并且可以进行任意精度的计算！</p>
+<h4 id="bc"><a href="#bc" class="headerlink" title="bc"></a>bc</h4><p>bc是一个功能强大的计算器，除了基本计算外，还支持变量，函数，条件和循环等编程功能，使用类似C语言语法的小型编程语言，并且可以进行任意精度的计算！</p>
 <p>启动后以交互式的方式运行，输入<code>quit</code>退出，基本用法如下</p>
 <ul>
 <li><code>bc</code> 无参数启动，缺省精度是小数点后0位</li>
@@ -482,14 +479,13 @@
 <li><code>bc file</code> 可以将指令写在一个文件内，用文件名作为参数给bc运行</li>
 </ul>
 <hr>
-<h4 id="passwd">passwd</h4>
-<p>passwd用于更换用户口令（可以认为是密码，不过严格来说密码和口令是两个概念）。</p>
+<h4 id="passwd"><a href="#passwd" class="headerlink" title="passwd"></a>passwd</h4><p>passwd用于更换用户口令（可以认为是密码，不过严格来说密码和口令是两个概念）。</p>
 <p>普通用户使用<code>passwd</code>更换自己的口令，更改前要先验证原来的口令。</p>
 <p>root用户修改口令不用验证原来的口令，还可以强行设置其它用户的口令。比如：<code>passwd aaa</code>可强行设置用户aaa的口令，但是root用户不可以读取其它用户的口令，因为口令是加密存储的，而且这种加密是不可逆的。</p>
 <hr>
-<h3 id="口令的设置与验证">口令的设置与验证</h3>
-<p>口令的保存为如下形式：</p>
+<h3 id="口令的设置与验证"><a href="#口令的设置与验证" class="headerlink" title="口令的设置与验证"></a>口令的设置与验证</h3><p>口令的保存为如下形式：</p>
 <pre class="line-numbers language-none"><code class="language-none">系统生成的序列 + 用户口令加密成长度固定的哈希值<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>验证口令时，先用提供的口令用同样的加密方式加密，将得到的哈系值与系统储存的哈系值比较即可。</p>
 
     </div>
@@ -582,13 +578,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

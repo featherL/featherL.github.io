@@ -355,6 +355,8 @@
     <div class="post-body" itemprop="articleBody">
         <p>buuoj刷pwn题之ZJCTF_2019_EasyHeap</p>
 <span id="more"></span>
+
+
 <p>heap题，没开PIE</p>
 <p>有add，delete，edit，没有show</p>
 <p>按照题意是要修改全局变量magic，来触发后门</p>
@@ -362,8 +364,7 @@
 <p><img src="/images/70072382/2.png" alt="backdoor"></p>
 <p>其中edit函数，写入数据的长度可控</p>
 <p><img src="/images/70072382/3.png" alt="edit"></p>
-<p>直接chunk extend控制magic<br>
-(<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/Breeze_CAT/article/details/103788698">https://blog.csdn.net/Breeze_CAT/article/details/103788698</a>)</p>
+<p>直接chunk extend控制magic<br>(<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/Breeze_CAT/article/details/103788698">https://blog.csdn.net/Breeze_CAT/article/details/103788698</a>)</p>
 <p>然而buuoj的环境不符合要求（与原题环境不一样），backdoor没用，改用修改<code>__free_hook</code>成<code>system</code>，的方法来getshell</p>
 <p>还要注意fastbin对size的检查，可以利用stdin，stdout，stderr内容最高位都是0x7f，符合0x70~0x7f范围的fastbin</p>
 <p>exp如下：</p>
@@ -539,13 +540,13 @@ irt<span class="token punctuation">(</span><span class="token punctuation">)</sp
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">380k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:45</span>
+    <span title="站点阅读时长">5:46</span>
   </span>
 </div>
 <div class="busuanzi-count">
